@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">Tokopaerbe</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--    Onboarding-->
+    <string name="gabungSekarang">Gabung Sekarang</string>
+    <string name="lewati">Lewati</string>
+    <string name="selanjutnya">Selanjutnya</string>
+
+    <!-- Login and Register-->
+    <string name="Masuk">Masuk</string>
+    <string name="Email">Email</string>
+    <string name="contohEmail">Contoh: test@gmail.com</string>
+    <string name="Password">Password</string>
+    <string name="contohPassword">Minimal 8 karakter</string>
+    <string name="atauDaftarDengan">atau daftar dengan</string>
+    <string name="atauMasukDengan">atau masuk dengan</string>
+    <string name="Daftar">Daftar</string>
+    <string name="registerInvalid">Register Invalid</string>
+    <string name="profileInvalid">Profile Invalid</string>
+    <string name="AUTHinvalid">AUTH Invalid</string>
+    <string name="loginInvalid">Login Invalid</string>
+    <string name="EmailTidakValid">Email tidak valid</string>
+    <string name="PasswordTidakValid">Password tidak valid</string>
+    <string name="persetujuan">Dengan masuk disini, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi TokoPhincon.</string>
+
+    <!-- Profile-->
+    <string name="Profile">Profil</string>
+    <string name="Name">Name</string>
+    <string name="Selesai">Selesai</string>
+    <string name="pilihGambar">Pilih Gambar</string>
+    <string name="Kamera">Kamera</string>
+    <string name="Galeri">Galeri</string>
+
+    <!-- Home-->
+    <string name="johnDoe">John Doe</string>
+    <string name="logout">Logout</string>
+    <string name="home">Home</string>
+    <string name="store">Store</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="transaction">Transaction</string>
+
+</resources>

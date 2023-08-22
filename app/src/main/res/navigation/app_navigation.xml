@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_navigation"
+    app:startDestination="@id/prelogin_navigation">
+
+    <include app:graph="@navigation/prelogin_navigation" />
+
+    <action
+        android:id="@+id/prelogin_to_main"
+        app:destination="@id/main_navigation"
+        app:popUpTo="@id/app_navigation"
+        app:popUpToInclusive="true" />
+
+    <include app:graph="@navigation/main_navigation" />
+
+    <action
+        android:id="@+id/main_to_prelogin"
+        app:destination="@id/prelogin_navigation"
+        app:popUpTo="@id/app_navigation"
+        app:popUpToInclusive="true" />
+
+</navigation>
