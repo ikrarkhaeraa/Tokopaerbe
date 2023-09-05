@@ -10,4 +10,23 @@
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <style name="styleInputChip" parent="Widget.Material3.Chip.Input">
+        <item name="chipIconTint">#1D192B</item>
+        <item name="chipBackgroundColor">#E8DEF8</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+
+    <style name="Widget.App.Button.OutlinedButton.IconOnly" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+    </style>
+
+
 </resources>

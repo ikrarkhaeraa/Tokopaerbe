@@ -6,4 +6,7 @@
     <color name="outlineVariant">#CAC4D0</color>
     <color name="lightonsurface">#1D1B20</color>
     <color name="lightonsurfacevariant">#49454F</color>
+    <color name="icontune">#1C1B1F</color>
+    <color name="grey">#DDDDDD</color>
+    <color name="error">#B3261E</color>
 </resources>

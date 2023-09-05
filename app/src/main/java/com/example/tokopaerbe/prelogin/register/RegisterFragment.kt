@@ -11,16 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentLoginBinding
 import com.example.tokopaerbe.databinding.FragmentRegisterBinding
-import com.example.tokopaerbe.home.MainFragment
-import com.example.tokopaerbe.prelogin.login.LoginFragment
-import com.example.tokopaerbe.prelogin.profile.ProfileFragment
-import com.example.tokopaerbe.retrofit.UserSession
+import com.example.tokopaerbe.retrofit.user.UserRegister
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
 
@@ -37,9 +39,7 @@ class RegisterFragment : Fragment() {
     private lateinit var password: String
     private var API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     private var firebaseToken = ""
-
-    private var userName = ""
-    private var userImage = ""
+    private val delayMillis = 5000L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -131,26 +131,29 @@ class RegisterFragment : Fragment() {
             }
 
             buttonDaftar.setOnClickListener {
-
+                showLoading(true)
                 model.postDataRegister(API_KEY, email, password, firebaseToken)
 
-                model.signUp.observe(requireActivity()) {
-                    Log.d("cekRegis", it.toString())
-                    if (it.code == 200) {
+                lifecycleScope.launch {
+                    val it = model.signUp.first()
 
-                        val userSession = UserSession(
-                            userName,
-                            userImage,
-                            it.data.accessToken,
-                            it.data.refreshToken,
-                            it.data.expiresAt,
-                            isLogin = true,
-                            isfirstInstall = false
+                    Log.d("cekRegisterResponse", it.data.toString())
+
+                    if (it.code == 200) {
+                        model.userLogin()
+
+                        saveUserRegister(
+                            UserRegister(
+                                it.data.accessToken,
+                                it.data.refreshToken,
+                                it.data.expiresAt
+                            )
                         )
 
-                        // Save the user session
-                        saveUserSession(userSession)
-                        goToProfile()
+                        GlobalScope.launch(Dispatchers.Main) {
+                            delay(delayMillis)
+                            goToProfile()
+                        }
 
                     } else {
                         Toast.makeText(
@@ -159,19 +162,31 @@ class RegisterFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+
                 }
+
             }
 
         }
     }
 
 
-    private fun saveUserSession(session: UserSession) {
-        model.saveUserSession(session)
+    private fun saveUserRegister(sessionRegister: UserRegister) {
+        model.saveSessionRegister(sessionRegister)
     }
 
+
     private fun goToProfile() {
+        showLoading(false)
         findNavController().navigate(R.id.action_registerFragment_to_profileFragment)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
     }
 
 }

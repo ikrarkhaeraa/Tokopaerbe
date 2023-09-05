@@ -11,15 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentLoginBinding
-import com.example.tokopaerbe.home.MainFragment
-import com.example.tokopaerbe.prelogin.profile.ProfileFragment
-import com.example.tokopaerbe.prelogin.register.RegisterFragment
-import com.example.tokopaerbe.retrofit.UserSession
+import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
@@ -36,6 +39,7 @@ class LoginFragment : Fragment() {
     private lateinit var password: String
     private var API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     private var firebaseToken = ""
+    private val delayMillis = 5000L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -112,7 +116,8 @@ class LoginFragment : Fragment() {
 
     private fun updateSubmitButtonState() {
         val isBothFieldsValid = isEmailValid && isPasswordValid
-        val isBothFieldsNotEmpty = binding.emailedittext.text?.isNotEmpty() == true && binding.passwordedittext.text?.isNotEmpty() == true
+        val isBothFieldsNotEmpty =
+            binding.emailedittext.text?.isNotEmpty() == true && binding.passwordedittext.text?.isNotEmpty() == true
 
         binding.buttonMasuk.isEnabled = isBothFieldsValid && isBothFieldsNotEmpty
     }
@@ -121,35 +126,39 @@ class LoginFragment : Fragment() {
         binding.apply {
 
             buttonMasuk.setOnClickListener {
-
+                showLoading(true)
                 model.postDataLogin(API_KEY, email, password, firebaseToken)
-                model.userLogin()
 
-                model.signIn.observe(requireActivity()) {
+                lifecycleScope.launch {
+                    val it = model.signIn.first()
+
                     Log.d("cekLogin", it.toString())
-                    if (it.code == 200) {
 
-                        val userSession = UserSession(
-                            it.data.userName,
-                            it.data.userImage,
-                            it.data.accessToken,
-                            it.data.refreshToken,
-                            it.data.expiresAt,
-                            isLogin = true,
-                            isfirstInstall = false
+                    if (it.code == 200) {
+                        model.userLogin()
+                        saveUserLogin(
+                            UserLogin(
+                                it.data.userName,
+                                it.data.userImage,
+                                it.data.accessToken,
+                                it.data.refreshToken,
+                                it.data.expiresAt
+                            )
                         )
 
-                        // Save the user session
-                        saveUserSession(userSession)
+                        GlobalScope.launch(Dispatchers.Main) {
+                            delay(delayMillis)
+                            login()
+                        }
 
-                        login()
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            getString(R.string.registerInvalid),
+                            getString(R.string.loginInvalid),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+
                 }
 
             }
@@ -160,22 +169,33 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun saveUserSession(session: UserSession) {
-        model.saveUserSession(session)
+    private fun saveUserLogin(sessionLogin: UserLogin) {
+        model.saveSessionLogin(sessionLogin)
     }
 
-    private fun login(){
-        model.signIn.observe(requireActivity()) {
+    private fun login() {
 
-            Log.d("loginResponse", it.toString())
+        lifecycleScope.launch {
+            val userName = model.getUserName().first()
 
-                if (it.data.userName.isEmpty()) {
-                    findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
+            Log.d("loginResponse", userName)
+            showLoading(false)
+            if (userName.isEmpty()) {
+                findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
 
-                } else {
-                    findNavController().navigate(R.id.prelogin_to_main)
-                }
+            } else {
+                findNavController().navigate(R.id.prelogin_to_main)
+            }
+//            findNavController().navigate(R.id.prelogin_to_main)
+        }
 
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
         }
     }
 

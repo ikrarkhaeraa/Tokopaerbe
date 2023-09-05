@@ -1,15 +1,25 @@
 package com.example.tokopaerbe.retrofit
 
+import com.example.tokopaerbe.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.retrofit.response.LoginResponse
+import com.example.tokopaerbe.retrofit.response.ProductsResponse
 import com.example.tokopaerbe.retrofit.response.ProfileResponse
+import com.example.tokopaerbe.retrofit.response.RefreshResponse
 import com.example.tokopaerbe.retrofit.response.RegisterResponse
+import com.example.tokopaerbe.retrofit.response.ReviewResponse
+import com.example.tokopaerbe.retrofit.response.SearchResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.CallAdapter
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("register")
@@ -31,4 +41,53 @@ interface ApiService {
         @Part text: MultipartBody.Part,
         @Part image: MultipartBody.Part
     ): Call<ProfileResponse>
+
+    @POST("refresh")
+    fun uploadDataRefresh(
+        @Header("API_KEY") apiKey: String,
+        @Body token: String
+    ): Call<RefreshResponse>
+
+    @POST("products")
+    fun uploadDataProducts(
+        @Header("Authorization") auth: String,
+        @Query("search") search: String?,
+        @Query("brand") brand: String?,
+        @Query("lowest") lowest: Int?,
+        @Query("highest") highest: Int?,
+        @Query("sort") sort: String?,
+        @Query("limit") limit: Int?,
+        @Query("page") page: Int?,
+    ): Call<ProductsResponse>
+
+    @POST("products")
+    suspend fun uploadDataProductsPagging(
+        @Header("Authorization") auth: String,
+        @Query("search") search: String?,
+        @Query("brand") brand: String?,
+        @Query("lowest") lowest: Int?,
+        @Query("highest") highest: Int?,
+        @Query("sort") sort: String?,
+        @Query("limit") limit: Int?,
+        @Query("page") page: Int?,
+    ): ProductsResponse
+
+    @POST("search")
+    fun uploadDataSearch(
+        @Header("Authorization") auth: String,
+        @Query("query") search: String
+    ): Call<SearchResponse>
+
+    @GET("products/{id}")
+    fun getDetailProductData(
+        @Header("Authorization") auth: String,
+        @Path("id") id: String
+    ): Call<DetailProductResponse>
+
+    @GET("review/{id}")
+    fun getReviewData(
+        @Header("Authorization") auth: String,
+        @Path("id") id: String
+    ): Call<ReviewResponse>
+
 }

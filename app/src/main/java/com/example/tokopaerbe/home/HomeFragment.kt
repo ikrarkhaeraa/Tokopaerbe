@@ -44,6 +44,7 @@ class HomeFragment : Fragment() {
         binding.logout.setOnClickListener {
 
             model.userLogout()
+
             Log.d("cekLogout", "LogoutSuccess")
             (requireActivity() as MainActivity).logout()
         }

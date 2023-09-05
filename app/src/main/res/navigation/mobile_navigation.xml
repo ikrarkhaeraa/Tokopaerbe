@@ -13,19 +13,19 @@
 
     <fragment
         android:id="@+id/navigation_store"
-        android:name="com.example.tokopaerbe.home.StoreFragment"
+        android:name="com.example.tokopaerbe.home.store.StoreFragment"
         android:label="@string/store"
-        tools:layout="@layout/fragment_store" />
+        tools:layout="@layout/fragment_store"/>
 
     <fragment
         android:id="@+id/navigation_wishlist"
-        android:name="com.example.tokopaerbe.home.WishlistFragment"
+        android:name="com.example.tokopaerbe.home.wishlist.WishlistFragment"
         android:label="@string/wishlist"
         tools:layout="@layout/fragment_wishlist" />
 
     <fragment
         android:id="@+id/navigation_transaction"
-        android:name="com.example.tokopaerbe.home.WishlistFragment"
+        android:name="com.example.tokopaerbe.home.wishlist.WishlistFragment"
         android:label="@string/transaction"
         tools:layout="@layout/fragment_transaction" />
 

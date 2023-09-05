@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/prelogin_navigation"
-    app:startDestination="@id/onboardingFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -20,6 +20,12 @@
         <action
             android:id="@+id/action_loginFragment_to_profileFragment"
             app:destination="@id/profileFragment"
+            app:popUpTo="@id/prelogin_navigation"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_loginFragment_to_onBoardingFragment"
+            app:destination="@id/onboardingFragment"
             app:popUpTo="@id/prelogin_navigation"
             app:popUpToInclusive="true" />
 

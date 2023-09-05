@@ -41,4 +41,76 @@
     <string name="wishlist">Wishlist</string>
     <string name="transaction">Transaction</string>
 
+    <!--Store-->
+    <string name="Search">Search</string>
+    <string name="Filter">Filter</string>
+    <string name="Title">Nama Barang</string>
+    <string name="Price">Harga Barang</string>
+    <string name="Store">Toko</string>
+    <string name="Rating">5.0 | Terjual 10</string>
+
+    <!--Filter-->
+    <string name="urutkan">Urutkan</string>
+    <string name="ulasan">Ulasan</string>
+    <string name="penjualan">Penjualan</string>
+    <string name="hargaTerendah">Harga Terendah</string>
+    <string name="hargaTertinggi">Harga Tertinggi</string>
+    <string name="kategori">Kategori</string>
+    <string name="apple">Apple</string>
+    <string name="asus">Asus</string>
+    <string name="dell">Dell</string>
+    <string name="lenovo">Lenovo</string>
+    <string name="harga">Harga</string>
+    <string name="tampilkanProduk">Tampilkan Produk</string>
+    <string name="terendah">Terendah</string>
+    <string name="tertinggi">Tertinggi</string>
+
+    <!--Error-->
+    <string name="errorTitle">Empty</string>
+    <string name="errorTitleConnection">Connection</string>
+    <string name="errorTitle500">500</string>
+    <string name="errorDesc">Your requested data is unavailable</string>
+    <string name="errorDescConnection">Your connection is unavailable</string>
+    <string name="errorDesc500">Internal Server Error</string>
+    <string name="resetButtonError">Reset</string>
+    <string name="refreshButtonError">Refresh</string>
+
+    <!--    Detail Product-->
+    <string name="detailProduk">Detail Produk</string>
+    <string name="price">Rp23.499.000</string>
+    <string name="spec">Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS</string>
+    <string name="sold">Terjual 10</string>
+    <string name="productRating">4.5</string>
+    <string name="totalRating">2</string>
+    <string name="pilihVarian">Pilih Varian</string>
+    <string name="labelVarian">Varian</string>
+    <string name="deskripsiProductTitle">Deskripsi Produk</string>
+    <string name="descProduct">This is the desc</string>
+    <string name="ulasanPembeli">Ulasan Pembeli</string>
+    <string name="lihatSemua">Lihat Semua</string>
+    <string name="ratingKecildibawah">/5.0</string>
+    <string name="totalSatisfaction">100% pembeli merasa puas</string>
+    <string name="ratingTitle">2 rating 2 ulasan</string>
+    <string name="beliLangsung">Beli Langsung</string>
+    <string name="keranjang">+ Keranjang</string>
+
+    <!--    Review-->
+    <string name="reviewerName">John Doe</string>
+    <string name="review">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
+
+
+    <!--    Cart-->
+    <string name="keranjangTitle">Keranjang</string>
+    <string name="pilihSemua">Pilih Semua</string>
+    <string name="hapus">Hapus</string>
+    <string name="totalBayar">Total Bayar</string>
+    <string name="priceTotal">Rp0</string>
+    <string name="Beli">Beli</string>
+    <string name="variant">16GB, 1TB SSD</string>
+    <string name="stock">Sisa 5</string>
+    <string name="quantity">1</string>
+
+
+    <!-- Wishlist-->
+    <string name="totalBarang">3 Barang</string>
 </resources>

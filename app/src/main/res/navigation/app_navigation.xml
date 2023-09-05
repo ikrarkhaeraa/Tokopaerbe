@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
     app:startDestination="@id/prelogin_navigation">
 
@@ -19,5 +20,62 @@
         app:destination="@id/prelogin_navigation"
         app:popUpTo="@id/app_navigation"
         app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_main_to_profileFragment"
+        app:destination="@id/profileFragment3" />
+
+    <action
+        android:id="@+id/action_main_to_cartFragment"
+        app:destination="@id/cartFragment" />
+
+    <action
+        android:id="@+id/store_to_detail"
+        app:destination="@id/detailProduct"
+        />
+
+    <fragment
+        android:id="@+id/detailProduct"
+        android:name="com.example.tokopaerbe.home.store.DetailProductFragment"
+        android:label="fragment_detail_product"
+        tools:layout="@layout/fragment_detail_product">
+
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue=""/>
+        <action
+            android:id="@+id/action_detailProduct_to_reviewFragment"
+            app:destination="@id/reviewFragment" />
+        <action
+            android:id="@+id/action_detailProduct_to_cartFragment"
+            app:destination="@id/cartFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/reviewFragment"
+        android:name="com.example.tokopaerbe.home.store.ReviewFragment"
+        android:label="fragment_review"
+        tools:layout="@layout/fragment_review">
+
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue=""/>
+
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.tokopaerbe.home.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" />
+
+    <fragment
+        android:id="@+id/profileFragment3"
+        android:name="com.example.tokopaerbe.prelogin.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+
 
 </navigation>

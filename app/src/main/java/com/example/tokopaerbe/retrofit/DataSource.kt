@@ -3,35 +3,57 @@ package com.example.tokopaerbe.retrofit
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
+import com.example.tokopaerbe.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.retrofit.response.LoginResponse
 import com.example.tokopaerbe.retrofit.response.ProfileResponse
 import com.example.tokopaerbe.retrofit.response.RegisterResponse
+import com.example.tokopaerbe.retrofit.response.ReviewResponse
+import com.example.tokopaerbe.retrofit.response.SearchResponse
+import com.example.tokopaerbe.retrofit.user.UserLogin
+import com.example.tokopaerbe.retrofit.user.UserProfile
+import com.example.tokopaerbe.retrofit.user.UserRegister
+import com.example.tokopaerbe.room.CartDao
+import com.example.tokopaerbe.room.CartEntity
+import com.example.tokopaerbe.room.WishlistDao
+import com.example.tokopaerbe.room.WishlistEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DataSource(private val pref: UserPreferences) {
+class DataSource(private val pref: UserPreferences, private val cartDao: CartDao, private val wishDao: WishlistDao) {
 
     companion object {
         @Volatile
         private var instance: DataSource? = null
-        fun getInstance(preferences: UserPreferences): DataSource =
+        fun getInstance(preferences: UserPreferences, cartDao: CartDao, wishDao: WishlistDao): DataSource =
             instance ?: synchronized(this) {
-                instance ?: DataSource(preferences)
+                instance ?: DataSource(preferences, cartDao, wishDao)
             }.also { instance = it }
     }
 
-    private val _signUp = MutableLiveData<RegisterResponse>()
-    val signUp: LiveData<RegisterResponse> = _signUp
+    private var _signUp = MutableLiveData<RegisterResponse>()
+    var signUp: Flow<RegisterResponse> = _signUp.asFlow()
 
-    private val _signIn = MutableLiveData<LoginResponse>()
-    val signIn: LiveData<LoginResponse> = _signIn
+    private var _signIn = MutableLiveData<LoginResponse>()
+    var signIn: Flow<LoginResponse> = _signIn.asFlow()
 
-    private val _profile = MutableLiveData<ProfileResponse>()
-    val profile: LiveData<ProfileResponse> = _profile
+    private var _profile = MutableLiveData<ProfileResponse>()
+    var profile: Flow<ProfileResponse> = _profile.asFlow()
 
+    private val _search = MutableLiveData<SearchResponse>()
+    val search: LiveData<SearchResponse> = _search
+
+    private val _detail = MutableLiveData<DetailProductResponse>()
+    val detail: LiveData<DetailProductResponse> = _detail
+
+    private val _review = MutableLiveData<ReviewResponse>()
+    val review: LiveData<ReviewResponse> = _review
 
     fun uploadRegisterData(API_KEY: String, email:String, password:String, firebaseToken: String) {
         val requestBody = RegisterRequestBody(email, password, firebaseToken)
@@ -77,7 +99,6 @@ class DataSource(private val pref: UserPreferences) {
     }
 
     fun uploadProfileData(auth: String, userName:MultipartBody.Part, userImage: MultipartBody.Part) {
-//        val requestBody = ProfileRequestBody(userName, userImage)
         val client = ApiConfig.getApiService().uploadDataProfile(auth, userName, userImage)
         client.enqueue(object : Callback<ProfileResponse> {
             override fun onResponse(
@@ -97,14 +118,102 @@ class DataSource(private val pref: UserPreferences) {
         })
     }
 
-    fun getUserSession(): LiveData<UserSession> {
-        return pref.getUserSession().asLiveData()
+    fun uploadSearchData(auth: String, query: String) {
+        val client = ApiConfig.getApiService().uploadDataSearch(auth, query)
+        client.enqueue(object : Callback<SearchResponse> {
+            override fun onResponse(
+                call: Call<SearchResponse>,
+                response: Response<SearchResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.e("searchResponse", "onResponse: ${response.message()}")
+                    _search.value = response.body()
+                } else {
+                    Log.e("search", "onResponse: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                Log.e("searchFailure", "onFailure: ${t.message}")
+            }
+        })
     }
 
-    suspend fun saveSession(session: UserSession) {
-        pref.saveUserSession(session)
+    fun getReviewData(auth: String, id: String) {
+        val client = ApiConfig.getApiService().getReviewData(auth, id)
+        client.enqueue(object : Callback<ReviewResponse> {
+            override fun onResponse(
+                call: Call<ReviewResponse>,
+                response: Response<ReviewResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.e("reviewResponse", "onResponse: ${response.message()}")
+                    _review.value = response.body()
+                } else {
+                    Log.e("review", "onResponse: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
+                Log.e("reviewFailure", "onFailure: ${t.message}")
+            }
+        })
     }
 
+    fun getDetailProductData(auth: String, id: String) {
+        val client = ApiConfig.getApiService().getDetailProductData(auth, id)
+        client.enqueue(object : Callback<DetailProductResponse> {
+            override fun onResponse(
+                call: Call<DetailProductResponse>,
+                response: Response<DetailProductResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.e("detailResponse", "onResponse: ${response.message()}")
+                    _detail.value = response.body()
+                } else {
+                    Log.e("detail", "onResponse: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<DetailProductResponse>, t: Throwable) {
+                Log.e("detailFailure", "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    suspend fun saveSessionProfile(sessionProfile: UserProfile) {
+        pref.saveUserProfile(sessionProfile)
+    }
+
+    suspend fun saveSessionRegister(sessionRegister: UserRegister) {
+        pref.saveUserRegister(sessionRegister)
+    }
+
+
+    suspend fun saveSessionLogin(sessionLogin: UserLogin) {
+        pref.saveUserLogin(sessionLogin)
+    }
+
+    fun userToken(): Flow<String> {
+       return pref.getAccessToken()
+    }
+
+    fun getCode(): LiveData<Int> {
+        return pref.getCode().asLiveData()
+    }
+
+    fun userName(): Flow<String> {
+        return pref.getUserName()
+    }
+
+    fun getUserFirstInstallState(): Flow<Boolean> {
+        return pref.getUserFirstInstallState()
+    }
+
+    fun getFavoriteState(): LiveData<Boolean> {
+        return pref.getFavoriteState().asLiveData()
+    }
+
+    fun getUserLoginState(): Flow<Boolean> {
+        return pref.getUserLoginState()
+    }
     suspend fun userLogin() {
         pref.login()
     }
@@ -113,8 +222,77 @@ class DataSource(private val pref: UserPreferences) {
         pref.install()
     }
 
+    suspend fun favoriteKey() {
+        pref.favoriteKey()
+    }
+
     suspend fun userLogout() {
         pref.logout()
+    }
+
+    fun getProductCart() : LiveData<List<CartEntity>?> {
+        return cartDao.getProduct()
+    }
+
+    fun deleteProductCart(id: String) {
+        return cartDao.deleteProduct(id)
+    }
+
+    suspend fun deleteAllCheckedProduct(cartEntity: List<CartEntity>) {
+        return cartDao.deleteAllCheckedProduct(cartEntity)
+    }
+
+    fun addProductCart(id: String,
+                       productName: String,
+                       variantName: String,
+                       stock: Int,
+                       productPrice: Int,
+                       quantity: Int,
+                       image: String,
+                       isChecked: Boolean,
+                       cartPrice: Int) {
+        return cartDao.addProduct(id, productName, variantName, stock, productPrice, quantity, image, isChecked, cartPrice)
+    }
+
+    fun isChecked(id: String, isChecked: Boolean) {
+        return cartDao.isChecked(id, isChecked)
+    }
+
+    fun quantity(id: String, quantity: Int) {
+        return cartDao.quantity(id, quantity)
+    }
+
+    fun checkAll(isChecked: Boolean) {
+        return cartDao.checkAll(isChecked)
+    }
+
+    fun cartPrice(cartPrice: Int){
+        return cartDao.cartPrice(cartPrice)
+    }
+
+    fun addWishList(id: String,
+                    productName: String,
+                    productPrice: Int,
+                    image: String,
+                    store: String,
+                    productRating: Float,
+                    sale: Int,
+                    stock: Int,
+                    variantName: String,
+                    quantity: Int) {
+        return wishDao.addWishList(id, productName, productPrice, image, store, productRating, sale, stock, variantName, quantity)
+    }
+
+    fun getWishList() : LiveData<List<WishlistEntity>?> {
+        return wishDao.getWishList()
+    }
+
+    fun deleteWishList(id: String) {
+        return wishDao.deleteWishList(id)
+    }
+
+    fun getIsFavorite(id: String): LiveData<List<WishlistEntity>?> {
+        return wishDao.getIsFavorite(id)
     }
 
 }

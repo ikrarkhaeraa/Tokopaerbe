@@ -3,7 +3,6 @@ package com.example.tokopaerbe.prelogin.profile
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -23,18 +22,20 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentProfileBinding
-import com.example.tokopaerbe.home.HomeFragment
-import com.example.tokopaerbe.home.MainFragment
-import com.example.tokopaerbe.prelogin.login.LoginFragment
-import com.example.tokopaerbe.prelogin.register.RegisterFragment
-import com.example.tokopaerbe.retrofit.UserSession
+import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -51,6 +52,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
+    private val delayMillis = 5000L
 
     companion object {
         const val CAMERA_X_RESULT = 700
@@ -115,67 +117,68 @@ class ProfileFragment : Fragment() {
         sendData()
     }
 
-    private fun uploadData() {
 
-        model.getUserSession().observe(requireActivity()) { usersession ->
-
-            val auth = "Bearer ${usersession.accessToken}"
-            Log.d("cekit", usersession.toString())
-            Log.d("cekAUTH", auth)
-
-            val username = binding.nameedittext.text.toString()
-            val userName = MultipartBody.Part.createFormData("userName", username)
-
-            val fileRequestBody = getMyFile.asRequestBody("image/*".toMediaTypeOrNull())
-            val imagePart = MultipartBody.Part.createFormData("userImage", getMyFile.name, fileRequestBody)
-
-            if (auth.isNotEmpty()) {
-                Log.d("cekSendDataProfile", "send Profile")
-                model.postDataProfile(auth, userName, imagePart)
-
-                model.profile.observe(requireActivity()) {profile ->
-                    saveUserSession(
-                        UserSession(
-                            profile.data.userName,
-                            profile.data.userImage,
-                            usersession.accessToken,
-                            usersession.refreshToken,
-                            usersession.expiresAt,
-                            isLogin = true,
-                            isfirstInstall = false
-                        )
-                    )
-                }
-
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.AUTHinvalid),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-        }
-
+    private fun saveUserProfile(sessionProfile: UserProfile) {
+        model.saveSessionProfile(sessionProfile)
     }
 
-    private fun saveUserSession(session: UserSession) {
-        model.saveUserSession(session)
-    }
 
     private fun sendData() {
         binding.buttonSelesai.setOnClickListener {
-            uploadData()
-            goToHome()
+            showLoading(true)
+
+            lifecycleScope.launch {
+                val it = model.getUserToken().first()
+                val auth = "Bearer $it"
+                Log.d("cekit", it)
+                Log.d("cekAUTH", auth)
+
+                val username = binding.nameedittext.text.toString()
+                val userName = MultipartBody.Part.createFormData("userName", username)
+
+                val fileRequestBody = getMyFile.asRequestBody("image/*".toMediaTypeOrNull())
+                val imagePart =
+                    MultipartBody.Part.createFormData("userImage", getMyFile.name, fileRequestBody)
+
+                if (it.isNotEmpty()) {
+                    model.postDataProfile(auth, userName, imagePart)
+
+                    lifecycleScope.launch {
+                        val it = model.profile.first()
+                        if (it.code == 200) {
+
+                            val userProfile =
+                                UserProfile(
+                                    it.data.userName,
+                                    it.data.userImage,
+                                )
+                            // Save the user session
+                            saveUserProfile(userProfile)
+
+                            GlobalScope.launch(Dispatchers.Main) {
+                                delay(delayMillis)
+                                goToHome()
+                            }
+                        }
+
+                    }
+
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.AUTHinvalid),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+
         }
     }
 
     private fun goToHome() {
-        model.profile.observe(requireActivity()) {
-            if (it.code == 200) {
-                findNavController().navigate(R.id.prelogin_to_main)
-            }
-        }
+        showLoading(false)
+        findNavController().navigate(R.id.prelogin_to_main)
     }
 
     private fun startTakePhoto() {
@@ -247,6 +250,14 @@ class ProfileFragment : Fragment() {
 
         override fun afterTextChanged(s: Editable?) {
             // Not used in this case
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
         }
     }
 

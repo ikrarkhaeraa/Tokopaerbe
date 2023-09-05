@@ -2,6 +2,7 @@ package com.example.tokopaerbe.retrofit
 
 import okhttp3.MultipartBody
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 data class RegisterRequestBody(
     val email: String,
@@ -14,8 +15,3 @@ data class LoginRequestBody(
     val password: String,
     val firebaseToken: String
 )
-
-//data class ProfileRequestBody(
-//    @Part val text: MultipartBody.Part,
-//    @Part val image: MultipartBody.Part
-//)
