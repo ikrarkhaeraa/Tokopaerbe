@@ -1,13 +1,16 @@
 package com.example.tokopaerbe.retrofit
 
 import com.example.tokopaerbe.retrofit.response.DetailProductResponse
+import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
 import com.example.tokopaerbe.retrofit.response.LoginResponse
 import com.example.tokopaerbe.retrofit.response.ProductsResponse
 import com.example.tokopaerbe.retrofit.response.ProfileResponse
+import com.example.tokopaerbe.retrofit.response.RatingResponse
 import com.example.tokopaerbe.retrofit.response.RefreshResponse
 import com.example.tokopaerbe.retrofit.response.RegisterResponse
 import com.example.tokopaerbe.retrofit.response.ReviewResponse
 import com.example.tokopaerbe.retrofit.response.SearchResponse
+import com.example.tokopaerbe.retrofit.response.TransactionResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -89,5 +92,22 @@ interface ApiService {
         @Header("Authorization") auth: String,
         @Path("id") id: String
     ): Call<ReviewResponse>
+
+    @POST("fulfillment")
+    fun uploadDataFulfillment(
+        @Header("Authorization") auth: String,
+        @Body requestBody: FulfillmentRequestBody
+    ): Call<FulfillmentResponse>
+
+    @POST("rating")
+    fun uploadDataRating(
+        @Header("Authorization") auth: String,
+        @Body requestBody: RatingRequestBody
+    ): Call<RatingResponse>
+
+    @GET("transaction")
+    fun getTransactionData(
+        @Header("Authorization") auth: String,
+    ): Call<TransactionResponse>
 
 }

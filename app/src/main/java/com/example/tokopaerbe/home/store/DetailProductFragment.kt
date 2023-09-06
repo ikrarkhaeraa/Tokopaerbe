@@ -19,6 +19,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.tokopaerbe.ImageSliderAdapter
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentDetailProductBinding
+import com.example.tokopaerbe.home.checkout.CheckoutDataClass
+import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
+import com.example.tokopaerbe.home.checkout.ListCheckout
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.chip.Chip
@@ -41,6 +44,9 @@ class DetailProductFragment : Fragment() {
     private var productId: String = ""
     private lateinit var listSearchResult: List<String>
     private var isIconBorder = true
+
+    private lateinit var listCheckout: ArrayList<CheckoutDataClass>
+    private var productCheckout: ListCheckout = ListCheckout(emptyList())
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -211,6 +217,52 @@ class DetailProductFragment : Fragment() {
 
                 }
             }
+
+
+            listCheckout = ArrayList()
+            binding.buyNow.setOnClickListener { view ->
+
+                if (selectedVariant.isNullOrEmpty()) {
+                    selectedVariant = it.data.productVariant[0].variantName
+                    val productImage = it.data.image[0]
+                    val productName = it.data.productName
+                    val productVariant = selectedVariant
+                    val productStock = it.data.stock
+                    val productPrice = it.data.productPrice
+                    val productQuantity = 1
+                    val product = CheckoutDataClass(
+                        productImage,
+                        productName,
+                        productVariant,
+                        productStock,
+                        productPrice,
+                        productQuantity)
+                    listCheckout.add(product)
+                } else {
+                    val productImage = it.data.image[0]
+                    val productName = it.data.productName
+                    val productVariant = selectedVariant
+                    val productStock = it.data.stock
+                    val productPrice = it.data.productPrice
+                    val productQuantity = 1
+                    val product = CheckoutDataClass(
+                        productImage,
+                        productName,
+                        productVariant,
+                        productStock,
+                        productPrice,
+                        productQuantity)
+                    listCheckout.add(product)
+                }
+                Log.d("ceklistChekout", listCheckout.toString())
+                productCheckout = ListCheckout(listCheckout)
+                findNavController().navigate(
+                    R.id.action_detailProduct_to_checkoutFragment,
+                    CheckoutFragmentArgs(productCheckout).toBundle(),
+                    navOptions = null
+                )
+            }
+
         }
 
     }

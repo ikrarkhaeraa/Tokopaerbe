@@ -10,10 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentHomeBinding
 import com.example.tokopaerbe.databinding.FragmentWishlistBinding
-import com.example.tokopaerbe.home.CartAdapter
-import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory

@@ -6,11 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import com.example.tokopaerbe.retrofit.response.DetailProductResponse
+import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
 import com.example.tokopaerbe.retrofit.response.LoginResponse
 import com.example.tokopaerbe.retrofit.response.ProfileResponse
+import com.example.tokopaerbe.retrofit.response.RatingResponse
 import com.example.tokopaerbe.retrofit.response.RegisterResponse
 import com.example.tokopaerbe.retrofit.response.ReviewResponse
 import com.example.tokopaerbe.retrofit.response.SearchResponse
+import com.example.tokopaerbe.retrofit.response.TransactionResponse
 import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.retrofit.user.UserRegister
@@ -54,6 +57,15 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
 
     private val _review = MutableLiveData<ReviewResponse>()
     val review: LiveData<ReviewResponse> = _review
+
+    private val _fulfillment = MutableLiveData<FulfillmentResponse>()
+    val fulfillment: LiveData<FulfillmentResponse> = _fulfillment
+
+    private val _rating = MutableLiveData<RatingResponse>()
+    val rating: LiveData<RatingResponse> = _rating
+
+    private val _transaction = MutableLiveData<TransactionResponse>()
+    val transaction: LiveData<TransactionResponse> = _transaction
 
     fun uploadRegisterData(API_KEY: String, email:String, password:String, firebaseToken: String) {
         val requestBody = RegisterRequestBody(email, password, firebaseToken)
@@ -174,6 +186,68 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
             }
             override fun onFailure(call: Call<DetailProductResponse>, t: Throwable) {
                 Log.e("detailFailure", "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    fun uploadFulfillmentData(auth: String, payment: String, items:List<Item>) {
+        val requestBody = FulfillmentRequestBody(payment, items)
+        val client = ApiConfig.getApiService().uploadDataFulfillment(auth, requestBody)
+        client.enqueue(object : Callback<FulfillmentResponse> {
+            override fun onResponse(
+                call: Call<FulfillmentResponse>,
+                response: Response<FulfillmentResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.e("fulfillmentResponse", "onResponse: ${response.message()}")
+                    _fulfillment.value = response.body()
+                } else {
+                    Log.e("fulfillment", "onResponse: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<FulfillmentResponse>, t: Throwable) {
+                Log.e("fulfillmentFailure", "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    fun uploadRatingData(auth: String, invoiceId: String, rating:Int, review: String) {
+        val requestBody = RatingRequestBody(invoiceId, rating, review)
+        val client = ApiConfig.getApiService().uploadDataRating(auth, requestBody)
+        client.enqueue(object : Callback<RatingResponse> {
+            override fun onResponse(
+                call: Call<RatingResponse>,
+                response: Response<RatingResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.e("ratingResponse", "onResponse: ${response.message()}")
+                    _rating.value = response.body()
+                } else {
+                    Log.e("rating", "onResponse: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<RatingResponse>, t: Throwable) {
+                Log.e("ratingFailure", "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    fun getTransactionData(auth: String) {
+        val client = ApiConfig.getApiService().getTransactionData(auth)
+        client.enqueue(object : Callback<TransactionResponse> {
+            override fun onResponse(
+                call: Call<TransactionResponse>,
+                response: Response<TransactionResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.e("transactionResponse", "onResponse: ${response.message()}")
+                    _transaction.value = response.body()
+                } else {
+                    Log.e("transaction", "onResponse: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<TransactionResponse>, t: Throwable) {
+                Log.e("transactionFailure", "onFailure: ${t.message}")
             }
         })
     }

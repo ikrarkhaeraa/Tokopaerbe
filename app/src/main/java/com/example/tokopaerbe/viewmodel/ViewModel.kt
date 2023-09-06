@@ -6,12 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tokopaerbe.home.store.Filter
 import com.example.tokopaerbe.retrofit.DataSource
+import com.example.tokopaerbe.retrofit.Item
 import com.example.tokopaerbe.retrofit.response.DetailProductResponse
+import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
 import com.example.tokopaerbe.retrofit.response.LoginResponse
 import com.example.tokopaerbe.retrofit.response.ProfileResponse
+import com.example.tokopaerbe.retrofit.response.RatingResponse
 import com.example.tokopaerbe.retrofit.response.RegisterResponse
 import com.example.tokopaerbe.retrofit.response.ReviewResponse
 import com.example.tokopaerbe.retrofit.response.SearchResponse
+import com.example.tokopaerbe.retrofit.response.TransactionResponse
 import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.retrofit.user.UserRegister
@@ -29,7 +33,9 @@ class ViewModel(private val data: DataSource) : ViewModel() {
     val search: LiveData<SearchResponse> = data.search
     val detail: LiveData<DetailProductResponse> = data.detail
     val review: LiveData<ReviewResponse> = data.review
-
+    val fulfillment: LiveData<FulfillmentResponse> = data.fulfillment
+    val rating: LiveData<RatingResponse> = data.rating
+    val transaction: LiveData<TransactionResponse> = data.transaction
 
 
     private val _search = MutableLiveData<String?>()
@@ -245,6 +251,24 @@ class ViewModel(private val data: DataSource) : ViewModel() {
     fun postDataLogin(API_KEY:String, email:String, password:String, firebaseToken:String) {
         viewModelScope.launch {
             data.uploadLoginData(API_KEY, email, password, firebaseToken)
+        }
+    }
+
+    fun postDataFulfillment(auth: String, payment: String, items:List<Item>) {
+        viewModelScope.launch {
+            data.uploadFulfillmentData(auth, payment, items)
+        }
+    }
+
+    fun postDataRating(auth: String, invoiceId: String, rating:Int, review: String) {
+        viewModelScope.launch {
+            data.uploadRatingData(auth, invoiceId, rating, review)
+        }
+    }
+
+    fun getTransactionData(auth: String) {
+        viewModelScope.launch {
+            data.getTransactionData(auth)
         }
     }
 

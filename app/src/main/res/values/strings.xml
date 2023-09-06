@@ -113,4 +113,43 @@
 
     <!-- Wishlist-->
     <string name="totalBarang">3 Barang</string>
+
+
+    <!-- Checkout-->
+    <string name="Checkout">Checkout</string>
+    <string name="barangYangDibeli">Barang yang dibeli</string>
+    <string name="pembayaran">Pembayaran</string>
+    <string name="pilihPembayaran">Pilih Pembayaran</string>
+    <string name="bayar">Bayar</string>
+
+    <!-- Pilih Pembayaran-->
+    <string name="transferVA">Transfer Virtual Account</string>
+    <string name="transferBank">Transfer Bank</string>
+    <string name="pembayaranInstan">Pembayaran Instan</string>
+    <string name="metodeBayar">platform pembayaran</string>
+
+
+    <!-- Status-->
+    <string name="status">Status</string>
+    <string name="pembayaranBerhasil">Pembayaran Berhasil</string>
+    <string name="beriUlasan">Beri Ulasan</string>
+    <string name="detailTransaksi">Detail Transaksi</string>
+    <string name="idTransaksi">ID Transaksi</string>
+    <string name="tanggal">Tanggal</string>
+    <string name="waktu">Waktu</string>
+    <string name="metodePembayaran">Metode Pembayaran</string>
+    <string name="totalPembayaran">Total Pembayaran</string>
+    <string name="idTransaksiValue">abcd-efgh-ijkl-mnop</string>
+    <string name="statusValue">Berhasil</string>
+    <string name="tanggalValue">3 Jun 2023</string>
+    <string name="waktuValue">22:00</string>
+    <string name="metodePembayaranValue">BCA Virtual Account</string>
+    <string name="totalPembayaranValue">Rp23.499.000</string>
+
+
+    <!--Transaksi-->
+    <string name="belanja">Belanja</string>
+    <string name="selesai">Selesai</string>
+    <string name="totalBelanja">TotalBelanja</string>
+    <string name="ulas">Ulas</string>
 </resources>

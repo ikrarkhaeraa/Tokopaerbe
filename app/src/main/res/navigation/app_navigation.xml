@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_detailProduct_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_detailProduct_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
 
     </fragment>
 
@@ -67,15 +70,30 @@
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
-        android:name="com.example.tokopaerbe.home.CartFragment"
+        android:name="com.example.tokopaerbe.home.cart.CartFragment"
         android:label="fragment_cart"
-        tools:layout="@layout/fragment_cart" />
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/profileFragment3"
         android:name="com.example.tokopaerbe.prelogin.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.example.tokopaerbe.home.checkout.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout">
+
+        <argument
+            android:name="productCheckout"
+            app:argType="com.example.tokopaerbe.home.checkout.ListCheckout" />
+    </fragment>
 
 
 </navigation>
