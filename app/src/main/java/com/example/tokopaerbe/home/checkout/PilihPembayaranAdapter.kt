@@ -32,10 +32,10 @@ class PilihPembayaranAdapter :
         val payment = getItem(position)
         holder.bind(payment)
 
-//        holder.binding.recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-//        val adapter = MetodePembayaranAdapter()
-//        holder.binding.recyclerView.adapter = adapter
-//        adapter.submitList(it.data)
+        holder.binding.recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
+        val adapter = MetodePembayaranAdapter()
+        holder.binding.recyclerView.adapter = adapter
+        adapter.submitList(payment.item)
     }
 
     class ListViewHolder(var binding: ItemMetodePembayaranBinding) :
