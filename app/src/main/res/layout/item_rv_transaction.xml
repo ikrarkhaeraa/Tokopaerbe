@@ -84,7 +84,7 @@
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/productName"
             android:layout_width="288dp"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -100,12 +100,13 @@
             card_view:layout_constraintTop_toBottomOf="@+id/materialDivider2" />
 
         <TextView
+            android:id="@+id/totalBarang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/totalBarang"
             android:layout_marginStart="8dp"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
-            card_view:layout_constraintTop_toBottomOf="@+id/textView15" />
+            card_view:layout_constraintTop_toBottomOf="@+id/productName" />
 
         <TextView
             android:id="@+id/totalBelanja"
@@ -120,6 +121,7 @@
             card_view:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
+            android:id="@+id/totalHarga"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/harga"
@@ -131,6 +133,7 @@
             card_view:layout_constraintStart_toStartOf="parent"/>
 
         <Button
+            android:id="@+id/buttonUlas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

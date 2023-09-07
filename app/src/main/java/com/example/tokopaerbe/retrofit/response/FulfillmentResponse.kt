@@ -15,7 +15,7 @@ data class FulfillmentResponse(
 
 data class Fulfillment(
     @field:SerializedName("invoiceId")
-    val invoiveId: String,
+    val invoiceId: String,
 
     @field:SerializedName("status")
     val status: Boolean,

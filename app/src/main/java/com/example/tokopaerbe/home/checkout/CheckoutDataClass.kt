@@ -5,6 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CheckoutDataClass (
+    var productId: String,
     var productImage: String,
     var productName: String,
     var productVariant: String,

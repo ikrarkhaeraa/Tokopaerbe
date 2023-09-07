@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_transaction"
-        android:name="com.example.tokopaerbe.home.wishlist.WishlistFragment"
+        android:name="com.example.tokopaerbe.home.transaction.TransactionFragment"
         android:label="@string/transaction"
         tools:layout="@layout/fragment_transaction" />
 

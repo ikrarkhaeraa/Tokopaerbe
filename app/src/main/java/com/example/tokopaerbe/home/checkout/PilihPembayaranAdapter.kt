@@ -20,7 +20,9 @@ import com.squareup.picasso.Picasso
 import java.text.NumberFormat
 import java.util.Locale
 
-class PilihPembayaranAdapter :
+class PilihPembayaranAdapter (
+    private val itemClickListener: MetodePembayaranAdapter.OnItemClickListener
+) :
     ListAdapter<Payment, PilihPembayaranAdapter.ListViewHolder>(CartEntityDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
@@ -33,7 +35,7 @@ class PilihPembayaranAdapter :
         holder.bind(payment)
 
         holder.binding.recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-        val adapter = MetodePembayaranAdapter()
+        val adapter = MetodePembayaranAdapter(itemClickListener)
         holder.binding.recyclerView.adapter = adapter
         adapter.submitList(payment.item)
     }

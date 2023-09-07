@@ -31,8 +31,11 @@
 
     <action
         android:id="@+id/store_to_detail"
-        app:destination="@id/detailProduct"
-        />
+        app:destination="@id/detailProduct" />
+
+    <action
+        android:id="@+id/transaction_to_status"
+        app:destination="@id/statusFragment" />
 
     <fragment
         android:id="@+id/detailProduct"
@@ -42,8 +45,8 @@
 
         <argument
             android:name="productId"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
         <action
             android:id="@+id/action_detailProduct_to_reviewFragment"
             app:destination="@id/reviewFragment" />
@@ -64,15 +67,16 @@
 
         <argument
             android:name="productId"
-            app:argType="string"
-            android:defaultValue=""/>
+            android:defaultValue=""
+            app:argType="string" />
 
     </fragment>
+
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.example.tokopaerbe.home.cart.CartFragment"
         android:label="fragment_cart"
-        tools:layout="@layout/fragment_cart" >
+        tools:layout="@layout/fragment_cart">
         <action
             android:id="@+id/action_cartFragment_to_checkoutFragment"
             app:destination="@id/checkoutFragment" />
@@ -96,12 +100,36 @@
         <action
             android:id="@+id/action_checkoutFragment_to_pilihPembayaranFragment"
             app:destination="@id/pilihPembayaranFragment" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_statusFragment"
+            app:destination="@id/statusFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/pilihPembayaranFragment"
         android:name="com.example.tokopaerbe.home.checkout.PilihPembayaranFragment"
         android:label="fragment_pilih_pembayaran"
-        tools:layout="@layout/fragment_pilih_pembayaran" />
+        tools:layout="@layout/fragment_pilih_pembayaran">
+        <action
+            android:id="@+id/action_pilihPembayaranFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/statusFragment"
+        android:name="com.example.tokopaerbe.home.checkout.StatusFragment"
+        android:label="fragment_status"
+        tools:layout="@layout/fragment_status">
+
+        <action
+            android:id="@+id/action_statusFragment_to_main_navigation"
+            app:destination="@id/main_navigation" />
+        <argument
+            android:name="itemTransaction"
+            app:argType="com.example.tokopaerbe.home.transaction.ItemTransaction"
+            app:nullable="true" />
+
+    </fragment>
 
 
 </navigation>

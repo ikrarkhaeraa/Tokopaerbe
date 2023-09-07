@@ -25,7 +25,7 @@ class CheckoutAdapter(
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val (productImage, productName, productVariant, productStock, productPrice, productQuantity) = listCheckoutProduct[position]
+        val (productId, productImage, productName, productVariant, productStock, productPrice, productQuantity) = listCheckoutProduct[position]
         Picasso.get().load(productImage).into(holder.binding.itemImage)
         holder.binding.itemTitle.text = productName
         holder.binding.variant.text = productVariant

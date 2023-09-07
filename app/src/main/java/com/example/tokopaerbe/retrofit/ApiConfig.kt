@@ -8,23 +8,43 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 //@AndroidEntryPoint
+//class ApiConfig {
+//    companion object{
+//        fun getApiService(): ApiService {
+//            val loggingInterceptor =
+//                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+////            val chucker = ChuckerInterceptor
+//            val client = OkHttpClient.Builder()
+////                .addInterceptor(chucker)
+//                .addInterceptor(loggingInterceptor)
+////                .authenticator(this, preferences)
+//                .build()
+//            val retrofit = Retrofit.Builder()
+//                .baseUrl("http://172.17.20.235:5000/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .client(client)
+//                .build()
+//            return retrofit.create(ApiService::class.java)
+//        }
+//    }
+//}
+
 class ApiConfig {
-    companion object{
-        fun getApiService(): ApiService {
-            val loggingInterceptor =
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-//            val chucker = ChuckerInterceptor
-            val client = OkHttpClient.Builder()
-//                .addInterceptor(chucker)
-                .addInterceptor(loggingInterceptor)
-//                .authenticator(this, preferences)
-                .build()
+    companion object {
+        private lateinit var apiService: ApiService
+
+        fun initialize(okHttpClient: OkHttpClient) {
             val retrofit = Retrofit.Builder()
                 .baseUrl("http://192.168.153.125:5000/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
+                .client(okHttpClient)
                 .build()
-            return retrofit.create(ApiService::class.java)
+
+            apiService = retrofit.create(ApiService::class.java)
+        }
+
+        fun getApiService(): ApiService {
+            return apiService
         }
     }
 }

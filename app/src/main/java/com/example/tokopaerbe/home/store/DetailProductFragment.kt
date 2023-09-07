@@ -224,6 +224,7 @@ class DetailProductFragment : Fragment() {
 
                 if (selectedVariant.isNullOrEmpty()) {
                     selectedVariant = it.data.productVariant[0].variantName
+                    val produdtId = it.data.productId
                     val productImage = it.data.image[0]
                     val productName = it.data.productName
                     val productVariant = selectedVariant
@@ -231,6 +232,7 @@ class DetailProductFragment : Fragment() {
                     val productPrice = it.data.productPrice
                     val productQuantity = 1
                     val product = CheckoutDataClass(
+                        productId,
                         productImage,
                         productName,
                         productVariant,
@@ -239,6 +241,7 @@ class DetailProductFragment : Fragment() {
                         productQuantity)
                     listCheckout.add(product)
                 } else {
+                    val produdtId = it.data.productId
                     val productImage = it.data.image[0]
                     val productName = it.data.productName
                     val productVariant = selectedVariant
@@ -246,6 +249,7 @@ class DetailProductFragment : Fragment() {
                     val productPrice = it.data.productPrice
                     val productQuantity = 1
                     val product = CheckoutDataClass(
+                        productId,
                         productImage,
                         productName,
                         productVariant,

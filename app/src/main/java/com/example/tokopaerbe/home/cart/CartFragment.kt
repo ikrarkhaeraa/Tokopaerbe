@@ -72,6 +72,7 @@ class CartFragment : Fragment() {
                 listCheckout = ArrayList()
                 binding.buttonBeli.setOnClickListener {
                     selectedItem.map {
+                        val productId = it.productId
                         val productImage = it.image
                         val productName = it.productName
                         val productVariant = it.variantName
@@ -79,6 +80,7 @@ class CartFragment : Fragment() {
                         val productPrice = it.productPrice
                         val productQuantity = it.quantity
                         val product = CheckoutDataClass(
+                            productId,
                             productImage,
                             productName,
                             productVariant,

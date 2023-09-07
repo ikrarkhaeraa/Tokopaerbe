@@ -9,11 +9,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tokopaerbe.databinding.ItemMetodePembayaranBinding
 import com.example.tokopaerbe.databinding.ItemPlatformPembayaranBinding
+import com.example.tokopaerbe.home.store.SearchAdapter
 import com.example.tokopaerbe.retrofit.response.Payment
 import com.example.tokopaerbe.retrofit.response.PaymentMethod
 import com.squareup.picasso.Picasso
 
-class MetodePembayaranAdapter :
+class MetodePembayaranAdapter (
+    private val itemClickListener: OnItemClickListener
+) :
     ListAdapter<PaymentMethod, MetodePembayaranAdapter.ListViewHolder>(CartEntityDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
@@ -24,6 +27,10 @@ class MetodePembayaranAdapter :
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val payment = getItem(position)
         holder.bind(payment)
+
+        holder.itemView.setOnClickListener {
+            itemClickListener.onItemClick(payment.image, payment.label)
+        }
     }
 
     class ListViewHolder(var binding: ItemPlatformPembayaranBinding) :
@@ -46,6 +53,10 @@ class MetodePembayaranAdapter :
         override fun areContentsTheSame(oldItem: PaymentMethod, newItem: PaymentMethod): Boolean {
             return oldItem == newItem
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(image: String, name: String)
     }
 
 }

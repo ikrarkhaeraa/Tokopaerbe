@@ -150,6 +150,6 @@
     <!--Transaksi-->
     <string name="belanja">Belanja</string>
     <string name="selesai">Selesai</string>
-    <string name="totalBelanja">TotalBelanja</string>
+    <string name="totalBelanja">Total Belanja</string>
     <string name="ulas">Ulas</string>
 </resources>

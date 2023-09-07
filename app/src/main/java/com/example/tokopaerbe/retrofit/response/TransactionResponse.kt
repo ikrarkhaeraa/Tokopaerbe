@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TransactionResponse(
     @field:SerializedName("data")
-    val data: Transaction,
+    val data: List<Transaction>,
 
     @field:SerializedName("code")
     val code: Int,
@@ -15,7 +15,7 @@ data class TransactionResponse(
 
 data class Transaction (
     @field:SerializedName("invoiceId")
-    val invoiveId: String,
+    val invoiceId: String,
 
     @field:SerializedName("status")
     val status: Boolean,
