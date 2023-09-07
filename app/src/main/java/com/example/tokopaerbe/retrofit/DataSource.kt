@@ -8,6 +8,7 @@ import androidx.lifecycle.asLiveData
 import com.example.tokopaerbe.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
 import com.example.tokopaerbe.retrofit.response.LoginResponse
+import com.example.tokopaerbe.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.retrofit.response.ProfileResponse
 import com.example.tokopaerbe.retrofit.response.RatingResponse
 import com.example.tokopaerbe.retrofit.response.RegisterResponse
@@ -57,6 +58,9 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
 
     private val _review = MutableLiveData<ReviewResponse>()
     val review: LiveData<ReviewResponse> = _review
+
+    private val _payment = MutableLiveData<PaymentResponse>()
+    val payment: LiveData<PaymentResponse> = _payment
 
     private val _fulfillment = MutableLiveData<FulfillmentResponse>()
     val fulfillment: LiveData<FulfillmentResponse> = _fulfillment
@@ -166,6 +170,26 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
             }
             override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
                 Log.e("reviewFailure", "onFailure: ${t.message}")
+            }
+        })
+    }
+
+    fun getPaymentData(auth: String) {
+        val client = ApiConfig.getApiService().getPaymentData(auth)
+        client.enqueue(object : Callback<PaymentResponse> {
+            override fun onResponse(
+                call: Call<PaymentResponse>,
+                response: Response<PaymentResponse>
+            ) {
+                if (response.isSuccessful) {
+                    Log.e("paymentResponse", "onResponse: ${response.message()}")
+                    _payment.value = response.body()
+                } else {
+                    Log.e("payment", "onResponse: ${response.message()}")
+                }
+            }
+            override fun onFailure(call: Call<PaymentResponse>, t: Throwable) {
+                Log.e("paymentFailure", "onFailure: ${t.message}")
             }
         })
     }

@@ -3,6 +3,7 @@ package com.example.tokopaerbe.retrofit
 import com.example.tokopaerbe.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
 import com.example.tokopaerbe.retrofit.response.LoginResponse
+import com.example.tokopaerbe.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.retrofit.response.ProductsResponse
 import com.example.tokopaerbe.retrofit.response.ProfileResponse
 import com.example.tokopaerbe.retrofit.response.RatingResponse
@@ -92,6 +93,11 @@ interface ApiService {
         @Header("Authorization") auth: String,
         @Path("id") id: String
     ): Call<ReviewResponse>
+
+    @GET("payment")
+    fun getPaymentData(
+        @Header("Authorization") auth: String,
+    ): Call<PaymentResponse>
 
     @POST("fulfillment")
     fun uploadDataFulfillment(

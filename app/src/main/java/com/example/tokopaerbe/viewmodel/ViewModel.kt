@@ -10,6 +10,7 @@ import com.example.tokopaerbe.retrofit.Item
 import com.example.tokopaerbe.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
 import com.example.tokopaerbe.retrofit.response.LoginResponse
+import com.example.tokopaerbe.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.retrofit.response.ProfileResponse
 import com.example.tokopaerbe.retrofit.response.RatingResponse
 import com.example.tokopaerbe.retrofit.response.RegisterResponse
@@ -33,6 +34,7 @@ class ViewModel(private val data: DataSource) : ViewModel() {
     val search: LiveData<SearchResponse> = data.search
     val detail: LiveData<DetailProductResponse> = data.detail
     val review: LiveData<ReviewResponse> = data.review
+    val payment: LiveData<PaymentResponse> = data.payment
     val fulfillment: LiveData<FulfillmentResponse> = data.fulfillment
     val rating: LiveData<RatingResponse> = data.rating
     val transaction: LiveData<TransactionResponse> = data.transaction
@@ -239,6 +241,12 @@ class ViewModel(private val data: DataSource) : ViewModel() {
     fun getReviewData(auth: String, id: String) {
         viewModelScope.launch {
             data.getReviewData(auth, id)
+        }
+    }
+
+    fun getPaymentData(auth: String) {
+        viewModelScope.launch {
+            data.getPaymentData(auth)
         }
     }
 

@@ -8,12 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentCheckoutBinding
+import com.example.tokopaerbe.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -56,6 +61,20 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
         binding.recyclerView.adapter = adapter
 
         calculateTotalPrice(productCheckout.listCheckout)
+
+        binding.pilihPembayaran.setOnClickListener {
+            lifecycleScope.launch {
+                val token = model.getUserToken().first()
+                val auth = "Bearer $token"
+
+                model.getPaymentData(auth)
+                model.payment.observe(viewLifecycleOwner) {
+                    if (it.code == 200) {
+                        findNavController().navigate(R.id.action_checkoutFragment_to_pilihPembayaranFragment)
+                    }
+                }
+            }
+        }
     }
 
     override fun onItemClick(position: Int, item: CheckoutDataClass) {

@@ -93,7 +93,15 @@
         <argument
             android:name="productCheckout"
             app:argType="com.example.tokopaerbe.home.checkout.ListCheckout" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_pilihPembayaranFragment"
+            app:destination="@id/pilihPembayaranFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/pilihPembayaranFragment"
+        android:name="com.example.tokopaerbe.home.checkout.PilihPembayaranFragment"
+        android:label="fragment_pilih_pembayaran"
+        tools:layout="@layout/fragment_pilih_pembayaran" />
 
 
 </navigation>
