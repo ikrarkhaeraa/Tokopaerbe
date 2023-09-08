@@ -8,6 +8,8 @@
         <item name="windowSplashScreenAnimationDuration">5000</item>
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">?attr/colorSurfaceContainerLowest</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="dialogFragment">

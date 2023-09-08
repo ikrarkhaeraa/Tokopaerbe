@@ -147,22 +147,20 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
 
-        val filter = bundleOf().apply {
-            putString("selectedText1", selectedText1)
-            putString("selectedText2", selectedText2)
-            putString("textTerendah", textTerendah)
-            putString("textTertinggi", textTertinggi)
-        }
-
-
         binding.tampilkanproduk.setOnClickListener {
-            setFragmentResult("textFromChipGroup1", bundleOf("bundleKey" to selectedText1))
-            setFragmentResult("textFromChipGroup2", bundleOf("bundleKey" to selectedText2))
-            setFragmentResult("textTerendah", bundleOf("bundleKey" to textTerendah))
-            setFragmentResult("textTertinggi", bundleOf("bundleKey" to textTertinggi))
+//            setFragmentResult("textFromChipGroup1", bundleOf("bundleKey" to selectedText1))
+//            setFragmentResult("textFromChipGroup2", bundleOf("bundleKey" to selectedText2))
+//            setFragmentResult("textTerendah", bundleOf("bundleKey" to textTerendah))
+//            setFragmentResult("textTertinggi", bundleOf("bundleKey" to textTertinggi))
+            val filter = bundleOf().apply {
+                putString("selectedText1", selectedText1)
+                putString("selectedText2", selectedText2)
+                putString("textTerendah", textTerendah)
+                putString("textTertinggi", textTertinggi)
+            }
             Log.d("cekSelectedText", selectedText1)
             Log.d("cekSelectedText", selectedText2)
-//            setFragmentResult("filter", filter)
+            setFragmentResult("filter", filter)
             dismiss()
         }
 

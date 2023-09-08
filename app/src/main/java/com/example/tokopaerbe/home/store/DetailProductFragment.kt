@@ -1,11 +1,13 @@
 package com.example.tokopaerbe.home.store
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toolbar
@@ -26,6 +28,9 @@ import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.chip.Chip
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -218,13 +223,27 @@ class DetailProductFragment : Fragment() {
                 }
             }
 
+            binding.share.setOnClickListener { view ->
+                val shareIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        "Product : ${it.data.productName}\n" +
+                        "Price : $itemPrice\n" +
+                        "Link : http://ecommerce.tokopaerbe.com/product/${it.data.productId}"
+                    )
+                    type = "text/plain"
+                }
+                startActivity(Intent.createChooser(shareIntent, null))
+            }
+
 
             listCheckout = ArrayList()
             binding.buyNow.setOnClickListener { view ->
 
                 if (selectedVariant.isNullOrEmpty()) {
                     selectedVariant = it.data.productVariant[0].variantName
-                    val produdtId = it.data.productId
+                    val productId = it.data.productId
                     val productImage = it.data.image[0]
                     val productName = it.data.productName
                     val productVariant = selectedVariant
@@ -241,7 +260,7 @@ class DetailProductFragment : Fragment() {
                         productQuantity)
                     listCheckout.add(product)
                 } else {
-                    val produdtId = it.data.productId
+                    val productId = it.data.productId
                     val productImage = it.data.image[0]
                     val productName = it.data.productName
                     val productVariant = selectedVariant
@@ -271,14 +290,6 @@ class DetailProductFragment : Fragment() {
 
     }
 
-    private fun setIconFavorite() {
-        val iconResource = if (isIconBorder) {
-            R.drawable.baseline_favorite_border_24
-        } else {
-            R.drawable.baseline_favorite_24
-        }
-        binding.favorite.setImageResource(iconResource)
-    }
 
     private fun formatPrice(price: Double): String {
         val numberFormat = NumberFormat.getNumberInstance(
@@ -298,6 +309,14 @@ class DetailProductFragment : Fragment() {
         _binding = FragmentDetailProductBinding.inflate(inflater, container, false)
         factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = VISIBLE
+        } else {
+            binding.progressBar.visibility = GONE
+        }
     }
 
 }

@@ -56,6 +56,10 @@
         <action
             android:id="@+id/action_detailProduct_to_checkoutFragment"
             app:destination="@id/checkoutFragment" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="http://ecommerce.tokopaerbe.com/product/{productId}"
+            />
 
     </fragment>
 

@@ -14,7 +14,7 @@
         android:fontFamily="@font/poppins"
         android:textColor="@color/lightonsurface"
         android:text="@string/Masuk"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="18dp"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -145,6 +145,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
+        android:id="@+id/persetujuan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/persetujuan"

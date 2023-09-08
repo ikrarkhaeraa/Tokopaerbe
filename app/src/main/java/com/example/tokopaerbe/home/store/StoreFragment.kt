@@ -19,6 +19,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.navigation.Navigation
+import androidx.paging.LoadState
+import androidx.paging.PagingSource
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
@@ -26,6 +28,7 @@ import com.example.tokopaerbe.R
 import com.example.tokopaerbe.pagging.LoadingStateAdapter
 import com.example.tokopaerbe.pagging.PaggingModel
 import com.example.tokopaerbe.databinding.FragmentStoreBinding
+import com.example.tokopaerbe.pagging.ProductPagingSource
 import com.example.tokopaerbe.retrofit.user.UserFilter
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
@@ -66,7 +69,6 @@ class StoreFragment : Fragment() {
 
     private val delayMillis = 1000L
     private val filterParams = MutableStateFlow(UserFilter(null, null, null, null, null))
-    private var isGridLayoutManager = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -151,42 +153,117 @@ class StoreFragment : Fragment() {
                 filter.highest
             ).observe(viewLifecycleOwner) { result ->
 
-//                model.getCode().observe(viewLifecycleOwner) {
-//                    Log.d("cekCode", it.toString())
-//                    if (it == 200) {
-//                        gridProductAdapter.submitData(lifecycle, result)
-//                    }  else if (it == 404) {
-//                    binding.recyclerView.visibility = GONE
-//                    binding.gambarerror.visibility = VISIBLE
-//                    binding.errorTitle.visibility = VISIBLE
-//                    binding.errorTitle.text = getString(R.string.errorTitle)
-//                    binding.errorDesc.visibility = VISIBLE
-//                    binding.errorDesc.text = getString(R.string.errorDesc)
-//                    binding.resetButton.visibility = VISIBLE
-//                } else if (it == 500) {
-//                    binding.recyclerView.visibility = GONE
-//                    binding.gambarerror.visibility = VISIBLE
-//                    binding.errorTitle.visibility = VISIBLE
-//                    binding.errorTitle.text = getString(R.string.errorTitle500)
-//                    binding.errorDesc.visibility = VISIBLE
-//                    binding.errorDesc.text = getString(R.string.errorDesc500)
-//                    binding.resetButton.visibility = VISIBLE
-//                    binding.resetButton.text = getString(R.string.refreshButtonError)
-//                } else {
-//                    binding.recyclerView.visibility = GONE
-//                    binding.gambarerror.visibility = VISIBLE
-//                    binding.errorTitle.visibility = VISIBLE
-//                    binding.errorTitle.text = getString(R.string.errorTitleConnection)
-//                    binding.errorDesc.visibility = VISIBLE
-//                    binding.errorDesc.text = getString(R.string.errorDescConnection)
-//                    binding.resetButton.visibility = VISIBLE
-//                    binding.resetButton.text = getString(R.string.refreshButtonError)
-//                }
-//
-//                }
+                model.getCode().observe(viewLifecycleOwner) {
+                    Log.d("cekCode", it.toString())
+                    when (it) {
 
-                gridProductAdapter.submitData(lifecycle, result)
-                Log.d("cekDataPaging", result.toString())
+                        200 -> {
+                            gridProductAdapter.submitData(lifecycle, result)
+                        }
+
+                        404 -> {
+                            binding.recyclerView.visibility = GONE
+                            binding.gambarerror.visibility = VISIBLE
+                            binding.errorTitle.visibility = VISIBLE
+                            binding.errorTitle.text = getString(R.string.errorTitle)
+                            binding.errorDesc.visibility = VISIBLE
+                            binding.errorDesc.text = getString(R.string.errorDesc)
+                            binding.resetButton.visibility = VISIBLE
+                            binding.resetButton.setOnClickListener { view ->
+                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+                                resetFilter.observe(viewLifecycleOwner) {
+                                    paggingModel.sendFilter(
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    ).observe(viewLifecycleOwner) { reset ->
+                                        Log.d("cekResetFilter", resetFilter.toString())
+                                        linearProductAdapter.submitData(lifecycle, reset)
+
+                                        binding.recyclerView.visibility = VISIBLE
+                                        binding.gambarerror.visibility = GONE
+                                        binding.errorTitle.visibility = GONE
+                                        binding.errorTitle.text = getString(R.string.errorTitle)
+                                        binding.errorDesc.visibility = GONE
+                                        binding.errorDesc.text = getString(R.string.errorDesc)
+                                        binding.resetButton.visibility = GONE
+                                    }
+                                }
+                            }
+                        }
+
+                        500 -> {
+                            binding.recyclerView.visibility = GONE
+                            binding.gambarerror.visibility = VISIBLE
+                            binding.errorTitle.visibility = VISIBLE
+                            binding.errorTitle.text = getString(R.string.errorTitle500)
+                            binding.errorDesc.visibility = VISIBLE
+                            binding.errorDesc.text = getString(R.string.errorDesc500)
+                            binding.resetButton.visibility = VISIBLE
+                            binding.resetButton.text = getString(R.string.refreshButtonError)
+                            binding.resetButton.setOnClickListener { view ->
+                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+                                resetFilter.observe(viewLifecycleOwner) {
+                                    paggingModel.sendFilter(
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    ).observe(viewLifecycleOwner) { reset ->
+                                        linearProductAdapter.submitData(lifecycle, reset)
+
+                                        binding.recyclerView.visibility = VISIBLE
+                                        binding.gambarerror.visibility = GONE
+                                        binding.errorTitle.visibility = GONE
+                                        binding.errorTitle.text = getString(R.string.errorTitle)
+                                        binding.errorDesc.visibility = GONE
+                                        binding.errorDesc.text = getString(R.string.errorDesc)
+                                        binding.resetButton.visibility = GONE
+                                    }
+                                }
+                            }
+                        }
+
+                        else -> {
+                            binding.recyclerView.visibility = GONE
+                            binding.gambarerror.visibility = VISIBLE
+                            binding.errorTitle.visibility = VISIBLE
+                            binding.errorTitle.text = getString(R.string.errorTitleConnection)
+                            binding.errorDesc.visibility = VISIBLE
+                            binding.errorDesc.text = getString(R.string.errorDescConnection)
+                            binding.resetButton.visibility = VISIBLE
+                            binding.resetButton.text = getString(R.string.refreshButtonError)
+                            binding.resetButton.setOnClickListener { view ->
+                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+                                resetFilter.observe(viewLifecycleOwner) {
+                                    paggingModel.sendFilter(
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    ).observe(viewLifecycleOwner) { reset ->
+                                        linearProductAdapter.submitData(lifecycle, reset)
+
+                                        binding.recyclerView.visibility = VISIBLE
+                                        binding.gambarerror.visibility = GONE
+                                        binding.errorTitle.visibility = GONE
+                                        binding.errorTitle.text = getString(R.string.errorTitle)
+                                        binding.errorDesc.visibility = GONE
+                                        binding.errorDesc.text = getString(R.string.errorDesc)
+                                        binding.resetButton.visibility = GONE
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+//                gridProductAdapter.submitData(lifecycle, result)
+//                Log.d("cekDataPaging", result.toString())
             }
 
         }
@@ -225,42 +302,117 @@ class StoreFragment : Fragment() {
                 filter.highest
             ).observe(viewLifecycleOwner) { result ->
 
-//                model.getCode().observe(viewLifecycleOwner) {
-//                    Log.d("cekCode", it.toString())
-//                    if (it == 200) {
-//                        linearProductAdapter.submitData(lifecycle, result)
-//                    } else if (it == 404) {
-//                        binding.recyclerView.visibility = GONE
-//                        binding.gambarerror.visibility = VISIBLE
-//                        binding.errorTitle.visibility = VISIBLE
-//                        binding.errorTitle.text = getString(R.string.errorTitle)
-//                        binding.errorDesc.visibility = VISIBLE
-//                        binding.errorDesc.text = getString(R.string.errorDesc)
-//                        binding.resetButton.visibility = VISIBLE
-//                    } else if (it == 500) {
-//                        binding.recyclerView.visibility = GONE
-//                        binding.gambarerror.visibility = VISIBLE
-//                        binding.errorTitle.visibility = VISIBLE
-//                        binding.errorTitle.text = getString(R.string.errorTitle500)
-//                        binding.errorDesc.visibility = VISIBLE
-//                        binding.errorDesc.text = getString(R.string.errorDesc500)
-//                        binding.resetButton.visibility = VISIBLE
-//                        binding.resetButton.text = getString(R.string.refreshButtonError)
-//                    } else {
-//                        binding.recyclerView.visibility = GONE
-//                        binding.gambarerror.visibility = VISIBLE
-//                        binding.errorTitle.visibility = VISIBLE
-//                        binding.errorTitle.text = getString(R.string.errorTitleConnection)
-//                        binding.errorDesc.visibility = VISIBLE
-//                        binding.errorDesc.text = getString(R.string.errorDescConnection)
-//                        binding.resetButton.visibility = VISIBLE
-//                        binding.resetButton.text = getString(R.string.refreshButtonError)
-//                    }
-//
-//                }
+                model.getCode().observe(viewLifecycleOwner) {
+                    Log.d("cekCode", it.toString())
+                    when (it) {
 
-                linearProductAdapter.submitData(lifecycle, result)
-                Log.d("cekDataPaging", result.toString())
+                        200 -> {
+                            linearProductAdapter.submitData(lifecycle, result)
+                        }
+
+                        404 -> {
+                            binding.recyclerView.visibility = GONE
+                            binding.gambarerror.visibility = VISIBLE
+                            binding.errorTitle.visibility = VISIBLE
+                            binding.errorTitle.text = getString(R.string.errorTitle)
+                            binding.errorDesc.visibility = VISIBLE
+                            binding.errorDesc.text = getString(R.string.errorDesc)
+                            binding.resetButton.visibility = VISIBLE
+                            binding.resetButton.setOnClickListener { view ->
+                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+                                resetFilter.observe(viewLifecycleOwner) {
+                                    paggingModel.sendFilter(
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    ).observe(viewLifecycleOwner) { reset ->
+                                        Log.d("cekResetFilter", resetFilter.toString())
+                                        linearProductAdapter.submitData(lifecycle, reset)
+
+                                        binding.recyclerView.visibility = VISIBLE
+                                        binding.gambarerror.visibility = GONE
+                                        binding.errorTitle.visibility = GONE
+                                        binding.errorTitle.text = getString(R.string.errorTitle)
+                                        binding.errorDesc.visibility = GONE
+                                        binding.errorDesc.text = getString(R.string.errorDesc)
+                                        binding.resetButton.visibility = GONE
+                                    }
+                                }
+                            }
+                        }
+
+                        500 -> {
+                            binding.recyclerView.visibility = GONE
+                            binding.gambarerror.visibility = VISIBLE
+                            binding.errorTitle.visibility = VISIBLE
+                            binding.errorTitle.text = getString(R.string.errorTitle500)
+                            binding.errorDesc.visibility = VISIBLE
+                            binding.errorDesc.text = getString(R.string.errorDesc500)
+                            binding.resetButton.visibility = VISIBLE
+                            binding.resetButton.text = getString(R.string.refreshButtonError)
+                            binding.resetButton.setOnClickListener { view ->
+                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+                                resetFilter.observe(viewLifecycleOwner) {
+                                    paggingModel.sendFilter(
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    ).observe(viewLifecycleOwner) { reset ->
+                                        linearProductAdapter.submitData(lifecycle, reset)
+
+                                        binding.recyclerView.visibility = VISIBLE
+                                        binding.gambarerror.visibility = GONE
+                                        binding.errorTitle.visibility = GONE
+                                        binding.errorTitle.text = getString(R.string.errorTitle)
+                                        binding.errorDesc.visibility = GONE
+                                        binding.errorDesc.text = getString(R.string.errorDesc)
+                                        binding.resetButton.visibility = GONE
+                                    }
+                                }
+                            }
+                        }
+
+                        else -> {
+                            binding.recyclerView.visibility = GONE
+                            binding.gambarerror.visibility = VISIBLE
+                            binding.errorTitle.visibility = VISIBLE
+                            binding.errorTitle.text = getString(R.string.errorTitleConnection)
+                            binding.errorDesc.visibility = VISIBLE
+                            binding.errorDesc.text = getString(R.string.errorDescConnection)
+                            binding.resetButton.visibility = VISIBLE
+                            binding.resetButton.text = getString(R.string.refreshButtonError)
+                            binding.resetButton.setOnClickListener { view ->
+                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+                                resetFilter.observe(viewLifecycleOwner) {
+                                    paggingModel.sendFilter(
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    ).observe(viewLifecycleOwner) { reset ->
+                                        linearProductAdapter.submitData(lifecycle, reset)
+
+                                        binding.recyclerView.visibility = VISIBLE
+                                        binding.gambarerror.visibility = GONE
+                                        binding.errorTitle.visibility = GONE
+                                        binding.errorTitle.text = getString(R.string.errorTitle)
+                                        binding.errorDesc.visibility = GONE
+                                        binding.errorDesc.text = getString(R.string.errorDesc)
+                                        binding.resetButton.visibility = GONE
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+//                linearProductAdapter.submitData(lifecycle, result)
+//                Log.d("cekDataPaging", result.toString())
             }
 
         }
@@ -283,73 +435,36 @@ class StoreFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun settingFilter() {
 
-        binding.chipgroup.removeAllViews()
 
-//        setFragmentResultListener("filter") { _, bundle ->
-//            var sort = bundle.getString("selectedText1")
-//            var brand = bundle.getString("selectedText2")
-//            var textTerendah = bundle.getString("textTerendah")
-//            var textTertinggi = bundle.getString("textTertinggi")
-//
-//            Log.d("cekFragmentResult", sort.toString())
-//            Log.d("cekFragmentResult", brand.toString())
-//            Log.d("cekFragmentResult", textTerendah.toString())
-//            Log.d("cekFragmentResult", textTertinggi.toString())
-//        }
+        setFragmentResultListener("filter") { _, bundle ->
+            binding.chipgroup.removeAllViews()
 
-        setFragmentResultListener("textFromChipGroup1") { _, bundle ->
-            selectedText1 = bundle.getString("bundleKey").toString()
-            Log.d("cekSelectedText1", selectedText1!!)
-            if (selectedText1!!.isNotEmpty()) {
+            val sort = bundle.getString("selectedText1")
+            val brand = bundle.getString("selectedText2")
+            val terendah = bundle.getString("textTerendah")
+            val tertinggi = bundle.getString("textTertinggi")
+
+            selectedText1 = sort
+            selectedText2 = brand
+            textTerendah = terendah
+            textTertinggi = tertinggi
+
+            Log.d("cekFragmentResult", selectedText1.toString())
+            Log.d("cekFragmentResult", selectedText2.toString())
+            Log.d("cekFragmentResult", textTerendah.toString())
+            Log.d("cekFragmentResult", textTertinggi.toString())
+
+            val listFilter = listOf(selectedText1, selectedText2, textTerendah, textTertinggi)
+
+            for (i in listFilter.indices) {
                 val chip = Chip(requireActivity())
-                chip.text = selectedText1 // Set the text for the chip
-                binding.chipgroup.addView(chip)
-                if (selectedText1!!.isNotEmpty()) {
-                    updateFilterAndRequestData()
+                chip.text = listFilter[i]
+                chip.isClickable = true
+                if (chip.text.isNotEmpty()) {
+                    binding.chipgroup.addView(chip)
                 }
             }
-        }
-
-        setFragmentResultListener("textFromChipGroup2") { _, bundle ->
-            selectedText2 = bundle.getString("bundleKey").toString()
-            Log.d("cekSelectedText2", selectedText2!!)
-            if (selectedText2!!.isNotEmpty()) {
-                val chip = Chip(requireActivity())
-                chip.text = selectedText2 // Set the text for the chip
-                binding.chipgroup.addView(chip)
-                if (selectedText2!!.isNotEmpty()) {
-                    updateFilterAndRequestData()
-                }
-
-            }
-        }
-
-        setFragmentResultListener("textTerendah") { _, bundle ->
-            textTerendah = bundle.getString("bundleKey").toString()
-            Log.d("cekTextTerendah", textTerendah!!)
-            if (textTerendah!!.isNotEmpty()) {
-                val chip = Chip(requireActivity())
-                chip.text = "< $textTerendah" // Set the text for the chip
-                binding.chipgroup.addView(chip)
-                if (textTerendah!!.isNotEmpty()) {
-                    updateFilterAndRequestData()
-                }
-
-            }
-        }
-
-        setFragmentResultListener("textTertinggi") { _, bundle ->
-            textTertinggi = bundle.getString("bundleKey").toString()
-            Log.d("cekTextTertinggi", textTertinggi!!)
-            if (textTertinggi!!.isNotEmpty()) {
-                val chip = Chip(requireActivity())
-                chip.text = "> $textTertinggi" // Set the text for the chip
-                binding.chipgroup.addView(chip)
-                if (textTertinggi!!.isNotEmpty()) {
-                    updateFilterAndRequestData()
-                }
-
-            }
+            updateFilterAndRequestData()
         }
 
     }

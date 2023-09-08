@@ -33,7 +33,7 @@ class StatusFragment : Fragment() {
     private var review: String = ""
 
     private val args: StatusFragmentArgs by navArgs()
-    private var productCheckout: ItemTransaction? = ItemTransaction(emptyList())
+    private var itemTransaction: ItemTransaction? = ItemTransaction(emptyList())
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,8 +45,8 @@ class StatusFragment : Fragment() {
 
         binding.reviewedittext.addTextChangedListener(reviewTextWatcher)
 
-        model.fulfillment.observe(viewLifecycleOwner) {
-            if (productCheckout?.itemTransaction?.isEmpty() == true) {
+        if (model.fulfillment.value?.code == 200) {
+            model.fulfillment.observe(viewLifecycleOwner) {
                 binding.idTransaksiValue.text = it.data.invoiceId
                 binding.StatusValue.text = "Berhasil"
                 binding.tanggalValue.text = it.data.date
@@ -63,37 +63,43 @@ class StatusFragment : Fragment() {
                         Log.d("cekStatusData", ratingBar.toString())
                         Log.d("cekStatusData", review)
 
-                        findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
+                        model.rating.observe(viewLifecycleOwner) { ratingResponse ->
+                            if (ratingResponse.code == "200") {
+                                findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
+                            }
+                        }
                     }
                 }
-            } else {
-                productCheckout = args.itemTransaction
-                Log.d("cekCheckout", productCheckout.toString())
-                productCheckout?.itemTransaction?.map {transaction ->
-                    binding.idTransaksiValue.text = transaction.invoiceId
-                    binding.StatusValue.text = "Berhasil"
-                    binding.tanggalValue.text = transaction.tanggalValue
-                    binding.waktuValue.text = transaction.waktuValue
-                    binding.metodePembayaranValue.text = transaction.metodePembayaranValue
-                    binding.totalPembayaranValue.text = transaction.totalPembayaranValue.toString()
+            }
+        } else {
+            itemTransaction = args.itemTransaction
+            Log.d("cekItemTransaction", itemTransaction.toString())
+            itemTransaction?.itemTransaction?.map { transaction ->
+                binding.idTransaksiValue.text = transaction.invoiceId
+                binding.StatusValue.text = "Berhasil"
+                binding.tanggalValue.text = transaction.tanggalValue
+                binding.waktuValue.text = transaction.waktuValue
+                binding.metodePembayaranValue.text = transaction.metodePembayaranValue
+                binding.totalPembayaranValue.text = transaction.totalPembayaranValue.toString()
 
-                    binding.buttonSelesai.setOnClickListener { view ->
-                        lifecycleScope.launch {
-                            val token = model.getUserToken().first()
-                            val auth = "Bearer $token"
+                binding.buttonSelesai.setOnClickListener { view ->
+                    lifecycleScope.launch {
+                        val token = model.getUserToken().first()
+                        val auth = "Bearer $token"
 
-                            model.postDataRating(auth, transaction.invoiceId, ratingBar, review)
-                            Log.d("cekStatusData", ratingBar.toString())
-                            Log.d("cekStatusData", review)
+                        model.postDataRating(auth, transaction.invoiceId, ratingBar, review)
+                        Log.d("cekStatusData", ratingBar.toString())
+                        Log.d("cekStatusData", review)
 
-                            findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
+                        model.rating.observe(viewLifecycleOwner) { ratingResponse ->
+                            if (ratingResponse.code == "200") {
+                                findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
+                            }
                         }
                     }
                 }
             }
         }
-
-
     }
 
     override fun onCreateView(

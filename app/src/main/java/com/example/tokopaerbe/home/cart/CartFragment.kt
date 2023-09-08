@@ -34,11 +34,16 @@ class CartFragment : Fragment() {
     private var totalPrice = 0.0
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
+    private lateinit var adapter: CartAdapter
 
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = CartAdapter(model)
+        binding.recyclerView.adapter = adapter
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.cartToolbar
 
@@ -152,9 +157,6 @@ class CartFragment : Fragment() {
         binding.price.visibility = VISIBLE
         binding.buttonBeli.visibility = VISIBLE
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = CartAdapter(model)
-        binding.recyclerView.adapter = adapter
         adapter.submitList(cartList)
         binding.recyclerView.visibility = VISIBLE
     }

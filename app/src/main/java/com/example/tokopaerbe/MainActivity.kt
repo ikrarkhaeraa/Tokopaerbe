@@ -53,10 +53,10 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.action_loginFragment_to_onBoardingFragment)
             }
             else if (!userLoginState && !userFirstInstallState) {
-                navController.navigate(R.id.action_onboardingFragment_to_loginFragment)
+                navController.navigate(R.id.main_to_prelogin)
             }
             else if (userName.isEmpty()) {
-                navController.navigate(R.id.action_onboardingFragment_to_profileFragment)
+                navController.navigate(R.id.action_loginFragment_to_profileFragment)
             }
             else {
                 navController.navigate(R.id.prelogin_to_main)

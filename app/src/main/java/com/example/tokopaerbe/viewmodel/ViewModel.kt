@@ -201,6 +201,10 @@ class ViewModel(private val data: DataSource) : ViewModel() {
         }
     }
 
+    fun getCode(): LiveData<Int>  {
+           return data.getCode()
+    }
+
     fun favoriteKey() {
         viewModelScope.launch {
             data.favoriteKey()

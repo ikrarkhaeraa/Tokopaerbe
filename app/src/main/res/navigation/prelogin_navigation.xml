@@ -56,6 +56,13 @@
         android:name="com.example.tokopaerbe.prelogin.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_register">
+
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/prelogin_navigation"
+            app:popUpToInclusive="true" />
+
     </fragment>
 
     <fragment

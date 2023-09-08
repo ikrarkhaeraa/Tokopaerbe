@@ -70,4 +70,12 @@ class ReviewFragment : Fragment() {
         return binding.root
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
 }

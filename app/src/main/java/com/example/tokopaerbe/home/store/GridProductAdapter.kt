@@ -60,7 +60,7 @@ class GridProductAdapter (private val onProductClick: (Product) -> Unit) : Pagin
                 val itemPrice = formatPrice(productData.productPrice.toDouble())
                 binding.itemPrice.text = "Rp$itemPrice"
                 binding.store.text = productData.store
-                binding.ratingTerjual.text = "${productData.productRating} | ${productData.sale}"
+                binding.ratingTerjual.text = "${productData.productRating} | Terjual ${productData.sale}"
             }
         }
 
