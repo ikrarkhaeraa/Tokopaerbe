@@ -14,7 +14,7 @@ import com.example.tokopaerbe.retrofit.user.UserRegister
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class UserPreferences private constructor(private val database: DataStore<Preferences>) {
+class UserPreferences (private val database: DataStore<Preferences>) {
 
     companion object {
         @Volatile

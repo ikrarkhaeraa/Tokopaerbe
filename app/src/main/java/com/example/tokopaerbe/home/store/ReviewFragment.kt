@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +20,9 @@ import com.example.tokopaerbe.databinding.FragmentReviewBinding
 import com.example.tokopaerbe.retrofit.response.Review
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -35,29 +40,40 @@ class ReviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar: androidx.appcompat.widget.Toolbar = binding.reviewToolbar
+        binding.reviewFragment.visibility = GONE
+        showLoading(true)
 
-        val navigationIcon: View = toolbar
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(1000)
 
-        navigationIcon.setOnClickListener {
-            findNavController().navigateUp()
+            showLoading(false)
+            binding.reviewFragment.visibility = VISIBLE
+
+            val toolbar: androidx.appcompat.widget.Toolbar = binding.reviewToolbar
+
+            val navigationIcon: View = toolbar
+
+            navigationIcon.setOnClickListener {
+                findNavController().navigateUp()
+            }
+
+            productId = args.productId
+
+            lifecycleScope.launch{
+                val it = model.getUserToken().first()
+                val token = "Bearer $it"
+                model.getReviewData(token, productId)
+            }
+
+            model.review.observe(viewLifecycleOwner) {
+                Log.d("cekReview", it.toString())
+
+                listReview = it.data
+                binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerView.adapter = ReviewAdapter(listReview)
+            }
         }
 
-        productId = args.productId
-
-        lifecycleScope.launch{
-            val it = model.getUserToken().first()
-            val token = "Bearer $it"
-            model.getReviewData(token, productId)
-        }
-
-        model.review.observe(viewLifecycleOwner) {
-            Log.d("cekReview", it.toString())
-
-            listReview = it.data
-            binding.recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
-            binding.recyclerView.adapter = ReviewAdapter(listReview)
-        }
     }
 
     override fun onCreateView(

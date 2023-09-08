@@ -1,3 +1,4 @@
+import androidx.lifecycle.ViewModel
 import com.example.tokopaerbe.retrofit.ApiService
 import com.example.tokopaerbe.retrofit.UserPreferences
 import kotlinx.coroutines.*
@@ -10,9 +11,9 @@ import okhttp3.Response
 import okhttp3.Route
 import retrofit2.Call
 
-class TokenAuthenticator(
+class Authenticator(
     private val apiService: ApiService,
-    private val userPreferences: UserPreferences
+    private val preferences: UserPreferences
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -31,10 +32,10 @@ class TokenAuthenticator(
         return null
     }
 
-    private suspend fun refreshAuthToken(): String? {
+    private fun refreshAuthToken(): String? {
         return try {
             val apiKey = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
-            val accessToken = userPreferences.getAccessToken().toString()
+            val accessToken = preferences.getAccessToken().toString()
 
             val refreshResponse = apiService.uploadDataRefresh(apiKey, accessToken).execute()
 

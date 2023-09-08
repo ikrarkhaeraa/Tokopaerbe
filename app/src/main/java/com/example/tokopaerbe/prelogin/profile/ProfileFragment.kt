@@ -92,17 +92,17 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        if (!allPermissionsGranted()) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-            )
-        }
-
         binding.nameedittext.addTextChangedListener(nameTextWatcher)
         binding.buttonSelesai.isEnabled = false
 
         binding.circle.setOnClickListener {
+
+            if (!allPermissionsGranted()) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+                )
+            }
+
             val items = arrayOf(getString(R.string.Kamera), getString(R.string.Galeri))
 
             MaterialAlertDialogBuilder(requireContext()).setTitle(resources.getString(R.string.pilihGambar))

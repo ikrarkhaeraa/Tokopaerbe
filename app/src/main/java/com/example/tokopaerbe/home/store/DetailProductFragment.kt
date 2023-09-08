@@ -57,233 +57,244 @@ class DetailProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar: androidx.appcompat.widget.Toolbar = binding.detailProductToolbar
+        binding.detailFragment.visibility = GONE
+        showLoading(true)
 
-        val navigationIcon: View = toolbar
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(1000)
 
-        navigationIcon.setOnClickListener {
-            findNavController().navigateUp()
-        }
+            showLoading(false)
+            binding.detailFragment.visibility = VISIBLE
 
-        productId = args.productId
+            val toolbar: androidx.appcompat.widget.Toolbar = binding.detailProductToolbar
 
-        lifecycleScope.launch {
-            val userToken = model.getUserToken().first()
-            val token = "Bearer $userToken"
-            Log.d("cekTokenForDetail", token)
-            model.getDetailProductData(token, productId)
-        }
+            val navigationIcon: View = toolbar
 
-        model.detail.observe(viewLifecycleOwner) {
-            Log.d("cekDetailProduct", it.data.toString())
-            Log.d("cekPrice", it.data.productPrice.toString())
+            navigationIcon.setOnClickListener {
+                findNavController().navigateUp()
+            }
 
-            var price = it.data.productPrice
-            var itemPrice = formatPrice(price.toDouble())
-            binding.price.text = "Rp$itemPrice"
-            binding.productName.text = it.data.productName
-            binding.sold.text = "Terjual ${it.data.sale}"
-            binding.rating.text = it.data.productRating.toString()
-            binding.review.text = it.data.totalReview.toString()
+            productId = args.productId
 
-            var selectedVariant = ""
-            var index = 0
-            binding.chipGroupVarian.removeAllViews()
-            for (i in it.data.productVariant.indices) {
-                val chip = Chip(requireActivity())
-                chip.text = it.data.productVariant[i].variantName
-                chip.isClickable = true
-                chip.tag = i
-                binding.chipGroupVarian.addView(chip)
+            lifecycleScope.launch {
+                val userToken = model.getUserToken().first()
+                val token = "Bearer $userToken"
+                Log.d("cekTokenForDetail", token)
+                model.getDetailProductData(token, productId)
+            }
 
-                chip.setOnClickListener { view ->
-                    selectedVariant = (view as Chip).text.toString()
-                    index = view.tag as Int
+            model.detail.observe(viewLifecycleOwner) {
+                Log.d("cekDetailProduct", it.data.toString())
+                Log.d("cekPrice", it.data.productPrice.toString())
 
-                    if (index == 1) {
-                        val priceNormal = it.data.productPrice
-                        val priceVariant = it.data.productVariant[1].variantPrice
-                        price = priceNormal + priceVariant
-                        itemPrice = formatPrice(price.toDouble())
-                        binding.price.text = "Rp$itemPrice"
-                    } else {
-                        price = it.data.productPrice
-                        itemPrice = formatPrice(price.toDouble())
-                        binding.price.text = "Rp$itemPrice"
+                var price = it.data.productPrice
+                var itemPrice = formatPrice(price.toDouble())
+                binding.price.text = "Rp$itemPrice"
+                binding.productName.text = it.data.productName
+                binding.sold.text = "Terjual ${it.data.sale}"
+                binding.rating.text = it.data.productRating.toString()
+                binding.review.text = it.data.totalReview.toString()
+
+                var selectedVariant = ""
+                var index = 0
+                binding.chipGroupVarian.removeAllViews()
+                for (i in it.data.productVariant.indices) {
+                    val chip = Chip(requireActivity())
+                    chip.text = it.data.productVariant[i].variantName
+                    chip.isClickable = true
+                    chip.tag = i
+                    binding.chipGroupVarian.addView(chip)
+
+                    chip.setOnClickListener { view ->
+                        selectedVariant = (view as Chip).text.toString()
+                        index = view.tag as Int
+
+                        if (index == 1) {
+                            val priceNormal = it.data.productPrice
+                            val priceVariant = it.data.productVariant[1].variantPrice
+                            price = priceNormal + priceVariant
+                            itemPrice = formatPrice(price.toDouble())
+                            binding.price.text = "Rp$itemPrice"
+                        } else {
+                            price = it.data.productPrice
+                            itemPrice = formatPrice(price.toDouble())
+                            binding.price.text = "Rp$itemPrice"
+                        }
+
+                        Log.d("cekPrice", price.toString())
+                        Log.d("cekIndexChip", index.toString())
+                        Log.d("cekSelectedVariant", selectedVariant)
                     }
-
-                    Log.d("cekPrice", price.toString())
-                    Log.d("cekIndexChip", index.toString())
-                    Log.d("cekSelectedVariant", selectedVariant)
                 }
-            }
 
-            binding.descproduct.text = it.data.description
-            binding.ratingGedeDibawah.text = it.data.productRating.toString()
-            binding.satisfaction.text = "${it.data.totalSatisfaction} pembeli merasa puas"
-            binding.totalRating.text = "${it.data.totalRating} rating ${it.data.totalReview} ulasan"
+                binding.descproduct.text = it.data.description
+                binding.ratingGedeDibawah.text = it.data.productRating.toString()
+                binding.satisfaction.text = "${it.data.totalSatisfaction} pembeli merasa puas"
+                binding.totalRating.text = "${it.data.totalRating} rating ${it.data.totalReview} ulasan"
 
-            listSearchResult = it.data.image
-            val imageSliderAdapter = ImageSliderAdapter(listSearchResult)
-            binding.viewpager.adapter = imageSliderAdapter
+                listSearchResult = it.data.image
+                val imageSliderAdapter = ImageSliderAdapter(listSearchResult)
+                binding.viewpager.adapter = imageSliderAdapter
 
-            if (listSearchResult.size == 1) {
-                binding.tabLayout.visibility = GONE
-            } else {
-                TabLayoutMediator(binding.tabLayout, binding.viewpager) { _, _ ->
-                }.attach()
-            }
-
-            binding.keranjangButton.setOnClickListener { view ->
-
-                if (selectedVariant.isNullOrEmpty()) {
-                    selectedVariant = it.data.productVariant[0].variantName
-                    model.addCartProduct(
-                        it.data.productId,
-                        it.data.productName,
-                        selectedVariant,
-                        it.data.stock,
-                        price,
-                        1,
-                        it.data.image[0],
-                        false,
-                        0
-                    )
+                if (listSearchResult.size == 1) {
+                    binding.tabLayout.visibility = GONE
                 } else {
-                    model.addCartProduct(
-                        it.data.productId,
-                        it.data.productName,
-                        selectedVariant,
-                        it.data.stock,
-                        price,
-                        1,
-                        it.data.image[0],
-                        false,
-                        0
-                    )
+                    TabLayoutMediator(binding.tabLayout, binding.viewpager) { _, _ ->
+                    }.attach()
                 }
 
-                Toast.makeText(this.requireContext(), "Added to cart", Toast.LENGTH_SHORT)
-                    .show()
-            }
+                binding.keranjangButton.setOnClickListener { view ->
 
-            binding.lihatSemua.setOnClickListener {
-                findNavController().navigate(
-                    R.id.action_detailProduct_to_reviewFragment,
-                    ReviewFragmentArgs(productId).toBundle(),
-                    navOptions = null
-                )
-            }
-
-            model.getWishList().observe(viewLifecycleOwner) { wishList ->
-                val isFavList = wishList.orEmpty()
-
-                val isFav = isFavList.any { wishListEntity ->
-                    wishListEntity.productId == it.data.productId
-                }
-
-                if (isFav) {
-                    binding.favorite.setImageResource(R.drawable.baseline_favorite_24)
-
-                    binding.favorite.setOnClickListener { view ->
-                        model.deleteWishList(it.data.productId)
-                        isIconBorder = !isIconBorder
-                        Toast.makeText(
-                            this.requireContext(),
-                            "Remove from wishlist",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                    }
-
-                } else {
-                    binding.favorite.setImageResource(R.drawable.baseline_favorite_border_24)
-
-                    binding.favorite.setOnClickListener { view ->
-                        model.addWishList(
+                    if (selectedVariant.isNullOrEmpty()) {
+                        selectedVariant = it.data.productVariant[0].variantName
+                        model.addCartProduct(
                             it.data.productId,
                             it.data.productName,
-                            price,
-                            it.data.image[0],
-                            it.data.store,
-                            it.data.productRating,
-                            it.data.sale,
+                            selectedVariant,
                             it.data.stock,
-                            it.data.productVariant[0].variantName,
-                            1
+                            price,
+                            1,
+                            it.data.image[0],
+                            false,
+                            0
                         )
-                        Toast.makeText(
-                            this.requireContext(),
-                            "Added to wishlist",
-                            Toast.LENGTH_SHORT
+                    } else {
+                        model.addCartProduct(
+                            it.data.productId,
+                            it.data.productName,
+                            selectedVariant,
+                            it.data.stock,
+                            price,
+                            1,
+                            it.data.image[0],
+                            false,
+                            0
                         )
-                            .show()
                     }
 
+                    Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT)
+                        .show()
                 }
-            }
 
-            binding.share.setOnClickListener { view ->
-                val shareIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(
-                        Intent.EXTRA_TEXT,
-                        "Product : ${it.data.productName}\n" +
-                        "Price : $itemPrice\n" +
-                        "Link : http://ecommerce.tokopaerbe.com/product/${it.data.productId}"
+                binding.lihatSemua.setOnClickListener {
+                    findNavController().navigate(
+                        R.id.action_detailProduct_to_reviewFragment,
+                        ReviewFragmentArgs(productId).toBundle(),
+                        navOptions = null
                     )
-                    type = "text/plain"
                 }
-                startActivity(Intent.createChooser(shareIntent, null))
-            }
 
+                model.getWishList().observe(viewLifecycleOwner) { wishList ->
+                    val isFavList = wishList.orEmpty()
 
-            listCheckout = ArrayList()
-            binding.buyNow.setOnClickListener { view ->
+                    val isFav = isFavList.any { wishListEntity ->
+                        wishListEntity.productId == it.data.productId
+                    }
 
-                if (selectedVariant.isNullOrEmpty()) {
-                    selectedVariant = it.data.productVariant[0].variantName
-                    val productId = it.data.productId
-                    val productImage = it.data.image[0]
-                    val productName = it.data.productName
-                    val productVariant = selectedVariant
-                    val productStock = it.data.stock
-                    val productPrice = it.data.productPrice
-                    val productQuantity = 1
-                    val product = CheckoutDataClass(
-                        productId,
-                        productImage,
-                        productName,
-                        productVariant,
-                        productStock,
-                        productPrice,
-                        productQuantity)
-                    listCheckout.add(product)
-                } else {
-                    val productId = it.data.productId
-                    val productImage = it.data.image[0]
-                    val productName = it.data.productName
-                    val productVariant = selectedVariant
-                    val productStock = it.data.stock
-                    val productPrice = it.data.productPrice
-                    val productQuantity = 1
-                    val product = CheckoutDataClass(
-                        productId,
-                        productImage,
-                        productName,
-                        productVariant,
-                        productStock,
-                        productPrice,
-                        productQuantity)
-                    listCheckout.add(product)
+                    if (isFav) {
+                        binding.favorite.setImageResource(R.drawable.baseline_favorite_24)
+
+                        binding.favorite.setOnClickListener { view ->
+                            model.deleteWishList(it.data.productId)
+                            isIconBorder = !isIconBorder
+                            Toast.makeText(
+                                requireContext(),
+                                "Remove from wishlist",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+
+                    } else {
+                        binding.favorite.setImageResource(R.drawable.baseline_favorite_border_24)
+
+                        binding.favorite.setOnClickListener { view ->
+                            model.addWishList(
+                                it.data.productId,
+                                it.data.productName,
+                                price,
+                                it.data.image[0],
+                                it.data.store,
+                                it.data.productRating,
+                                it.data.sale,
+                                it.data.stock,
+                                it.data.productVariant[0].variantName,
+                                1
+                            )
+                            Toast.makeText(
+                                requireContext(),
+                                "Added to wishlist",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+
+                    }
                 }
-                Log.d("ceklistChekout", listCheckout.toString())
-                productCheckout = ListCheckout(listCheckout)
-                findNavController().navigate(
-                    R.id.action_detailProduct_to_checkoutFragment,
-                    CheckoutFragmentArgs(productCheckout).toBundle(),
-                    navOptions = null
-                )
+
+                binding.share.setOnClickListener { view ->
+                    val shareIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "Product : ${it.data.productName}\n" +
+                                    "Price : $itemPrice\n" +
+                                    "Link : http://ecommerce.tokopaerbe.com/product/${it.data.productId}"
+                        )
+                        type = "text/plain"
+                    }
+                    startActivity(Intent.createChooser(shareIntent, null))
+                }
+
+
+                listCheckout = ArrayList()
+                binding.buyNow.setOnClickListener { view ->
+
+                    if (selectedVariant.isNullOrEmpty()) {
+                        selectedVariant = it.data.productVariant[0].variantName
+                        val productId = it.data.productId
+                        val productImage = it.data.image[0]
+                        val productName = it.data.productName
+                        val productVariant = selectedVariant
+                        val productStock = it.data.stock
+                        val productPrice = it.data.productPrice
+                        val productQuantity = 1
+                        val product = CheckoutDataClass(
+                            productId,
+                            productImage,
+                            productName,
+                            productVariant,
+                            productStock,
+                            productPrice,
+                            productQuantity)
+                        listCheckout.add(product)
+                    } else {
+                        val productId = it.data.productId
+                        val productImage = it.data.image[0]
+                        val productName = it.data.productName
+                        val productVariant = selectedVariant
+                        val productStock = it.data.stock
+                        val productPrice = it.data.productPrice
+                        val productQuantity = 1
+                        val product = CheckoutDataClass(
+                            productId,
+                            productImage,
+                            productName,
+                            productVariant,
+                            productStock,
+                            productPrice,
+                            productQuantity)
+                        listCheckout.add(product)
+                    }
+                    Log.d("ceklistChekout", listCheckout.toString())
+                    productCheckout = ListCheckout(listCheckout)
+                    findNavController().navigate(
+                        R.id.action_detailProduct_to_checkoutFragment,
+                        CheckoutFragmentArgs(productCheckout).toBundle(),
+                        navOptions = null
+                    )
+                }
+
             }
 
         }
