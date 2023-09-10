@@ -30,7 +30,4 @@ class CartEntity (
 
     @field:ColumnInfo("isChecked")
     var isChecked: Boolean = false,
-
-    @field:ColumnInfo("cartPrice")
-    var cartPrice: Int = 0
 )

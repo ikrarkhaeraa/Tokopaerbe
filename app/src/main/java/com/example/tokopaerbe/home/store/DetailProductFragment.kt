@@ -49,6 +49,7 @@ class DetailProductFragment : Fragment() {
     private var productId: String = ""
     private lateinit var listSearchResult: List<String>
     private var isIconBorder = true
+    private var index: Int = 0
 
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
@@ -95,8 +96,8 @@ class DetailProductFragment : Fragment() {
                 binding.rating.text = it.data.productRating.toString()
                 binding.review.text = it.data.totalReview.toString()
 
+
                 var selectedVariant = ""
-                var index = 0
                 binding.chipGroupVarian.removeAllViews()
                 for (i in it.data.productVariant.indices) {
                     val chip = Chip(requireActivity())
@@ -104,6 +105,10 @@ class DetailProductFragment : Fragment() {
                     chip.isClickable = true
                     chip.tag = i
                     binding.chipGroupVarian.addView(chip)
+
+                    if (chip.tag == 0) {
+                        chip.isChecked = true
+                    }
 
                     chip.setOnClickListener { view ->
                         selectedVariant = (view as Chip).text.toString()
@@ -156,7 +161,6 @@ class DetailProductFragment : Fragment() {
                             1,
                             it.data.image[0],
                             false,
-                            0
                         )
                     } else {
                         model.addCartProduct(
@@ -168,7 +172,6 @@ class DetailProductFragment : Fragment() {
                             1,
                             it.data.image[0],
                             false,
-                            0
                         )
                     }
 

@@ -20,9 +20,6 @@ interface CartDao {
     @Query("UPDATE productList SET isChecked = :isChecked")
     fun checkAll(isChecked: Boolean)
 
-    @Query("UPDATE productList SET cartPrice = :cartPrice")
-    fun cartPrice(cartPrice: Int)
-
     @Query("INSERT OR REPLACE INTO productList (productId, " +
             "productName," +
             " variantName, " +
@@ -30,8 +27,7 @@ interface CartDao {
             "productPrice, " +
             "quantity, " +
             "image, " +
-            "isChecked, " +
-            "cartPrice) values (:id, :productName, :variantName, :stock, :productPrice, :quantity, :image, :isChecked, :cartPrice)")
+            "isChecked) values (:id, :productName, :variantName, :stock, :productPrice, :quantity, :image, :isChecked)")
     fun addProduct(
         id: String,
         productName: String,
@@ -41,7 +37,6 @@ interface CartDao {
         quantity: Int,
         image: String,
         isChecked: Boolean,
-        cartPrice: Int
     )
 
     @Query("DELETE FROM productList WHERE productId = :id")

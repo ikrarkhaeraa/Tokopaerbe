@@ -77,6 +77,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textFieldEmail" />
 
     <TextView
+        android:id="@+id/persetujuan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/persetujuan"

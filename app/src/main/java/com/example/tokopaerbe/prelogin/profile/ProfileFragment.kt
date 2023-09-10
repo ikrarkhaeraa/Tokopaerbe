@@ -8,7 +8,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -91,6 +94,25 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val text = getString(R.string.persetujuan)
+        val spannableStringBuilder = SpannableStringBuilder(text)
+
+        val startTerms = text.indexOf("Syarat & Ketentuan")
+        val endTerms = startTerms + "Syarat & Ketentuan".length
+        val startPrivacy = text.indexOf("Kebijakan Privasi")
+        val endPrivacy = startPrivacy + "Kebijakan Privasi".length
+
+        // Create ForegroundColorSpan for each part you want to color
+        val colorSpanTerms = ForegroundColorSpan(resources.getColor(R.color.primaryColor)) // Change the color to your desired color
+        val colorSpanPrivacy = ForegroundColorSpan(resources.getColor(R.color.primaryColor)) // Change the color to your desired color
+
+        // Apply the spans to the text
+        spannableStringBuilder.setSpan(colorSpanTerms, startTerms, endTerms, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy, endPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        // Set the SpannableStringBuilder to your TextView
+        binding.persetujuan.text = spannableStringBuilder
 
         binding.nameedittext.addTextChangedListener(nameTextWatcher)
         binding.buttonSelesai.isEnabled = false

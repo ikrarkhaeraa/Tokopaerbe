@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     fun logout() {
         model.userLogout()
+        model.userInstall()
         navController.navigate(R.id.main_to_prelogin)
     }
 

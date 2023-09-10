@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -108,6 +110,9 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
             }
 
             binding.buttonBayar.setOnClickListener {
+                binding.buttonBayar.visibility = GONE
+                showLoading(true)
+
                 lifecycleScope.launch {
                     val token = model.getUserToken().first()
                     val auth = "Bearer $token"
@@ -150,6 +155,14 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
             )
         )
         return numberFormat.format(price)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = VISIBLE
+        } else {
+            binding.progressBar.visibility = GONE
+        }
     }
 
 }

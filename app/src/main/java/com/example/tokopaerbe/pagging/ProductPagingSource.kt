@@ -47,7 +47,7 @@ class ProductPagingSource(
             LoadResult.Page(
                 data = responseData.data.items,
                 prevKey = null,
-                nextKey = if (page == responseData.data.totalPages) null else page + 1
+                nextKey = if (page == responseData.data.totalPages) null else page.plus(1)
             )
         } catch (exception: Exception) {
             Log.d("pagingError", exception.toString())

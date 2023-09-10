@@ -14,7 +14,6 @@
             android:layout_marginTop="16dp"
             app:endIconMode="clear_text"
             app:startIconDrawable="@drawable/baseline_search_24"
-            app:startIconContentDescription="@string/Search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -22,6 +21,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/searchedittext"
                 android:singleLine="true"
+                android:hint="@string/Search"
+                android:imeOptions="actionSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

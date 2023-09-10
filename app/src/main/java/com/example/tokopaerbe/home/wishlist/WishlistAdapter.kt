@@ -41,7 +41,6 @@ class WishlistAdapter(private val model: ViewModel) :
                 1,
                 wishlistEntity.image,
                 false,
-                0
             )
 
         }

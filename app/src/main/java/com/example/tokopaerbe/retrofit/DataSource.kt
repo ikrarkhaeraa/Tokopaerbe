@@ -18,6 +18,7 @@ import com.example.tokopaerbe.retrofit.response.TransactionResponse
 import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.retrofit.user.UserRegister
+import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import com.example.tokopaerbe.room.CartDao
 import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.room.WishlistDao
@@ -289,6 +290,14 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
         pref.saveUserLogin(sessionLogin)
     }
 
+    suspend fun saveValueBottomSheet(valueBottomSheet: ValueBottomSheet) {
+        pref.saveValueBottomSheet(valueBottomSheet)
+    }
+
+    fun getValueBottomSheet(): Flow<String> {
+        return pref.getValueBottomSheet()
+    }
+
     fun userToken(): Flow<String> {
        return pref.getAccessToken()
     }
@@ -347,9 +356,8 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
                        productPrice: Int,
                        quantity: Int,
                        image: String,
-                       isChecked: Boolean,
-                       cartPrice: Int) {
-        return cartDao.addProduct(id, productName, variantName, stock, productPrice, quantity, image, isChecked, cartPrice)
+                       isChecked: Boolean) {
+        return cartDao.addProduct(id, productName, variantName, stock, productPrice, quantity, image, isChecked)
     }
 
     fun isChecked(id: String, isChecked: Boolean) {
@@ -364,9 +372,6 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
         return cartDao.checkAll(isChecked)
     }
 
-    fun cartPrice(cartPrice: Int){
-        return cartDao.cartPrice(cartPrice)
-    }
 
     fun addWishList(id: String,
                     productName: String,

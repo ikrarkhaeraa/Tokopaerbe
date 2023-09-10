@@ -203,7 +203,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/pilihVarian"
                     app:selectionRequired="true"
-                    app:singleSelection="true"></com.google.android.material.chip.ChipGroup>
+                    app:singleSelection="true"/>
 
                 <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/materialDivider2"

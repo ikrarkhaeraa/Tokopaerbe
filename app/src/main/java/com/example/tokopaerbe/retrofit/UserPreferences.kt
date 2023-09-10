@@ -11,6 +11,7 @@ import com.example.tokopaerbe.retrofit.user.ErrorState
 import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.retrofit.user.UserRegister
+import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -28,6 +29,10 @@ class UserPreferences (private val database: DataStore<Preferences>) {
         private val INSTALL_KEY = booleanPreferencesKey("install")
         private val CODE_KEY = intPreferencesKey("code")
         private val FAVORITE_KEY = booleanPreferencesKey("favorite")
+        private val SELECTEDTEXT1_KEY = stringPreferencesKey("selectedText1")
+        private val SELECTEDTEXT2_KEY = stringPreferencesKey("selectedText2")
+        private val LOWEST_KEY = stringPreferencesKey("lowest")
+        private val HIGHEST_KEY = stringPreferencesKey("highest")
 
         fun getInstance(database: DataStore<Preferences>): UserPreferences {
             return INSTANCE ?: synchronized(this) {
@@ -76,6 +81,23 @@ class UserPreferences (private val database: DataStore<Preferences>) {
         }
     }
 
+    fun getValueBottomSheet(): Flow<String> {
+        return database.data.map { preferences ->
+            preferences[SELECTEDTEXT1_KEY] ?: ""
+            preferences[SELECTEDTEXT2_KEY] ?: ""
+            preferences[LOWEST_KEY] ?: ""
+            preferences[HIGHEST_KEY] ?: ""
+        }
+    }
+
+    suspend fun saveValueBottomSheet(valueBottomSheet: ValueBottomSheet) {
+        database.edit { preferences ->
+            preferences[SELECTEDTEXT1_KEY] ?: valueBottomSheet.sort
+            preferences[SELECTEDTEXT2_KEY] ?: valueBottomSheet.brand
+            preferences[LOWEST_KEY] ?: valueBottomSheet.lowest
+            preferences[HIGHEST_KEY] ?: valueBottomSheet.highest
+        }
+    }
 
     fun getAccessToken(): Flow<String> {
         return database.data.map { preferences ->

@@ -90,29 +90,29 @@
                 android:id="@+id/add_card_icon"
                 android:layout_width="70dp"
                 android:layout_height="60dp"
-                android:src="@drawable/add_card"
                 android:padding="16dp"
-                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/add_card"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/metodePembayaran"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pilihPembayaran"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/add_card_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="20dp"
                 android:src="@drawable/baseline_arrow_forward_ios_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:padding="20dp"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -142,10 +142,10 @@
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/bold"
-        android:text="@string/priceTotal"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
+        android:fontFamily="@font/bold"
+        android:text="@string/priceTotal"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
@@ -154,12 +154,26 @@
         android:id="@+id/buttonBayar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/medium"
-        android:text="@string/bayar"
         android:layout_marginTop="17dp"
         android:layout_marginEnd="17dp"
+        android:fontFamily="@font/medium"
+        android:text="@string/bayar"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialDivider2" />
+
+    <ProgressBar
+
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialDivider2"
+        tools:visibility="visible" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

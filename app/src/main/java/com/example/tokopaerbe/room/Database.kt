@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [CartEntity::class, WishlistEntity::class],
-    version = 2,
+    version = 1,
     exportSchema = false,)
 abstract class CartDatabase : RoomDatabase() {
     abstract fun productDao(): CartDao

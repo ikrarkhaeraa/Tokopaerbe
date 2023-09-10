@@ -12,20 +12,28 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentModalBottomSheetBinding
 import com.example.tokopaerbe.databinding.FragmentTransactionBinding
+import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ModalBottomSheetFragment : BottomSheetDialogFragment() {
@@ -40,12 +48,8 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
     private var textTertinggi: String = ""
 
     private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
 
-    private var savedSortValue: String? = null
-    private var savedBrandValue: String? = null
-    private var savedTextTerendah: String? = null
-    private var savedTextTertinggi: String? = null
 
     companion object {
         const val TAG = "ModalBottomSheet"
@@ -64,63 +68,58 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        selectedText1 = model.sort
+        selectedText2 = model.brand
+        textTerendah = model.textTerendah
+        textTertinggi = model.textTertinggi
 
+        Log.d("cekcek", selectedText1)
+        Log.d("cekcek", selectedText2)
+        Log.d("cekcek", textTerendah)
+        Log.d("cekcek", textTertinggi)
 
-        model.sort.observe(viewLifecycleOwner) {
-            savedSortValue = it
-            Log.d("cekValueBottomSheet", savedSortValue.toString())
-            if (!savedSortValue.isNullOrEmpty()) {
-
-                for (i in 0 until binding.chipgroup1.childCount) {
-                    val chip = binding.chipgroup1.getChildAt(i) as? Chip
-                    if (chip != null && chip.text.toString() == savedSortValue) {
-                        chip.isChecked = true
-                        Log.d("cekChipText", chip.text.toString())
-                        break
-                    }
+        if (selectedText1.isNotEmpty()) {
+            for (i in 0 until binding.chipgroup1.childCount) {
+                val chip = binding.chipgroup1.getChildAt(i) as? Chip
+                if (chip != null && chip.text.toString() == selectedText1) {
+                    chip.isChecked = true
+                    Log.d("cekChipText", chip.text.toString())
+                    Log.d("cekChip", chip.isChecked.toString())
+                    break
                 }
-
             }
         }
 
-        model.brand.observe(viewLifecycleOwner) {
-            savedBrandValue = it
-            Log.d("cekValueBottomSheet", savedBrandValue.toString())
-            if (!savedBrandValue.isNullOrEmpty()) {
-
-                for (i in 0 until binding.chipgroup2.childCount) {
-                    val chip = binding.chipgroup2.getChildAt(i) as? Chip
-                    if (chip != null && chip.text.toString() == savedBrandValue) {
-                        chip.isChecked = true
-                        Log.d("cekChipText", chip.text.toString())
-                        break
-                    }
+        if (selectedText2.isNotEmpty()) {
+            for (i in 0 until binding.chipgroup2.childCount) {
+                val chip = binding.chipgroup2.getChildAt(i) as? Chip
+                if (chip != null && chip.text.toString() == selectedText2) {
+                    chip.isChecked = true
+                    Log.d("cekChipText", chip.text.toString())
+                    Log.d("cekChip", chip.isChecked.toString())
+                    break
                 }
-
             }
         }
 
-//        model.textTerendah.observe(viewLifecycleOwner) {
-//            savedTextTerendah = it
-//            Log.d("cekValueBottomSheet", savedTextTerendah.toString())
-//            binding.editTextTerendah.setText(savedTextTerendah)
-//        }
-//
-//        model.textTertinggi.observe(viewLifecycleOwner) {
-//            savedTextTertinggi = it
-//            Log.d("cekValueBottomSheet", savedTextTertinggi.toString())
-//            binding.editTextTertinggi.setText(savedTextTertinggi)
-//        }
+
+        if (textTerendah.isNotEmpty()) {
+            binding.editTextTerendah.setText(textTerendah)
+        }
+
+        if (textTertinggi.isNotEmpty()) {
+            binding.editTextTertinggi.setText(textTertinggi)
+        }
 
 
         binding.chipgroup1.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId != View.NO_ID) {
                 val selectedChip = group.findViewById<Chip>(checkedId)
                 selectedText1 = selectedChip?.text.toString()
-                model.setSortValue(selectedText1)
+                model.sort = selectedText1
             } else {
                 selectedText1 = ""
-                model.setSortValue(selectedText1)
+                model.sort = selectedText1
             }
         }
 
@@ -129,39 +128,40 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             if (checkedId != View.NO_ID) {
                 val selectedChip = group.findViewById<Chip>(checkedId)
                 selectedText2 = selectedChip?.text.toString()
-                model.setBrandValue(selectedText2)
+                model.brand = selectedText2
             } else {
                 selectedText2 = ""
-                model.setBrandValue(selectedText2)
+                model.brand = selectedText2
             }
         }
 
 
         binding.editTextTerendah.doOnTextChanged { text, _, _, _ ->
             textTerendah = text.toString()
+            model.textTerendah = textTerendah
         }
 
 
         binding.editTextTertinggi.doOnTextChanged { text, _, _, _ ->
             textTertinggi = text.toString()
+            model.textTertinggi = textTertinggi
         }
 
 
         binding.tampilkanproduk.setOnClickListener {
-//            setFragmentResult("textFromChipGroup1", bundleOf("bundleKey" to selectedText1))
-//            setFragmentResult("textFromChipGroup2", bundleOf("bundleKey" to selectedText2))
-//            setFragmentResult("textTerendah", bundleOf("bundleKey" to textTerendah))
-//            setFragmentResult("textTertinggi", bundleOf("bundleKey" to textTertinggi))
+
             val filter = bundleOf().apply {
                 putString("selectedText1", selectedText1)
                 putString("selectedText2", selectedText2)
                 putString("textTerendah", textTerendah)
                 putString("textTertinggi", textTertinggi)
             }
-            Log.d("cekSelectedText", selectedText1)
-            Log.d("cekSelectedText", selectedText2)
+            Log.d("cekSelectedText", selectedText1.toString())
+            Log.d("cekSelectedText", selectedText2.toString())
             setFragmentResult("filter", filter)
+
             dismiss()
+
         }
 
         binding.reset.setOnClickListener {
@@ -172,4 +172,5 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
     }
+
 }

@@ -3,6 +3,7 @@ package com.example.tokopaerbe.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.example.tokopaerbe.home.store.Filter
 import com.example.tokopaerbe.retrofit.DataSource
@@ -20,6 +21,7 @@ import com.example.tokopaerbe.retrofit.response.TransactionResponse
 import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.retrofit.user.UserRegister
+import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.room.WishlistEntity
 import kotlinx.coroutines.flow.Flow
@@ -40,47 +42,34 @@ class ViewModel(private val data: DataSource) : ViewModel() {
     val transaction: LiveData<TransactionResponse> = data.transaction
 
 
-    private val _search = MutableLiveData<String?>()
-    val searchFilter: LiveData<String?>
-        get() = _search
-    fun setSearchValue(selectedText: String) {
-        _search.postValue(selectedText)
+    private var _search: String = ""
+    var searchFilter: String = ""
+    fun setSearchValue(searchText: String) {
+        _search = searchText
     }
 
-    private val _sort = MutableLiveData<String?>()
-    val sort: LiveData<String?>
-        get() = _sort
+    private var _sort: String = ""
+    var sort: String = ""
     fun setSortValue(selectedText: String) {
-        _sort.postValue(selectedText)
+        _sort = selectedText
     }
 
-    private val _brand = MutableLiveData<String?>()
-    val brand: LiveData<String?>
-        get() = _brand
+    private var _brand: String = ""
+    var brand: String = ""
     fun setBrandValue(selectedText: String) {
-        _brand.postValue(selectedText)
+        _brand = selectedText
     }
 
-    private val _textTerendah = MutableLiveData<String?>()
-    val textTerendah: LiveData<String?>
-        get() = _textTerendah
+    private var _textTerendah: String = ""
+    var textTerendah: String = ""
     fun setTerendahValue(selectedText: String) {
-        _textTerendah.postValue(selectedText)
+        _textTerendah = selectedText
     }
 
-    private val _textTertinggi = MutableLiveData<String?>()
-    val textTertinggi: LiveData<String?>
-        get() = _textTertinggi
+    private var _textTertinggi: String = ""
+    var textTertinggi: String = ""
     fun setTertinggiValue(selectedText: String) {
-        _textTertinggi.postValue(selectedText)
-    }
-
-    fun setSelectedFilter(filter: Filter) {
-        _search.value = filter.search
-        _sort.value = filter.sort
-        _brand.value = filter.brand
-        _textTerendah.value = filter.textTerendah
-        _textTertinggi.value = filter.textTertinggi
+        _textTertinggi = selectedText
     }
 
 
@@ -114,9 +103,8 @@ class ViewModel(private val data: DataSource) : ViewModel() {
                        productPrice: Int,
                        quantity: Int,
                        image: String,
-                       isChecked: Boolean,
-                       cartPrice: Int) {
-        return data.addProductCart(id, productName, variantName, stock, productPrice, quantity, image, isChecked, cartPrice)
+                       isChecked: Boolean) {
+        return data.addProductCart(id, productName, variantName, stock, productPrice, quantity, image, isChecked)
     }
 
     fun addWishList(id: String,
@@ -174,6 +162,16 @@ class ViewModel(private val data: DataSource) : ViewModel() {
 
     fun getUserName(): Flow<String> {
         return data.userName()
+    }
+
+    fun getValueBottomSheet(): Flow<String> {
+        return data.getValueBottomSheet()
+    }
+
+    fun saveValueBottomSheet(valueBottomSheet: ValueBottomSheet) {
+        viewModelScope.launch {
+            data.saveValueBottomSheet(valueBottomSheet)
+        }
     }
 
     fun saveSessionRegister(sessionRegister: UserRegister) {
