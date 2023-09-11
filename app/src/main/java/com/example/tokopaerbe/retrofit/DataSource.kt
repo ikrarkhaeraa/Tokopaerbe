@@ -341,6 +341,10 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
         return cartDao.getProduct()
     }
 
+    fun getCartForDetail() : Flow<List<CartEntity>?> {
+        return cartDao.getCartForDetail()
+    }
+
     fun deleteProductCart(id: String) {
         return cartDao.deleteProduct(id)
     }

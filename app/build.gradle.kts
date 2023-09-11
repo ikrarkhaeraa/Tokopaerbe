@@ -114,5 +114,8 @@ dependencies {
     //Piscaso
     implementation ("com.squareup.picasso:picasso:2.71828")
 
+    //Pull Refresh
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+
 }
 

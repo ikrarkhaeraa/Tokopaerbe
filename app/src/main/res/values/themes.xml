@@ -17,6 +17,8 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
+    <style name="ChipInput" parent="Widget.Material3.Chip.Filter"/>
+
     <style name="styleInputChip" parent="Widget.Material3.Chip.Input">
         <item name="chipIconTint">#1D192B</item>
         <item name="chipBackgroundColor">#E8DEF8</item>

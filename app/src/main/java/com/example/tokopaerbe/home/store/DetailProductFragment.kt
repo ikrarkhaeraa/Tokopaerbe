@@ -10,6 +10,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -24,6 +25,7 @@ import com.example.tokopaerbe.databinding.FragmentDetailProductBinding
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
 import com.example.tokopaerbe.home.checkout.ListCheckout
+import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.chip.Chip
@@ -31,6 +33,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
@@ -53,6 +56,8 @@ class DetailProductFragment : Fragment() {
 
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
+
+    private lateinit var cartEntity: ArrayList<CartEntity>
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,7 +105,7 @@ class DetailProductFragment : Fragment() {
                 var selectedVariant = ""
                 binding.chipGroupVarian.removeAllViews()
                 for (i in it.data.productVariant.indices) {
-                    val chip = Chip(requireActivity())
+                    val chip = Chip(requireActivity(), null, R.style.ChipInput)
                     chip.text = it.data.productVariant[i].variantName
                     chip.isClickable = true
                     chip.tag = i
@@ -135,7 +140,8 @@ class DetailProductFragment : Fragment() {
                 binding.descproduct.text = it.data.description
                 binding.ratingGedeDibawah.text = it.data.productRating.toString()
                 binding.satisfaction.text = "${it.data.totalSatisfaction} pembeli merasa puas"
-                binding.totalRating.text = "${it.data.totalRating} rating ${it.data.totalReview} ulasan"
+                binding.totalRating.text =
+                    "${it.data.totalRating} rating ${it.data.totalReview} ulasan"
 
                 listSearchResult = it.data.image
                 val imageSliderAdapter = ImageSliderAdapter(listSearchResult)
@@ -150,34 +156,143 @@ class DetailProductFragment : Fragment() {
 
                 binding.keranjangButton.setOnClickListener { view ->
 
-                    if (selectedVariant.isNullOrEmpty()) {
-                        selectedVariant = it.data.productVariant[0].variantName
-                        model.addCartProduct(
-                            it.data.productId,
-                            it.data.productName,
-                            selectedVariant,
-                            it.data.stock,
-                            price,
-                            1,
-                            it.data.image[0],
-                            false,
-                        )
-                    } else {
-                        model.addCartProduct(
-                            it.data.productId,
-                            it.data.productName,
-                            selectedVariant,
-                            it.data.stock,
-                            price,
-                            1,
-                            it.data.image[0],
-                            false,
-                        )
+                    lifecycleScope.launch {
+                        val entity = model.getCartforDetail().first()
+
+                        if (selectedVariant.isEmpty()) {
+                            selectedVariant = it.data.productVariant[0].variantName
+                            if (entity?.isEmpty() == true) {
+                                model.addCartProduct(
+                                    it.data.productId,
+                                    it.data.productName,
+                                    selectedVariant,
+                                    it.data.stock,
+                                    price,
+                                    1,
+                                    it.data.image[0],
+                                    false,
+                                )
+                                Toast.makeText(
+                                    requireContext(), "Added First Item to Cart", LENGTH_SHORT
+                                ).show()
+                            } else {
+                                entity?.map { item ->
+                                    if (it.data.productId == entity.last().productId) {
+                                        if (item.quantity < item.stock) {
+                                            model.quantity(productId, item.quantity.plus(1))
+                                            Toast.makeText(
+                                                requireContext(), "Update Quantity", LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Stock is unavailable",
+                                                LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    } else {
+                                        model.addCartProduct(
+                                            it.data.productId,
+                                            it.data.productName,
+                                            selectedVariant,
+                                            it.data.stock,
+                                            price,
+                                            1,
+                                            it.data.image[0],
+                                            false,
+                                        )
+                                        Toast.makeText(
+                                            requireContext(), "Added to Cart", LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }
+                        }
+
+                        else {
+                            if (entity?.isEmpty() == true) {
+                                model.addCartProduct(
+                                    it.data.productId,
+                                    it.data.productName,
+                                    selectedVariant,
+                                    it.data.stock,
+                                    price,
+                                    1,
+                                    it.data.image[0],
+                                    false,
+                                )
+                                Toast.makeText(
+                                    requireContext(), "Added First Item to Cart", LENGTH_SHORT
+                                ).show()
+                            } else {
+                                entity?.map { item ->
+
+                                    if (it.data.productId == entity.last().productId) {
+                                        if (item.quantity < item.stock) {
+                                            model.quantity(productId, item.quantity.plus(1))
+                                            Toast.makeText(
+                                                requireContext(), "Update Quantity", LENGTH_SHORT
+                                            ).show()
+                                        } else {
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Stock is unavailable",
+                                                LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    } else {
+                                        model.addCartProduct(
+                                            it.data.productId,
+                                            it.data.productName,
+                                            selectedVariant,
+                                            it.data.stock,
+                                            price,
+                                            1,
+                                            it.data.image[0],
+                                            false,
+                                        )
+                                        Toast.makeText(
+                                            requireContext(), "Added to Cart", LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                            }
+                        }
+
                     }
 
-                    Toast.makeText(requireContext(), "Added to cart", Toast.LENGTH_SHORT)
-                        .show()
                 }
+
+//                binding.keranjangButton.setOnClickListener { view ->
+//
+//                    if (selectedVariant.isEmpty()) {
+//                        selectedVariant = it.data.productVariant[0].variantName
+//                        model.addCartProduct(
+//                            it.data.productId,
+//                            it.data.productName,
+//                            selectedVariant,
+//                            it.data.stock,
+//                            price,
+//                            1,
+//                            it.data.image[0],
+//                            false,
+//                        )
+//                        Toast.makeText(requireContext(), "Added to Cart", LENGTH_SHORT).show()
+//
+//                    } else {
+//                        model.addCartProduct(
+//                            it.data.productId,
+//                            it.data.productName,
+//                            selectedVariant,
+//                            it.data.stock,
+//                            price,
+//                            1,
+//                            it.data.image[0],
+//                            false,
+//                        )
+//                    }
+//                }
+
 
                 binding.lihatSemua.setOnClickListener {
                     findNavController().navigate(
@@ -201,11 +316,8 @@ class DetailProductFragment : Fragment() {
                             model.deleteWishList(it.data.productId)
                             isIconBorder = !isIconBorder
                             Toast.makeText(
-                                requireContext(),
-                                "Remove from wishlist",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                                requireContext(), "Remove from wishlist", Toast.LENGTH_SHORT
+                            ).show()
                         }
 
                     } else {
@@ -225,11 +337,8 @@ class DetailProductFragment : Fragment() {
                                 1
                             )
                             Toast.makeText(
-                                requireContext(),
-                                "Added to wishlist",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
+                                requireContext(), "Added to wishlist", Toast.LENGTH_SHORT
+                            ).show()
                         }
 
                     }
@@ -240,9 +349,7 @@ class DetailProductFragment : Fragment() {
                         action = Intent.ACTION_SEND
                         putExtra(
                             Intent.EXTRA_TEXT,
-                            "Product : ${it.data.productName}\n" +
-                                    "Price : $itemPrice\n" +
-                                    "Link : http://ecommerce.tokopaerbe.com/product/${it.data.productId}"
+                            "Product : ${it.data.productName}\n" + "Price : $itemPrice\n" + "Link : http://ecommerce.tokopaerbe.com/product/${it.data.productId}"
                         )
                         type = "text/plain"
                     }
@@ -269,7 +376,8 @@ class DetailProductFragment : Fragment() {
                             productVariant,
                             productStock,
                             productPrice,
-                            productQuantity)
+                            productQuantity
+                        )
                         listCheckout.add(product)
                     } else {
                         val productId = it.data.productId
@@ -286,7 +394,8 @@ class DetailProductFragment : Fragment() {
                             productVariant,
                             productStock,
                             productPrice,
-                            productQuantity)
+                            productQuantity
+                        )
                         listCheckout.add(product)
                     }
                     Log.d("ceklistChekout", listCheckout.toString())
@@ -308,16 +417,14 @@ class DetailProductFragment : Fragment() {
     private fun formatPrice(price: Double): String {
         val numberFormat = NumberFormat.getNumberInstance(
             Locale(
-                "id",
-                "ID"
+                "id", "ID"
             )
         ) // Use the appropriate locale for your formatting
         return numberFormat.format(price)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentDetailProductBinding.inflate(inflater, container, false)

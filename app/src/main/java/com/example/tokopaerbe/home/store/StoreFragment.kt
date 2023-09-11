@@ -90,11 +90,38 @@ class StoreFragment : Fragment() {
             binding.shimmerGrid.visibility = GONE
         }
 
+        binding.searchTextField.setText("")
+
         binding.gambarerror.visibility = GONE
         binding.errorTitle.visibility = GONE
         binding.errorDesc.visibility = GONE
         binding.resetButton.visibility = GONE
-        binding.searchTextField.text?.clear()
+
+
+        // Set up the refresh listener
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.chipgroup.removeAllViews()
+            searchText = null
+            selectedText1 = null
+            selectedText2 = null
+            textTerendah = null
+            textTertinggi = null
+            updateFilterAndRequestData()
+            val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+            resetFilter.observe(viewLifecycleOwner) {filterResetEmpty ->
+                paggingModel.sendFilter(
+                    filterResetEmpty.search,
+                    filterResetEmpty.sort,
+                    filterResetEmpty.brand,
+                    filterResetEmpty.lowest,
+                    filterResetEmpty.highest
+                ).observe(viewLifecycleOwner) { reset ->
+                    Log.d("cekResetFilter", resetFilter.toString())
+                    linearProductAdapter.submitData(lifecycle, reset)
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+            }
+        }
 
         GlobalScope.launch(Dispatchers.Main) {
             delay(delayMillis)
@@ -113,7 +140,7 @@ class StoreFragment : Fragment() {
         }
 
         setFragmentResultListener("searchText") { _, bundle ->
-            binding.searchTextField.text?.clear()
+            binding.searchTextField.setText("")
             searchText = bundle.getString("bundleKey").toString()
             Log.d("searchText", searchText!!)
                 binding.searchTextField.setText(searchText)

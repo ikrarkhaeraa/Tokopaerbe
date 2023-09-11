@@ -75,13 +75,13 @@ class ViewModel(private val data: DataSource) : ViewModel() {
 
     var rvStateStore: Boolean = true
         get() = field
-        set(value)  {
+        set(value) {
             field = value
         }
 
     var rvStateWishList: Boolean = true
         get() = field
-        set(value)  {
+        set(value) {
             field = value
         }
 
@@ -96,28 +96,53 @@ class ViewModel(private val data: DataSource) : ViewModel() {
     fun isChecked(id: String, isChecked: Boolean) {
         return data.isChecked(id, isChecked)
     }
-    fun addCartProduct(id: String,
-                       productName: String,
-                       variantName: String,
-                       stock: Int,
-                       productPrice: Int,
-                       quantity: Int,
-                       image: String,
-                       isChecked: Boolean) {
-        return data.addProductCart(id, productName, variantName, stock, productPrice, quantity, image, isChecked)
+
+    fun addCartProduct(
+        id: String,
+        productName: String,
+        variantName: String,
+        stock: Int,
+        productPrice: Int,
+        quantity: Int,
+        image: String,
+        isChecked: Boolean
+    ) {
+        return data.addProductCart(
+            id,
+            productName,
+            variantName,
+            stock,
+            productPrice,
+            quantity,
+            image,
+            isChecked
+        )
     }
 
-    fun addWishList(id: String,
-                    productName: String,
-                    productPrice: Int,
-                    image: String,
-                    store: String,
-                    productRating: Float,
-                    sale: Int,
-                    stock: Int,
-                    variantName: String,
-                    quantity: Int) {
-        return data.addWishList(id, productName, productPrice, image, store, productRating, sale, stock, variantName, quantity)
+    fun addWishList(
+        id: String,
+        productName: String,
+        productPrice: Int,
+        image: String,
+        store: String,
+        productRating: Float,
+        sale: Int,
+        stock: Int,
+        variantName: String,
+        quantity: Int
+    ) {
+        return data.addWishList(
+            id,
+            productName,
+            productPrice,
+            image,
+            store,
+            productRating,
+            sale,
+            stock,
+            variantName,
+            quantity
+        )
     }
 
     fun deleteWishList(id: String) {
@@ -138,12 +163,18 @@ class ViewModel(private val data: DataSource) : ViewModel() {
 
     fun deleteAllCheckedProduct(cartEntity: List<CartEntity>) {
         viewModelScope.launch {
-           data.deleteAllCheckedProduct(cartEntity)
+            data.deleteAllCheckedProduct(cartEntity)
         }
     }
+
     fun getCartProduct(): LiveData<List<CartEntity>?> {
         return data.getProductCart()
     }
+
+    fun getCartforDetail(): Flow<List<CartEntity>?> {
+        return data.getCartForDetail()
+    }
+
     fun getUserLoginState(): Flow<Boolean> {
         return data.getUserLoginState()
     }
@@ -199,8 +230,8 @@ class ViewModel(private val data: DataSource) : ViewModel() {
         }
     }
 
-    fun getCode(): LiveData<Int>  {
-           return data.getCode()
+    fun getCode(): LiveData<Int> {
+        return data.getCode()
     }
 
     fun favoriteKey() {
@@ -252,25 +283,25 @@ class ViewModel(private val data: DataSource) : ViewModel() {
         }
     }
 
-    fun postDataRegister(API_KEY:String, email:String, password:String, firebaseToken:String) {
+    fun postDataRegister(API_KEY: String, email: String, password: String, firebaseToken: String) {
         viewModelScope.launch {
             data.uploadRegisterData(API_KEY, email, password, firebaseToken)
         }
     }
 
-    fun postDataLogin(API_KEY:String, email:String, password:String, firebaseToken:String) {
+    fun postDataLogin(API_KEY: String, email: String, password: String, firebaseToken: String) {
         viewModelScope.launch {
             data.uploadLoginData(API_KEY, email, password, firebaseToken)
         }
     }
 
-    fun postDataFulfillment(auth: String, payment: String, items:List<Item>) {
+    fun postDataFulfillment(auth: String, payment: String, items: List<Item>) {
         viewModelScope.launch {
             data.uploadFulfillmentData(auth, payment, items)
         }
     }
 
-    fun postDataRating(auth: String, invoiceId: String, rating:Int, review: String) {
+    fun postDataRating(auth: String, invoiceId: String, rating: Int, review: String) {
         viewModelScope.launch {
             data.uploadRatingData(auth, invoiceId, rating, review)
         }

@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import retrofit2.http.DELETE
 
 @androidx.room.Dao
@@ -47,5 +48,8 @@ interface CartDao {
 
     @Query("SELECT * FROM productList")
     fun getProduct(): LiveData<List<CartEntity>?>
+
+    @Query("SELECT * FROM productList")
+    fun getCartForDetail(): Flow<List<CartEntity>?>
 
 }
