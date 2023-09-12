@@ -1,8 +1,11 @@
 package com.example.tokopaerbe.home.wishlist
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,10 +14,13 @@ import com.example.tokopaerbe.databinding.ItemGridWishlistBinding
 import com.example.tokopaerbe.databinding.ItemWishlistBinding
 import com.example.tokopaerbe.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-class WishListGridAdapter(private val model: ViewModel) :
+class WishListGridAdapter(private val model: ViewModel, private val coroutineScope: CoroutineScope, private val context: Context) :
     ListAdapter<WishlistEntity, WishListGridAdapter.ListViewHolder>(WishListEntityDiffCallback()) {
 
 
@@ -29,16 +35,55 @@ class WishListGridAdapter(private val model: ViewModel) :
 
         val addCartButton = holder.binding.addCart
         addCartButton.setOnClickListener {
-            model.addCartProduct(
-                wishlistEntity.productId,
-                wishlistEntity.productName,
-                wishlistEntity.variantName,
-                wishlistEntity.stock,
-                wishlistEntity.productPrice,
-                1,
-                wishlistEntity.image,
-                false,
-            )
+//            model.addCartProduct(
+//                wishlistEntity.productId,
+//                wishlistEntity.productName,
+//                wishlistEntity.variantName,
+//                wishlistEntity.stock,
+//                wishlistEntity.productPrice,
+//                1,
+//                wishlistEntity.image,
+//                false,
+//            )
+
+            coroutineScope.launch {
+
+                val productCart = model.getCartforDetail(wishlistEntity.productId)
+                Log.d("cekProductCart", productCart?.productId.toString())
+
+                if (productCart?.toString() == "null") {
+                    model.addCartProduct(
+                        wishlistEntity.productId,
+                        wishlistEntity.productName,
+                        wishlistEntity.variantName,
+                        wishlistEntity.stock,
+                        wishlistEntity.productPrice,
+                        1,
+                        wishlistEntity.image,
+                        false
+                    )
+                    Toast.makeText(
+                        context,
+                        "Added to cart",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else if (productCart?.productId == wishlistEntity.productId && productCart.quantity < productCart.stock) {
+                    model.quantity(wishlistEntity.productId, productCart.quantity.plus(1))
+                    Toast.makeText(
+                        context,
+                        "Quantity is update",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Stock is unavailable",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+
         }
 
         val deleteIcon = holder.binding.deleteIcon

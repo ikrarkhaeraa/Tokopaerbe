@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.tokopaerbe.MyApplication
 import com.example.tokopaerbe.pagging.PaggingRepository
 import com.example.tokopaerbe.room.CartDatabase
 
-private val Context.database: DataStore<Preferences> by preferencesDataStore("token")
+val Context.database: DataStore<Preferences> by preferencesDataStore("token")
 
 object Injection {
+
     fun provideRepository(context: Context): DataSource {
         val preferences = UserPreferences.getInstance(context.database)
         val database = CartDatabase.getInstance(context)

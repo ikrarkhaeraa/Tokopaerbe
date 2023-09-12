@@ -12,7 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.tokopaerbe.retrofit.ApiConfig
 import com.example.tokopaerbe.retrofit.ApiService
+import com.example.tokopaerbe.retrofit.DataSource
 import com.example.tokopaerbe.retrofit.UserPreferences
+import com.example.tokopaerbe.room.CartDao
+import com.example.tokopaerbe.room.WishlistDao
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import dagger.hilt.android.HiltAndroidApp
@@ -30,6 +33,10 @@ class MyApplication : Application() {
     @Inject
     lateinit var preferences: UserPreferences
 
+    @Inject
+    lateinit var chucker: Context
+
+
     @InternalCoroutinesApi
     override fun onCreate() {
         super.onCreate()
@@ -42,7 +49,7 @@ class MyApplication : Application() {
         val client = OkHttpClient.Builder()
             .addInterceptor(chuckerInterceptor)
             .addInterceptor(loggingInterceptor)
-            .authenticator(Authenticator(apiService, preferences))
+            .authenticator(Authenticator(preferences, chucker))
             .build()
 
         ApiConfig.initialize(client)

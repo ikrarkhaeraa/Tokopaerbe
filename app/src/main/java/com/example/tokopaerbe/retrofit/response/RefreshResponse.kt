@@ -3,7 +3,6 @@ package com.example.tokopaerbe.retrofit.response
 import com.google.gson.annotations.SerializedName
 
 data class RefreshResponse(
-
     @field:SerializedName("data")
     val data: DataRefresh,
 
@@ -15,13 +14,12 @@ data class RefreshResponse(
 )
 
 data class DataRefresh(
-
-    @field:SerializedName("userName")
+    @field:SerializedName("accessToken")
     val accessToken: String,
 
-    @field:SerializedName("userImage")
+    @field:SerializedName("refreshToken")
     val refreshToken: String,
 
-    @field:SerializedName("userImage")
-    val expiresAt: Long,
-    )
+    @field:SerializedName("expiresAt")
+    val expiresAt: Long
+)

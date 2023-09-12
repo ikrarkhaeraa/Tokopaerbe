@@ -14,6 +14,9 @@ import com.example.tokopaerbe.databinding.FragmentWishlistBinding
 import com.example.tokopaerbe.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 class WishlistFragment : Fragment() {
 
@@ -21,6 +24,9 @@ class WishlistFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
+
+    private val myCoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+
 
 
     override fun onCreateView(
@@ -97,7 +103,7 @@ class WishlistFragment : Fragment() {
 
     private fun setLinearLayoutManager(wishList: List<WishlistEntity>) {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = WishlistAdapter(model)
+        val adapter = WishlistAdapter(model, myCoroutineScope, this.requireContext())
         binding.recyclerView.adapter = adapter
         adapter.submitList(wishList)
         binding.recyclerView.visibility = View.VISIBLE
@@ -105,7 +111,7 @@ class WishlistFragment : Fragment() {
 
     private fun setGridLayoutManager(wishList: List<WishlistEntity>) {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = WishListGridAdapter(model)
+        val adapter = WishListGridAdapter(model, myCoroutineScope, this.requireContext())
         binding.recyclerView.adapter = adapter
         adapter.submitList(wishList)
         binding.recyclerView.visibility = View.VISIBLE

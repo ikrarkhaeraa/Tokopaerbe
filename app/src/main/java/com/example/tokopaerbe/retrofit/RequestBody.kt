@@ -16,6 +16,10 @@ data class LoginRequestBody(
     val firebaseToken: String
 )
 
+data class RefreshRequestBody(
+    val token: String,
+)
+
 data class FulfillmentRequestBody(
     val payment: String,
     val items: List<Item>

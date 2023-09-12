@@ -154,145 +154,88 @@ class DetailProductFragment : Fragment() {
                     }.attach()
                 }
 
-                binding.keranjangButton.setOnClickListener { view ->
+
+                binding.keranjangButton.setOnClickListener { _ ->
 
                     lifecycleScope.launch {
-                        val entity = model.getCartforDetail().first()
+
+                        val productCart = model.getCartforDetail(it.data.productId)
+                        Log.d("cekProductCart", productCart?.productId.toString())
 
                         if (selectedVariant.isEmpty()) {
                             selectedVariant = it.data.productVariant[0].variantName
-                            if (entity?.isEmpty() == true) {
+
+                            Log.d("cek1", "klik1")
+
+                            if (productCart.toString() == "null") {
                                 model.addCartProduct(
                                     it.data.productId,
                                     it.data.productName,
                                     selectedVariant,
                                     it.data.stock,
-                                    price,
+                                    it.data.productPrice,
                                     1,
                                     it.data.image[0],
-                                    false,
+                                    false
                                 )
                                 Toast.makeText(
-                                    requireContext(), "Added First Item to Cart", LENGTH_SHORT
+                                    requireContext(),
+                                    "Added to cart",
+                                    LENGTH_SHORT
+                                ).show()
+                            } else if (productCart?.productId == it.data.productId && productCart.quantity < productCart.stock) {
+                                model.quantity(it.data.productId, productCart.quantity.plus(1))
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Quantity is update",
+                                    LENGTH_SHORT
                                 ).show()
                             } else {
-                                entity?.map { item ->
-                                    if (it.data.productId == entity.last().productId) {
-                                        if (item.quantity < item.stock) {
-                                            model.quantity(productId, item.quantity.plus(1))
-                                            Toast.makeText(
-                                                requireContext(), "Update Quantity", LENGTH_SHORT
-                                            ).show()
-                                        } else {
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "Stock is unavailable",
-                                                LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    } else {
-                                        model.addCartProduct(
-                                            it.data.productId,
-                                            it.data.productName,
-                                            selectedVariant,
-                                            it.data.stock,
-                                            price,
-                                            1,
-                                            it.data.image[0],
-                                            false,
-                                        )
-                                        Toast.makeText(
-                                            requireContext(), "Added to Cart", LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Stock is unavailable",
+                                    LENGTH_SHORT
+                                ).show()
                             }
-                        }
 
-                        else {
-                            if (entity?.isEmpty() == true) {
+                        } else {
+
+                            Log.d("cek2", "klik2")
+
+                            if (productCart.toString() == "null") {
                                 model.addCartProduct(
                                     it.data.productId,
                                     it.data.productName,
                                     selectedVariant,
                                     it.data.stock,
-                                    price,
+                                    it.data.productPrice,
                                     1,
                                     it.data.image[0],
-                                    false,
+                                    false
                                 )
                                 Toast.makeText(
-                                    requireContext(), "Added First Item to Cart", LENGTH_SHORT
+                                    requireContext(),
+                                    "Added to cart",
+                                    LENGTH_SHORT
+                                ).show()
+                            } else if (productCart?.productId == it.data.productId && productCart.quantity < productCart.stock) {
+                                model.quantity(it.data.productId, productCart.quantity.plus(1))
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Quantity is update",
+                                    LENGTH_SHORT
                                 ).show()
                             } else {
-                                entity?.map { item ->
-
-                                    if (it.data.productId == entity.last().productId) {
-                                        if (item.quantity < item.stock) {
-                                            model.quantity(productId, item.quantity.plus(1))
-                                            Toast.makeText(
-                                                requireContext(), "Update Quantity", LENGTH_SHORT
-                                            ).show()
-                                        } else {
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "Stock is unavailable",
-                                                LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    } else {
-                                        model.addCartProduct(
-                                            it.data.productId,
-                                            it.data.productName,
-                                            selectedVariant,
-                                            it.data.stock,
-                                            price,
-                                            1,
-                                            it.data.image[0],
-                                            false,
-                                        )
-                                        Toast.makeText(
-                                            requireContext(), "Added to Cart", LENGTH_SHORT
-                                        ).show()
-                                    }
-                                }
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Stock is unavailable",
+                                    LENGTH_SHORT
+                                ).show()
                             }
-                        }
 
+                        }
                     }
-
                 }
-
-//                binding.keranjangButton.setOnClickListener { view ->
-//
-//                    if (selectedVariant.isEmpty()) {
-//                        selectedVariant = it.data.productVariant[0].variantName
-//                        model.addCartProduct(
-//                            it.data.productId,
-//                            it.data.productName,
-//                            selectedVariant,
-//                            it.data.stock,
-//                            price,
-//                            1,
-//                            it.data.image[0],
-//                            false,
-//                        )
-//                        Toast.makeText(requireContext(), "Added to Cart", LENGTH_SHORT).show()
-//
-//                    } else {
-//                        model.addCartProduct(
-//                            it.data.productId,
-//                            it.data.productName,
-//                            selectedVariant,
-//                            it.data.stock,
-//                            price,
-//                            1,
-//                            it.data.image[0],
-//                            false,
-//                        )
-//                    }
-//                }
-
 
                 binding.lihatSemua.setOnClickListener {
                     findNavController().navigate(
@@ -316,7 +259,7 @@ class DetailProductFragment : Fragment() {
                             model.deleteWishList(it.data.productId)
                             isIconBorder = !isIconBorder
                             Toast.makeText(
-                                requireContext(), "Remove from wishlist", Toast.LENGTH_SHORT
+                                requireContext(), "Remove from wishlist", LENGTH_SHORT
                             ).show()
                         }
 
@@ -337,7 +280,7 @@ class DetailProductFragment : Fragment() {
                                 1
                             )
                             Toast.makeText(
-                                requireContext(), "Added to wishlist", Toast.LENGTH_SHORT
+                                requireContext(), "Added to wishlist", LENGTH_SHORT
                             ).show()
                         }
 

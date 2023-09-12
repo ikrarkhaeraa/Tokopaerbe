@@ -171,8 +171,12 @@ class ViewModel(private val data: DataSource) : ViewModel() {
         return data.getProductCart()
     }
 
-    fun getCartforDetail(): Flow<List<CartEntity>?> {
-        return data.getCartForDetail()
+    suspend fun getCartforDetail(id: String): CartEntity? {
+        return data.getCartForDetail(id)
+    }
+
+    suspend fun getCartforWishlist(id: String): CartEntity? {
+        return data.getCartForWishlist(id)
     }
 
     fun getUserLoginState(): Flow<Boolean> {

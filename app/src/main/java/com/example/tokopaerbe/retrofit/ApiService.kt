@@ -49,7 +49,7 @@ interface ApiService {
     @POST("refresh")
     fun uploadDataRefresh(
         @Header("API_KEY") apiKey: String,
-        @Body token: String
+        @Body requestBody: RefreshRequestBody
     ): Call<RefreshResponse>
 
     @POST("products")

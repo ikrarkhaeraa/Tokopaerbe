@@ -49,7 +49,13 @@ interface CartDao {
     @Query("SELECT * FROM productList")
     fun getProduct(): LiveData<List<CartEntity>?>
 
-    @Query("SELECT * FROM productList")
-    fun getCartForDetail(): Flow<List<CartEntity>?>
+//    @Query("SELECT * FROM productList")
+//    fun getCartForDetail(): List<CartEntity>?
+
+    @Query("SELECT * FROM productList WHERE productId = :id")
+    suspend fun getCartForDetail(id: String) : CartEntity?
+
+    @Query("SELECT * FROM productList WHERE productId = :id")
+    suspend fun getCartForWishlist(id: String) : CartEntity?
 
 }

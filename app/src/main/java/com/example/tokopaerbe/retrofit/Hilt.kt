@@ -1,5 +1,6 @@
 package com.example.tokopaerbe.retrofit
 
+import Authenticator
 import android.app.Application
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -13,11 +14,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 import javax.inject.Singleton
-
-private val Context.database: DataStore<Preferences> by preferencesDataStore("token")
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,8 +27,8 @@ object Hilt {
 
     @Singleton
     @Provides
-    fun provideChucker(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
+    fun provideChucker(@ApplicationContext context: Context): Context{
+        return context
     }
 
     @Provides
@@ -44,4 +46,6 @@ object Hilt {
     fun provideUserPreferences(@ApplicationContext context: Context): UserPreferences {
         return UserPreferences(context.database)
     }
+
+
 }

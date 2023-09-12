@@ -7,6 +7,8 @@ import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
@@ -40,7 +42,7 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentModalBottomSheetBinding? = null
     private val baseTheme: Int = R.style.Theme_Tokopaerbe
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private var selectedText1: String = ""
     private var selectedText2: String = ""
@@ -49,6 +51,14 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by activityViewModels()
+
+    val resetClickListener = View.OnClickListener {
+        Log.d("cekReset", "reset")
+        binding.chipgroup1.clearCheck()
+        binding.chipgroup2.clearCheck()
+        binding.editTextTerendah.text?.clear()
+        binding.editTextTertinggi.text?.clear()
+    }
 
 
     companion object {
@@ -68,10 +78,17 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.reset.visibility = GONE
+
         selectedText1 = model.sort
         selectedText2 = model.brand
         textTerendah = model.textTerendah
         textTertinggi = model.textTertinggi
+
+
+        if (selectedText1.isNotEmpty() || selectedText2.isNotEmpty() || textTerendah.isNotEmpty() || textTertinggi.isNotEmpty()) {
+            binding.reset.visibility = VISIBLE
+        }
 
         Log.d("cekcek", selectedText1)
         Log.d("cekcek", selectedText2)
@@ -164,12 +181,14 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
 
         }
 
-        binding.reset.setOnClickListener {
-            binding.chipgroup1.clearCheck()
-            binding.chipgroup2.clearCheck()
-            binding.editTextTerendah.text?.clear()
-            binding.editTextTertinggi.text?.clear()
-        }
+//        binding.reset.setOnClickListener {
+//            binding.chipgroup1.clearCheck()
+//            binding.chipgroup2.clearCheck()
+//            binding.editTextTerendah.text?.clear()
+//            binding.editTextTertinggi.text?.clear()
+//        }
+
+        binding.reset.setOnClickListener(resetClickListener)
 
     }
 

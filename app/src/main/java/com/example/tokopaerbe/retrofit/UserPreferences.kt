@@ -105,6 +105,12 @@ class UserPreferences (private val database: DataStore<Preferences>) {
         }
     }
 
+    fun getRefreshToken(): Flow<String> {
+        return database.data.map { preferences ->
+            preferences[REFRESHTOKEN_KEY] ?: ""
+        }
+    }
+
     fun getUserName(): Flow<String> {
         return database.data.map {preferences ->
             preferences[USERNAME_KEY] ?: ""

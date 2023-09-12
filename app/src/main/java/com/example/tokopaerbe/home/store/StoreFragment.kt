@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.databinding.FragmentModalBottomSheetBinding
 import com.example.tokopaerbe.pagging.LoadingStateAdapter
 import com.example.tokopaerbe.pagging.PaggingModel
 import com.example.tokopaerbe.databinding.FragmentStoreBinding
@@ -46,6 +47,7 @@ class StoreFragment : Fragment() {
 
     private var _binding: FragmentStoreBinding? = null
     private val binding get() = _binding!!
+    private var fragmentBottomSheet: ModalBottomSheetFragment? = null
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
@@ -108,7 +110,7 @@ class StoreFragment : Fragment() {
             textTertinggi = null
             updateFilterAndRequestData()
             val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-            resetFilter.observe(viewLifecycleOwner) {filterResetEmpty ->
+            resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                 paggingModel.sendFilter(
                     filterResetEmpty.search,
                     filterResetEmpty.sort,
@@ -143,8 +145,8 @@ class StoreFragment : Fragment() {
             binding.searchTextField.setText("")
             searchText = bundle.getString("bundleKey").toString()
             Log.d("searchText", searchText!!)
-                binding.searchTextField.setText(searchText)
-                updateFilterAndRequestData()
+            binding.searchTextField.setText(searchText)
+            updateFilterAndRequestData()
         }
 
         binding.changeRV.setOnClickListener {
@@ -212,7 +214,7 @@ class StoreFragment : Fragment() {
                                 textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) {filterResetEmpty ->
+                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
                                         filterResetEmpty.search,
                                         filterResetEmpty.sort,
@@ -253,7 +255,7 @@ class StoreFragment : Fragment() {
                                 textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) {filterResetEmpty ->
+                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
                                         filterResetEmpty.search,
                                         filterResetEmpty.sort,
@@ -293,7 +295,7 @@ class StoreFragment : Fragment() {
                                 textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) {filterResetEmpty ->
+                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
                                         filterResetEmpty.search,
                                         filterResetEmpty.sort,
@@ -354,6 +356,7 @@ class StoreFragment : Fragment() {
                         200, 0 -> {
                             linearProductAdapter.submitData(lifecycle, result)
                         }
+
                         404 -> {
                             binding.recyclerView.visibility = GONE
                             binding.gambarerror.visibility = VISIBLE
@@ -363,6 +366,7 @@ class StoreFragment : Fragment() {
                             binding.errorDesc.text = getString(R.string.errorDesc)
                             binding.resetButton.visibility = VISIBLE
                             binding.resetButton.setOnClickListener { view ->
+                                binding.chipgroup.removeAllViews()
                                 searchText = null
                                 selectedText1 = null
                                 selectedText2 = null
@@ -370,7 +374,7 @@ class StoreFragment : Fragment() {
                                 textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) {filterResetEmpty ->
+                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
                                         filterResetEmpty.search,
                                         filterResetEmpty.sort,
@@ -393,6 +397,7 @@ class StoreFragment : Fragment() {
                                 }
                             }
                         }
+
                         500 -> {
                             binding.recyclerView.visibility = GONE
                             binding.gambarerror.visibility = VISIBLE
@@ -411,7 +416,7 @@ class StoreFragment : Fragment() {
                                 textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) {filterResetEmpty ->
+                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
                                         filterResetEmpty.search,
                                         filterResetEmpty.sort,
@@ -432,6 +437,7 @@ class StoreFragment : Fragment() {
                                 }
                             }
                         }
+
                         else -> {
                             binding.recyclerView.visibility = GONE
                             binding.gambarerror.visibility = VISIBLE
@@ -450,7 +456,7 @@ class StoreFragment : Fragment() {
                                 textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) {filterResetEmpty ->
+                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
                                         filterResetEmpty.search,
                                         filterResetEmpty.sort,
@@ -557,6 +563,16 @@ class StoreFragment : Fragment() {
         Log.d("cekUpdateFilter", textTerendah.toString())
         Log.d("cekUpdateFilter", textTertinggi.toString())
         filterParams.value = newFilter
+    }
+
+    fun setFragmentBottomSheet(bottomSheet: ModalBottomSheetFragment) {
+        this.fragmentBottomSheet = bottomSheet
+    }
+
+    // Trigger the reset click listener in FragmentA from FragmentB
+    private fun triggerResetClickListener() {
+        fragmentBottomSheet?.resetClickListener?.onClick(fragmentBottomSheet?.binding?.reset)
+
     }
 
 }
