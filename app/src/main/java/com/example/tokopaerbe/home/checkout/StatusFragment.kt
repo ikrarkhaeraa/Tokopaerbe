@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,6 +17,7 @@ import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentPilihPembayaranBinding
 import com.example.tokopaerbe.databinding.FragmentStatusBinding
 import com.example.tokopaerbe.home.transaction.ItemTransaction
+import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.first
@@ -32,12 +34,14 @@ class StatusFragment : Fragment() {
     private var ratingBar: Int = 0
     private var review: String = ""
 
-    private val args: StatusFragmentArgs by navArgs()
-    private var itemTransaction: ItemTransaction? = ItemTransaction(emptyList())
+    private val args: StatusFragmentArgs? by navArgs()
+    private var itemTransaction: TransactionDataClass? = null
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        itemTransaction = args?.item
 
         binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
             ratingBar = rating.toInt()
@@ -45,7 +49,7 @@ class StatusFragment : Fragment() {
 
         binding.reviewedittext.addTextChangedListener(reviewTextWatcher)
 
-        if (model.fulfillment.value?.code == 200) {
+        if (model.fulfillment.value?.code == 200 && itemTransaction.toString() == "null") {
             model.fulfillment.observe(viewLifecycleOwner) {
                 binding.idTransaksiValue.text = it.data.invoiceId
                 binding.StatusValue.text = "Berhasil"
@@ -72,22 +76,20 @@ class StatusFragment : Fragment() {
                 }
             }
         } else {
-            itemTransaction = args.itemTransaction
             Log.d("cekItemTransaction", itemTransaction.toString())
-            itemTransaction?.itemTransaction?.map { transaction ->
-                binding.idTransaksiValue.text = transaction.invoiceId
+                binding.idTransaksiValue.text = itemTransaction?.invoiceId
                 binding.StatusValue.text = "Berhasil"
-                binding.tanggalValue.text = transaction.tanggalValue
-                binding.waktuValue.text = transaction.waktuValue
-                binding.metodePembayaranValue.text = transaction.metodePembayaranValue
-                binding.totalPembayaranValue.text = transaction.totalPembayaranValue.toString()
+                binding.tanggalValue.text = itemTransaction?.tanggalValue
+                binding.waktuValue.text = itemTransaction?.waktuValue
+                binding.metodePembayaranValue.text = itemTransaction?.metodePembayaranValue
+                binding.totalPembayaranValue.text = itemTransaction?.totalPembayaranValue.toString()
 
                 binding.buttonSelesai.setOnClickListener { view ->
                     lifecycleScope.launch {
                         val token = model.getUserToken().first()
                         val auth = "Bearer $token"
 
-                        model.postDataRating(auth, transaction.invoiceId, ratingBar, review)
+                        model.postDataRating(auth, itemTransaction!!.invoiceId, ratingBar, review)
                         Log.d("cekStatusData", ratingBar.toString())
                         Log.d("cekStatusData", review)
 
@@ -98,8 +100,24 @@ class StatusFragment : Fragment() {
                         }
                     }
                 }
+        }
+
+        Log.d("cekArgumen", itemTransaction.toString())
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (itemTransaction.toString() == "null") {
+                    Log.d("cekKlik", "cek1")
+                    findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
+                } else {
+                    Log.d("cekKlik", "cek2")
+                    findNavController().navigateUp()
+                }
             }
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
     }
 
     override fun onCreateView(

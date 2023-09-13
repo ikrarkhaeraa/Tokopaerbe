@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentCheckoutBinding
+import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.retrofit.response.Item
 import com.example.tokopaerbe.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.viewmodel.ViewModel
@@ -41,6 +42,7 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
     private var totalPrice = 0.0
     private lateinit var listProductFulfillment: ArrayList<com.example.tokopaerbe.retrofit.Item>
+    private val item: TransactionDataClass? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -122,7 +124,7 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
                     lifecycleScope.launch {
                         model.fulfillment.observe(viewLifecycleOwner){
                             if (it.code == 200) {
-                                findNavController().navigate(R.id.action_checkoutFragment_to_statusFragment)
+                                findNavController().navigate(R.id.action_checkoutFragment_to_statusFragment, StatusFragmentArgs(item).toBundle(), navOptions = null)
                             }
                         }
                     }

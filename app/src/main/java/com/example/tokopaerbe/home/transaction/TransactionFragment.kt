@@ -108,9 +108,18 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
 
     }
 
-    override fun onItemClick() {
+    override fun onItemClick(invoiceId: String) {
         item = ItemTransaction(itemTransaction)
-        (requireActivity() as MainActivity).goToStatus(item)
+
+        Log.d("cekItemTransaction", item.itemTransaction.size.toString())
+
+        item.itemTransaction.map {
+            for(i in item.itemTransaction.indices) {
+                if (invoiceId == item.itemTransaction[i].invoiceId) {
+                    (requireActivity() as MainActivity).goToStatus(item.itemTransaction[i])
+                }
+            }
+        }
     }
 
 }

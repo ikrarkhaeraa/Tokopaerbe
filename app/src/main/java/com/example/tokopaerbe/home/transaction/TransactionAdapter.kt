@@ -30,7 +30,7 @@ class TransactionAdapter(
         holder.bind(transaction)
 
         holder.binding.buttonUlas.setOnClickListener {
-            itemClickListener.onItemClick()
+            itemClickListener.onItemClick(transaction.invoiceId)
         }
 
     }
@@ -82,7 +82,7 @@ class TransactionAdapter(
     }
 
     interface OnItemClickListener {
-        fun onItemClick()
+        fun onItemClick(invoiceId: String)
     }
 
 }

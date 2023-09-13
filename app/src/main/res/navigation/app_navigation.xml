@@ -129,10 +129,9 @@
             android:id="@+id/action_statusFragment_to_main_navigation"
             app:destination="@id/main_navigation" />
         <argument
-            android:name="itemTransaction"
-            app:argType="com.example.tokopaerbe.home.transaction.ItemTransaction"
+            android:name="item"
+            app:argType="com.example.tokopaerbe.home.transaction.TransactionDataClass"
             app:nullable="true" />
-
     </fragment>
 
 

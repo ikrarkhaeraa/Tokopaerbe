@@ -10,6 +10,8 @@ import com.example.tokopaerbe.databinding.ActivityMainBinding
 import com.example.tokopaerbe.home.checkout.StatusFragmentArgs
 import com.example.tokopaerbe.home.store.DetailProductFragmentArgs
 import com.example.tokopaerbe.home.transaction.ItemTransaction
+import com.example.tokopaerbe.home.transaction.TransactionAdapter
+import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.first
@@ -76,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.store_to_detail, DetailProductFragmentArgs(productId).toBundle(), navOptions = null)
     }
 
-    fun goToStatus(item: ItemTransaction) {
+    fun goToStatus(item: TransactionDataClass) {
         navController.navigate(R.id.transaction_to_status, StatusFragmentArgs(item).toBundle(), navOptions = null)
     }
 
