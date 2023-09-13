@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -47,7 +48,6 @@ class StoreFragment : Fragment() {
 
     private var _binding: FragmentStoreBinding? = null
     private val binding get() = _binding!!
-    private var fragmentBottomSheet: ModalBottomSheetFragment? = null
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
@@ -565,14 +565,5 @@ class StoreFragment : Fragment() {
         filterParams.value = newFilter
     }
 
-    fun setFragmentBottomSheet(bottomSheet: ModalBottomSheetFragment) {
-        this.fragmentBottomSheet = bottomSheet
-    }
-
-    // Trigger the reset click listener in FragmentA from FragmentB
-    private fun triggerResetClickListener() {
-        fragmentBottomSheet?.resetClickListener?.onClick(fragmentBottomSheet?.binding?.reset)
-
-    }
 
 }

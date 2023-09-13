@@ -81,7 +81,7 @@
     <string name="spec">Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS</string>
     <string name="sold">Terjual 10</string>
     <string name="productRating">4.5</string>
-    <string name="totalRating">2</string>
+    <string name="totalRating">(2)</string>
     <string name="pilihVarian">Pilih Varian</string>
     <string name="labelVarian">Varian</string>
     <string name="deskripsiProductTitle">Deskripsi Produk</string>

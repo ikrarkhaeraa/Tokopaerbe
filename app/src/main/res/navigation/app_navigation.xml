@@ -34,6 +34,11 @@
         app:destination="@id/detailProduct" />
 
     <action
+        android:id="@+id/store_to_detailCompose"
+        app:destination="@id/composeDetailProduct" />
+
+
+    <action
         android:id="@+id/transaction_to_status"
         app:destination="@id/statusFragment" />
 
@@ -133,6 +138,18 @@
             app:argType="com.example.tokopaerbe.home.transaction.TransactionDataClass"
             app:nullable="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/composeDetailProduct"
+        android:name="com.example.tokopaerbe.home.store.ComposeDetailProduct"
+        android:label="fragment_compose_detail_product"
+        tools:layout="@layout/fragment_compose_detail_product" />
+
+    <fragment
+        android:id="@+id/transactionFragment"
+        android:name="com.example.tokopaerbe.home.transaction.TransactionFragment"
+        android:label="fragment_transaction"
+        tools:layout="@layout/fragment_transaction" />
 
 
 </navigation>

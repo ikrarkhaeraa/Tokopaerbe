@@ -52,13 +52,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by activityViewModels()
 
-    val resetClickListener = View.OnClickListener {
-        Log.d("cekReset", "reset")
-        binding.chipgroup1.clearCheck()
-        binding.chipgroup2.clearCheck()
-        binding.editTextTerendah.text?.clear()
-        binding.editTextTertinggi.text?.clear()
-    }
 
 
     companion object {
@@ -77,6 +70,7 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         binding.reset.visibility = GONE
 
@@ -178,17 +172,14 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             setFragmentResult("filter", filter)
 
             dismiss()
-
         }
 
-//        binding.reset.setOnClickListener {
-//            binding.chipgroup1.clearCheck()
-//            binding.chipgroup2.clearCheck()
-//            binding.editTextTerendah.text?.clear()
-//            binding.editTextTertinggi.text?.clear()
-//        }
-
-        binding.reset.setOnClickListener(resetClickListener)
+        binding.reset.setOnClickListener {
+            binding.chipgroup1.clearCheck()
+            binding.chipgroup2.clearCheck()
+            binding.editTextTerendah.text?.clear()
+            binding.editTextTertinggi.text?.clear()
+        }
 
     }
 
