@@ -68,6 +68,29 @@
 
     </fragment>
 
+
+    <fragment
+        android:id="@+id/detailProductCompose"
+        android:name="com.example.tokopaerbe.home.store.ComposeDetailProduct"
+        android:label="fragment_detail_compose"
+        tools:layout="@layout/fragment_compose_detail_product">
+
+        <argument
+            android:name="productIdCompose"
+            android:defaultValue=""
+            app:argType="string" />
+        <action
+            android:id="@+id/action_detailProductCompose_to_reviewFragment"
+            app:destination="@id/reviewFragment" />
+        <action
+            android:id="@+id/action_detailProductCompose_to_cartFragment"
+            app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_detailProductCompose_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
+
+
     <fragment
         android:id="@+id/reviewFragment"
         android:name="com.example.tokopaerbe.home.store.ReviewFragment"
@@ -149,7 +172,8 @@
         android:id="@+id/transactionFragment"
         android:name="com.example.tokopaerbe.home.transaction.TransactionFragment"
         android:label="fragment_transaction"
-        tools:layout="@layout/fragment_transaction" />
+        tools:layout="@layout/fragment_transaction">
+    </fragment>
 
 
 </navigation>

@@ -110,7 +110,7 @@ class StatusFragment : Fragment() {
                     Log.d("cekKlik", "cek1")
                     findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
                 } else {
-                    findNavController().navigateUp()
+                    findNavController().popBackStack()
                     Log.d("cekKlik", "cek2")
                 }
             }

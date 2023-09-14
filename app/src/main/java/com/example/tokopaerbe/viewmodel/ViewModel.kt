@@ -175,6 +175,10 @@ class ViewModel(private val data: DataSource) : ViewModel() {
         return data.getCartForDetail(id)
     }
 
+    suspend fun getWishlistforDetail(id: String): WishlistEntity? {
+        return data.getWishlistForDetail(id)
+    }
+
     suspend fun getCartforWishlist(id: String): CartEntity? {
         return data.getCartForWishlist(id)
     }

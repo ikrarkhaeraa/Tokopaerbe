@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import com.example.tokopaerbe.databinding.ActivityMainBinding
 import com.example.tokopaerbe.home.checkout.StatusFragmentArgs
-import com.example.tokopaerbe.home.store.DetailProductFragmentArgs
+import com.example.tokopaerbe.home.store.ComposeDetailProductArgs
 import com.example.tokopaerbe.home.transaction.ItemTransaction
 import com.example.tokopaerbe.home.transaction.TransactionAdapter
 import com.example.tokopaerbe.home.transaction.TransactionDataClass
@@ -75,7 +75,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goToProduct(productId: String) {
-        navController.navigate(R.id.store_to_detail, DetailProductFragmentArgs(productId).toBundle(), navOptions = null)
+//        navController.navigate(R.id.store_to_detail, DetailProductFragmentArgs(productId).toBundle(), navOptions = null)
+        navController.navigate(R.id.store_to_detailCompose, ComposeDetailProductArgs(productId).toBundle(), navOptions = null)
     }
 
     fun goToStatus(item: TransactionDataClass) {

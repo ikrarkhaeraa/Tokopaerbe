@@ -6,5 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.store.ComposeDetailProduct">
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_view"
+        tools:composableName="com.example.tokopaerbe.home.store.ComposeDetailProduct"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

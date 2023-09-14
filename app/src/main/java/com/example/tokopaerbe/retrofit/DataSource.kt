@@ -345,6 +345,10 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
         return cartDao.getCartForDetail(id)
     }
 
+    suspend fun getWishlistForDetail(id: String): WishlistEntity? {
+        return wishDao.getWishlistForDetail(id)
+    }
+
     suspend fun getCartForWishlist(id: String): CartEntity? {
         return cartDao.getCartForWishlist(id)
     }

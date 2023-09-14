@@ -41,4 +41,7 @@ interface WishlistDao {
     @Query("SELECT * FROM wishList WHERE productId = :id")
     fun getIsFavorite(id: String) : LiveData<List<WishlistEntity>?>
 
+    @Query("SELECT * FROM wishList WHERE productId = :id")
+    suspend fun getWishlistForDetail(id: String) : WishlistEntity?
+
 }
