@@ -3,6 +3,7 @@ package com.example.tokopaerbe
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
@@ -14,6 +15,7 @@ import com.example.tokopaerbe.home.transaction.TransactionAdapter
 import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         checkUserStatus()
+        cekTheme()
     }
 
     private fun checkUserStatus() {
@@ -66,6 +69,19 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    private fun cekTheme() {
+
+        lifecycleScope.launch {
+            model.getIsDarkState().collect {theme ->
+                if (theme) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+        }
     }
 
     fun logout() {

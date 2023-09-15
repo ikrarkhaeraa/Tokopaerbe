@@ -37,6 +37,13 @@
         android:id="@+id/store_to_detailCompose"
         app:destination="@id/composeDetailProduct" />
 
+    <action
+        android:id="@+id/action_detailProductCompose_to_checkoutFragment"
+        app:destination="@id/checkoutFragment" />
+
+    <action
+        android:id="@+id/action_detailProductCompose_to_reviewFragmentCompose"
+        app:destination="@id/reviewFragmentCompose" />
 
     <action
         android:id="@+id/transaction_to_status"
@@ -72,22 +79,16 @@
     <fragment
         android:id="@+id/detailProductCompose"
         android:name="com.example.tokopaerbe.home.store.ComposeDetailProduct"
-        android:label="fragment_detail_compose"
-        tools:layout="@layout/fragment_compose_detail_product">
+        android:label="fragment_detail_compose">
 
         <argument
             android:name="productIdCompose"
             android:defaultValue=""
             app:argType="string" />
-        <action
-            android:id="@+id/action_detailProductCompose_to_reviewFragment"
-            app:destination="@id/reviewFragment" />
-        <action
-            android:id="@+id/action_detailProductCompose_to_cartFragment"
-            app:destination="@id/cartFragment" />
-        <action
-            android:id="@+id/action_detailProductCompose_to_checkoutFragment"
-            app:destination="@id/checkoutFragment" />
+        <deepLink
+            android:autoVerify="true"
+            app:uri="http://ecommerce.tokopaerbe.com/product/compose/{productIdCompose}"
+            />
     </fragment>
 
 
@@ -99,6 +100,19 @@
 
         <argument
             android:name="productId"
+            android:defaultValue=""
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/reviewFragmentCompose"
+        android:name="com.example.tokopaerbe.home.store.ReviewFragmentCompose"
+        android:label="fragment_review_compose"
+        tools:layout="@layout/fragment_review_compose">
+
+        <argument
+            android:name="productIdCompose"
             android:defaultValue=""
             app:argType="string" />
 

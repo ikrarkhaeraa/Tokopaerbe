@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentHomeBinding
@@ -15,6 +18,9 @@ import com.example.tokopaerbe.prelogin.login.LoginFragment
 import com.example.tokopaerbe.prelogin.register.RegisterFragment
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -37,6 +43,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.switch1.isChecked = AppCompatDelegate.getApplicationLocales().get(0)?.language == "in"
+
+        language()
+        theme()
         logout()
     }
 
@@ -45,6 +55,33 @@ class HomeFragment : Fragment() {
 
             Log.d("cekLogout", "LogoutSuccess")
             (requireActivity() as MainActivity).logout()
+        }
+    }
+
+    private fun language(){
+        binding.switch1.apply {
+            setOnClickListener {
+                val language = if (isChecked) "in" else "en"
+                val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language)
+                AppCompatDelegate.setApplicationLocales(appLocale)
+            }
+        }
+    }
+
+    private fun theme() {
+        lifecycleScope.launch {
+            model.getIsDarkState().collect {theme ->
+                binding.switch2.apply {
+                    isChecked = theme
+                    setOnClickListener {
+                        launch {
+                            model.darkTheme(isChecked)
+                        }
+                        if (isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                }
+            }
         }
     }
 

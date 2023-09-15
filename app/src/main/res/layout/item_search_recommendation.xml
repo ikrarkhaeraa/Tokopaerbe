@@ -10,6 +10,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginBottom="8dp"
+    card_view:cardBackgroundColor="?android:attr/windowBackground"
     card_view:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +38,6 @@
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
             android:textSize="12sp"
-            android:textColor="@color/lightonsurfacevariant"
             android:fontFamily="@font/poppins"
             android:textStyle="bold"
             card_view:layout_constraintStart_toEndOf="@+id/item_search"

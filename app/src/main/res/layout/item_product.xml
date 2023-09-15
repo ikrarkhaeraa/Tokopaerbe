@@ -10,6 +10,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginBottom="8dp"
+    card_view:cardBackgroundColor="?android:attr/windowBackground"
     card_view:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +38,6 @@
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
             android:textSize="12sp"
-            android:textColor="@color/lightonsurfacevariant"
             android:fontFamily="@font/poppins"
             android:textStyle="bold"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
@@ -52,7 +52,6 @@
             android:layout_marginTop="2dp"
             android:textSize="14sp"
             android:fontFamily="@font/bold"
-            android:textColor="@color/lightonsurfacevariant"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
             card_view:layout_constraintTop_toBottomOf="@+id/item_title"
             tools:text="@string/Price" />
@@ -76,7 +75,6 @@
             android:fontFamily="@font/poppins"
             android:text="@string/store"
             android:textSize="10sp"
-            android:textColor="@color/lightonsurfacevariant"
             card_view:layout_constraintStart_toEndOf="@+id/imageView3"
             card_view:layout_constraintTop_toBottomOf="@+id/item_price"
             tools:ignore="SmallSp" />
@@ -99,7 +97,6 @@
             android:text="@string/Rating"
             android:layout_marginTop="2dp"
             android:layout_marginStart="4dp"
-            android:textColor="@color/lightonsurfacevariant"
             android:textSize="10sp"
             card_view:layout_constraintStart_toEndOf="@+id/imageView4"
             card_view:layout_constraintTop_toBottomOf="@+id/store"

@@ -8,6 +8,7 @@
     android:layout_gravity="center"
     android:layout_marginLeft="8dp"
     android:layout_marginTop="8dp"
+    card_view:cardBackgroundColor="?android:attr/windowBackground"
     android:layout_marginRight="8dp"
     android:layout_marginBottom="8dp"
     card_view:cardCornerRadius="8dp">
@@ -20,17 +21,16 @@
             android:id="@+id/item_image"
             android:layout_width="186dp"
             android:layout_height="186dp"
-            card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/square_shimmer"
-            />
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/item_title"
             android:layout_width="170dp"
             android:layout_height="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/item_image"
             android:background="@color/grey"
             android:textColor="@color/lightonsurfacevariant"
@@ -41,21 +41,20 @@
             android:id="@+id/item_price"
             android:layout_width="170dp"
             android:layout_height="16dp"
-            android:layout_marginTop="4dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
             android:background="@color/grey"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/item_title"
-            />
+            card_view:layout_constraintTop_toBottomOf="@+id/item_title" />
 
 
         <TextView
             android:id="@+id/store"
             android:layout_width="85dp"
             android:layout_height="12dp"
-            android:background="@color/grey"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
+            android:background="@color/grey"
             android:textColor="@color/lightonsurfacevariant"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/item_price" />
@@ -64,10 +63,10 @@
             android:id="@+id/rating_terjual"
             android:layout_width="85dp"
             android:layout_height="12dp"
-            android:background="@color/grey"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
+            android:background="@color/grey"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/store" />

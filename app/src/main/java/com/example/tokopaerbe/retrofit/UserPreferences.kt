@@ -33,6 +33,7 @@ class UserPreferences (private val database: DataStore<Preferences>) {
         private val SELECTEDTEXT2_KEY = stringPreferencesKey("selectedText2")
         private val LOWEST_KEY = stringPreferencesKey("lowest")
         private val HIGHEST_KEY = stringPreferencesKey("highest")
+        private val DARKTHEME_KEY = booleanPreferencesKey("darkTheme")
 
         fun getInstance(database: DataStore<Preferences>): UserPreferences {
             return INSTANCE ?: synchronized(this) {
@@ -150,6 +151,18 @@ class UserPreferences (private val database: DataStore<Preferences>) {
     suspend fun favoriteKey() {
         database.edit { preferences ->
             preferences[FAVORITE_KEY] = false
+        }
+    }
+
+    suspend fun darkTheme(value: Boolean) {
+        database.edit { preferences ->
+            preferences[DARKTHEME_KEY] = value
+        }
+    }
+
+    fun getIsDarkState(): Flow<Boolean> {
+        return database.data.map { preferences ->
+            preferences[DARKTHEME_KEY] ?: false
         }
     }
 

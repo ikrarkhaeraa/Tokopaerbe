@@ -18,7 +18,7 @@
             android:id="@+id/cartToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
+            android:background="?android:attr/windowBackground"
             app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
             app:theme="@style/ThemeOverlay.AppCompat.ActionBar"

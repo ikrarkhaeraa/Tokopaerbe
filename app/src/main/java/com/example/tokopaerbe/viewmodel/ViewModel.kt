@@ -187,6 +187,10 @@ class ViewModel(private val data: DataSource) : ViewModel() {
         return data.getUserLoginState()
     }
 
+    fun getIsDarkState(): Flow<Boolean> {
+        return data.getIsDarkState()
+    }
+
     fun getUserFirstInstallState(): Flow<Boolean> {
         return data.getUserFirstInstallState()
     }
@@ -245,6 +249,12 @@ class ViewModel(private val data: DataSource) : ViewModel() {
     fun favoriteKey() {
         viewModelScope.launch {
             data.favoriteKey()
+        }
+    }
+
+    fun darkTheme(value: Boolean) {
+        viewModelScope.launch {
+            data.darkTheme(value)
         }
     }
 

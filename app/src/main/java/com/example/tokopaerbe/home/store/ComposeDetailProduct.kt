@@ -1,6 +1,7 @@
 package com.example.tokopaerbe.home.store
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -24,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
@@ -43,7 +47,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -65,6 +72,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.compose.ImagePainter.State.Empty.painter
 import coil.compose.rememberImagePainter
+import com.example.mycompose.ui.theme.MyComposeTheme
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragment
@@ -102,7 +110,7 @@ class ComposeDetailProduct : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                DetailProductScreenViewModel()
+                    DetailProductScreenViewModel ()
             }
         }
     }
@@ -110,7 +118,8 @@ class ComposeDetailProduct : Fragment() {
 
     @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
-    fun DetailProductScreenViewModel() {
+    fun DetailProductScreenViewModel(
+    ) {
 
 
         val userToken = model.getUserToken().collectAsState(initial = null).value
@@ -220,7 +229,6 @@ class ComposeDetailProduct : Fragment() {
         stock: Int? = 0,
         store: String? = "",
         sale: Int? = 0,
-        goToCheckOut: (ListCheckout) = ListCheckout(emptyList())
     ) {
 
         var priceState = remember { mutableStateOf(price) }
@@ -328,10 +336,13 @@ class ComposeDetailProduct : Fragment() {
                                 }
                                 Log.d("ceklistChekout", listCheckout.toString())
                                 productCheckout = ListCheckout(listCheckout)
-                                    findNavController().navigate(
-                                        R.id.action_detailProductCompose_to_checkoutFragment,
-                                        CheckoutFragmentArgs(productCheckout).toBundle(),
-                                        navOptions = null)
+
+                                findNavController().navigate(
+                                    R.id.action_detailProductCompose_to_checkoutFragment,
+                                    CheckoutFragmentArgs(productCheckout).toBundle(),
+                                    navOptions = null
+                                )
+
 
                             }, modifier = Modifier
                                 .weight(1f)
@@ -444,25 +455,50 @@ class ComposeDetailProduct : Fragment() {
                 val pagerState = rememberPagerState()
 
                 listSearchResult?.size?.let {
-                    HorizontalPager(
-                        modifier = Modifier.fillMaxSize(),
-                        pageCount = it,
-                        state = pagerState
-                    ) { pageIndex ->
-                        val imageUrl = listSearchResult[pageIndex]
-                        Image(
-                            painter = rememberImagePainter(
-                                data = imageUrl,
-                                builder = {
-                                    crossfade(true)
-                                }
-                            ),
-                            contentDescription = null,
-                            modifier = Modifier
+                    Box {
+
+                        HorizontalPager(
+                            modifier = Modifier.fillMaxSize(),
+                            pageCount = it,
+                            state = pagerState
+                        ) { pageIndex ->
+                            val imageUrl = listSearchResult[pageIndex]
+                            Image(
+                                painter = rememberImagePainter(
+                                    data = imageUrl,
+                                    builder = {
+                                        crossfade(true)
+                                    }
+                                ),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(309.dp)
+                            )
+                        }
+
+                        Row(
+                            Modifier
+                                .height(16.dp)
                                 .fillMaxWidth()
-                                .height(309.dp)
-                        )
+                                .align(Alignment.BottomCenter),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            repeat(it) { iteration ->
+                                val color = if (pagerState.currentPage == iteration) colorResource(id = R.color.primaryColor) else Color.LightGray
+                                Box(
+                                    modifier = Modifier
+                                        .padding(2.dp)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                        .size(8.dp)
+
+                                )
+                            }
+                        }
+
                     }
+
                 }
 
                 Row(Modifier.padding(top = 12.dp)) {
@@ -476,13 +512,23 @@ class ComposeDetailProduct : Fragment() {
                         color = colorResource(id = R.color.lightonsurfacevariant)
                     )
                     Log.d("cekPriceTitle", itemPriceState.value.toString())
+
                     Image(painter = painterResource(id = R.drawable.baseline_share_24),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(end = 16.dp)
                             .clickable {
-
+                                val shareIntent: Intent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        "Product : ${productName}\n" + "Price : $itemPrice\n" + "Link : http://ecommerce.tokopaerbe.com/product/compose/${productId}"
+                                    )
+                                    type = "text/plain"
+                                }
+                                startActivity(Intent.createChooser(shareIntent, null))
                             })
+
                     Image(painter = imageResource,
                         contentDescription = null,
                         modifier = Modifier
@@ -507,19 +553,23 @@ class ComposeDetailProduct : Fragment() {
                                                 productVariant[0].variantName,
                                                 1
                                             )
-                                            Toast.makeText(
-                                                requireContext(), "Added to wishlist",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
+                                            Toast
+                                                .makeText(
+                                                    requireContext(), "Added to wishlist",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
                                         }
 
                                     } else if (productWishlist?.productId == productId) {
                                         model.deleteWishList(productId)
                                         isImageChanged = !isImageChanged
-                                        Toast.makeText(
-                                            requireContext(), "Remove from wishlist",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        Toast
+                                            .makeText(
+                                                requireContext(), "Remove from wishlist",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
 
                                     }
                                 }
@@ -664,7 +714,15 @@ class ComposeDetailProduct : Fragment() {
                         fontFamily = FontFamily(Font(R.font.medium)),
                         fontSize = 12.sp,
                         color = colorResource(id = R.color.primaryColor),
-                        modifier = Modifier.padding(end = 16.dp)
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .clickable {
+                                findNavController().navigate(
+                                    R.id.action_detailProductCompose_to_reviewFragmentCompose,
+                                    ReviewFragmentComposeArgs(productId).toBundle(),
+                                    navOptions = null
+                                )
+                            }
                     )
                 }
 

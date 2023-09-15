@@ -57,23 +57,28 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val text = getString(R.string.persetujuan)
+        val text = getString(R.string.persetujuanDaftar)
         val spannableStringBuilder = SpannableStringBuilder(text)
 
-        val startTerms = text.indexOf("Syarat & Ketentuan")
-        val endTerms = startTerms + "Syarat & Ketentuan".length
-        val startPrivacy = text.indexOf("Kebijakan Privasi")
-        val endPrivacy = startPrivacy + "Kebijakan Privasi".length
+        val startTerms = text.indexOf(resources.getString(R.string.syaratdanketentuan))
+        val endTerms = startTerms + resources.getString(R.string.syaratdanketentuan).length
+        val startPrivacy = text.indexOf(resources.getString(R.string.kebijakanprivasi))
+        val endPrivacy = startPrivacy + resources.getString(R.string.kebijakanprivasi).length
 
-        // Create ForegroundColorSpan for each part you want to color
-        val colorSpanTerms = ForegroundColorSpan(resources.getColor(R.color.primaryColor)) // Change the color to your desired color
-        val colorSpanPrivacy = ForegroundColorSpan(resources.getColor(R.color.primaryColor)) // Change the color to your desired color
+        val startTerms2 = text.indexOf(resources.getString(R.string.syaratdanketentuan))
+        val endTerms2 = startTerms + resources.getString(R.string.syaratdanketentuan).length
+        val startPrivacy2 = text.indexOf(resources.getString(R.string.kebijakanprivasi))
+        val endPrivacy2 = startPrivacy + resources.getString(R.string.kebijakanprivasi).length
 
-        // Apply the spans to the text
+        val colorSpanTerms = ForegroundColorSpan(resources.getColor(R.color.primaryColor))
+        val colorSpanPrivacy = ForegroundColorSpan(resources.getColor(R.color.primaryColor))
+
         spannableStringBuilder.setSpan(colorSpanTerms, startTerms, endTerms, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy, endPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        // Set the SpannableStringBuilder to your TextView
+        spannableStringBuilder.setSpan(colorSpanTerms, startTerms2, endTerms2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy2, endPrivacy2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
         binding.persetujuan.text = spannableStringBuilder
 
         binding.emailedittext.addTextChangedListener(emailTextWatcher)

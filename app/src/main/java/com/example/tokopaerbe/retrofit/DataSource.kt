@@ -321,6 +321,11 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
     fun getUserLoginState(): Flow<Boolean> {
         return pref.getUserLoginState()
     }
+
+    fun getIsDarkState(): Flow<Boolean> {
+        return pref.getIsDarkState()
+    }
+
     suspend fun userLogin() {
         pref.login()
     }
@@ -331,6 +336,10 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
 
     suspend fun favoriteKey() {
         pref.favoriteKey()
+    }
+
+    suspend fun darkTheme(value: Boolean) {
+        pref.darkTheme(value)
     }
 
     suspend fun userLogout() {

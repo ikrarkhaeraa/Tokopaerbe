@@ -11,6 +11,7 @@
     android:layout_marginTop="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginBottom="8dp"
+    card_view:cardBackgroundColor="?android:attr/windowBackground"
     card_view:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,7 +47,6 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/item_image"
             android:fontFamily="@font/medium"
-            android:textColor="@color/lightonsurfacevariant"
             android:textSize="14sp"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
             card_view:layout_constraintTop_toTopOf="parent"
@@ -83,7 +83,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/medium"
-            android:textColor="@color/lightonsurfacevariant"
             android:textSize="14sp"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
             card_view:layout_constraintTop_toBottomOf="@+id/stock"
