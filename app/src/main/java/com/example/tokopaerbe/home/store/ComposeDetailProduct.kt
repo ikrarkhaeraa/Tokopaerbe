@@ -110,7 +110,9 @@ class ComposeDetailProduct : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
+                MyComposeTheme {
                     DetailProductScreenViewModel ()
+                }
             }
         }
     }
@@ -148,7 +150,7 @@ class ComposeDetailProduct : Fragment() {
 
             price = model.detail.observeAsState().value?.data?.productPrice
             productName = model.detail.observeAsState().value?.data?.productName
-            sold = "Terjual ${model.detail.observeAsState().value?.data?.sale}"
+            sold = "${model.detail.observeAsState().value?.data?.sale}"
             rating = model.detail.observeAsState().value?.data?.productRating.toString()
             review = model.detail.observeAsState().value?.data?.totalReview.toString()
             descProduct = model.detail.observeAsState().value?.data?.description
@@ -509,7 +511,6 @@ class ComposeDetailProduct : Fragment() {
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .weight(1f),
-                        color = colorResource(id = R.color.lightonsurfacevariant)
                     )
                     Log.d("cekPriceTitle", itemPriceState.value.toString())
 
@@ -581,7 +582,6 @@ class ComposeDetailProduct : Fragment() {
                     fontFamily = FontFamily(Font(R.font.poppins)),
                     fontSize = 14.sp,
                     modifier = Modifier.padding(top = 8.dp, start = 16.dp),
-                    color = colorResource(id = R.color.lightonsurfacevariant)
                 )
 
                 Row(Modifier.padding(top = 10.dp)) {
@@ -590,13 +590,12 @@ class ComposeDetailProduct : Fragment() {
                         fontFamily = FontFamily(Font(R.font.poppins)),
                         fontSize = 14.sp,
                         modifier = Modifier.padding(start = 16.dp),
-                        color = colorResource(id = R.color.lightonsurfacevariant)
                     )
                     Box(Modifier.padding(start = 8.dp)) {
                         Image(
                             painter = painterResource(id = R.drawable.box),
                             contentDescription = null,
-                            modifier = Modifier.size(width = 70.dp, height = 21.dp)
+                            modifier = Modifier.size(width = 80.dp, height = 25.dp)
                         )
                         Row {
                             Image(
@@ -609,12 +608,10 @@ class ComposeDetailProduct : Fragment() {
                             Text(
                                 text = rating.toString(),
                                 modifier = Modifier.padding(start = 4.dp),
-                                color = colorResource(id = R.color.lightonsurfacevariant)
                             )
                             Text(
                                 text = "($review)",
                                 modifier = Modifier.padding(start = 6.dp),
-                                color = colorResource(id = R.color.lightonsurfacevariant)
                             )
                         }
                     }
@@ -631,7 +628,6 @@ class ComposeDetailProduct : Fragment() {
                     fontFamily = FontFamily(Font(R.font.medium)),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(start = 16.dp, top = 12.dp),
-                    color = colorResource(id = R.color.lightonsurfacevariant)
                 )
 
                 FlowRow(modifier = Modifier.padding(top = 4.dp, start = 8.dp)) {
@@ -663,7 +659,6 @@ class ComposeDetailProduct : Fragment() {
                                     modifier = Modifier.padding(
                                         horizontal = 12.dp, vertical = 6.dp
                                     ),
-                                    color = colorResource(id = R.color.lightonsurfacevariant)
                                 )
                             },
                             modifier = Modifier.padding(start = 8.dp)
@@ -682,7 +677,6 @@ class ComposeDetailProduct : Fragment() {
                     fontFamily = FontFamily(Font(R.font.medium)),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(start = 16.dp, top = 12.dp),
-                    color = colorResource(id = R.color.lightonsurfacevariant)
                 )
 
                 Text(
@@ -690,7 +684,6 @@ class ComposeDetailProduct : Fragment() {
                     fontFamily = FontFamily(Font(R.font.poppins)),
                     fontSize = 14.sp,
                     modifier = Modifier.padding(start = 16.dp, top = 8.dp),
-                    color = colorResource(id = R.color.lightonsurfacevariant)
                 )
 
                 Divider(
@@ -707,13 +700,11 @@ class ComposeDetailProduct : Fragment() {
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .weight(1f),
-                        color = colorResource(id = R.color.lightonsurfacevariant)
                     )
                     Text(
                         text = stringResource(id = R.string.lihatSemua),
                         fontFamily = FontFamily(Font(R.font.medium)),
                         fontSize = 12.sp,
-                        color = colorResource(id = R.color.primaryColor),
                         modifier = Modifier
                             .padding(end = 16.dp)
                             .clickable {
@@ -749,13 +740,11 @@ class ComposeDetailProduct : Fragment() {
                             text = satisfaction.toString(),
                             fontFamily = FontFamily(Font(R.font.bold)),
                             fontSize = 12.sp,
-                            color = colorResource(id = R.color.lightonsurfacevariant)
                         )
                         Text(
                             text = totalRating.toString(),
                             fontFamily = FontFamily(Font(R.font.poppins)),
                             fontSize = 12.sp,
-                            color = colorResource(id = R.color.lightonsurfacevariant)
                         )
                     }
                 }

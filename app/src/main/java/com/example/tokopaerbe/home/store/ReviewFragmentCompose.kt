@@ -52,6 +52,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.compose.rememberImagePainter
+import com.example.mycompose.ui.theme.MyComposeTheme
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentReviewBinding
 import com.example.tokopaerbe.retrofit.response.Review
@@ -74,7 +75,9 @@ class ReviewFragmentCompose : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                ReviewFragmentScreenViewModel()
+                MyComposeTheme {
+                    ReviewFragmentScreenViewModel()
+                }
             }
         }
     }
@@ -166,7 +169,6 @@ class ReviewFragmentCompose : Fragment() {
                             Text(text = listReview!![index].userReview,
                                 fontFamily = FontFamily(Font(R.font.poppins)),
                                 fontSize = 12.sp,
-                                color = colorResource(id = R.color.lightonsurfacevariant)
                             )
 
                             Divider(

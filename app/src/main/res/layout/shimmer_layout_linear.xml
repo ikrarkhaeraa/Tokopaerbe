@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     app:cardBackgroundColor="?android:attr/windowBackground"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,7 +23,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.499" />
 
         <TextView
             android:id="@+id/textView7"
@@ -34,21 +39,23 @@
 
         <TextView
             android:id="@+id/textView8"
-            android:layout_width="268dp"
+            android:layout_width="0dp"
             android:layout_height="16dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_marginTop="8dp"
             android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="@+id/textView6"
             app:layout_constraintStart_toEndOf="@+id/textView7"
             app:layout_constraintTop_toTopOf="@+id/textView6" />
 
         <TextView
             android:id="@+id/textView9"
-            android:layout_width="268dp"
+            android:layout_width="0dp"
             android:layout_height="16dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginHorizontal="8dp"
             android:layout_marginTop="4dp"
             android:background="@color/grey"
+            app:layout_constraintEnd_toEndOf="@+id/textView6"
             app:layout_constraintStart_toEndOf="@+id/textView7"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
