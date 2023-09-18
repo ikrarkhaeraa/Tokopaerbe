@@ -40,6 +40,10 @@ class MetodePembayaranAdapter (
             binding.apply {
                 Picasso.get().load(data.image).into(itemImage)
                 namaPlatform.text = data.label
+                if (!data.status) {
+                    cardView.alpha = 0.4f
+                    cardView.isEnabled = false
+                }
             }
         }
     }

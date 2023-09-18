@@ -31,5 +31,5 @@ data class PaymentMethod (
     val image : String,
 
     @field:SerializedName("status")
-    val status : Boolean
+    var status : Boolean
 )
