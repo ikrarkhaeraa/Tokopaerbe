@@ -42,6 +42,7 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
     private val model: ViewModel by viewModels { factory }
     private var clickedLabel: String? = null
     private var clickedImage: String? = null
+    private lateinit var jsonModel: PaymentResponse
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,11 +95,11 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
                     Toast.LENGTH_SHORT,
                 ).show()
 
-                if(stringJson.isNotEmpty()){
-                    val jsonModel = gson.fromJson(stringJson, PaymentResponse::class.java)
+                if (stringJson.isNotEmpty()) {
+                    jsonModel = gson.fromJson(stringJson, PaymentResponse::class.java)
                     Log.d("cekPayment", jsonModel.toString())
                     adapter.submitList(jsonModel.data)
-                }else{
+                } else {
                     // probably your remote param not exists
                 }
 
@@ -112,24 +113,13 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
         }
 
         remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
-            override fun onUpdate(configUpdate : ConfigUpdate) {
+            override fun onUpdate(configUpdate: ConfigUpdate) {
                 Log.d("cekUpdateKey", "Updated keys: " + configUpdate.updatedKeys)
-                Toast.makeText(
-                    requireContext(),
-                    "update succeeded",
-                    Toast.LENGTH_SHORT,
-                ).show()
-
-                if (configUpdate.updatedKeys.contains("Payment")) {
-                    remoteConfig.activate().addOnCompleteListener {
-                        val jsonModel = gson.fromJson(stringJson, PaymentResponse::class.java)
-                        Log.d("cekPayment", jsonModel.toString())
-                        adapter.submitList(jsonModel.data)
-                    }
-                }
+                jsonModel = gson.fromJson(stringJson, PaymentResponse::class.java)
+                adapter.submitList(jsonModel.data)
             }
 
-            override fun onError(error : FirebaseRemoteConfigException) {
+            override fun onError(error: FirebaseRemoteConfigException) {
                 Log.w("cekUpdateKey", "Config update error with code: " + error.code, error)
             }
         })

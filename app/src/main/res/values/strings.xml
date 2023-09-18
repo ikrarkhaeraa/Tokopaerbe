@@ -58,10 +58,10 @@
 
 <!--Filter-->
 <string name="urutkan">Sort</string>
-<string name="ulasan">Review</string>
+<string name="ulasan">Rating</string>
 <string name="penjualan">Sale</string>
-<string name="hargaTerendah">Minimum Price</string>
-<string name="hargaTertinggi">Maximum Price</string>
+<string name="hargaTerendah">Lowest Price</string>
+<string name="hargaTertinggi">Highest Price</string>
 <string name="kategori">Category</string>
 <string name="apple">Apple</string>
 <string name="asus">Asus</string>
