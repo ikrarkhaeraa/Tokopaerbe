@@ -2,6 +2,8 @@ package com.example.tokopaerbe
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -15,6 +17,8 @@ import com.example.tokopaerbe.home.transaction.TransactionAdapter
 import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -42,6 +46,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
+        Firebase.messaging.subscribeToTopic("promo")
+            .addOnCompleteListener { task ->
+                var msg = "Subscribe Success"
+                if (!task.isSuccessful) {
+                    msg = "Subscribe Failed"
+                }
+                Log.d("cekSubs", msg)
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
+
         checkUserStatus()
         cekTheme()
     }
@@ -54,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             val userName = model.getUserName().first()
 
             if (userFirstInstallState) {
-                model.userInstall()
+//                model.userInstall()
                 navController.navigate(R.id.action_loginFragment_to_onBoardingFragment)
             }
             else if (!userLoginState && !userFirstInstallState) {

@@ -45,6 +45,10 @@ class HomeFragment : Fragment() {
 
         binding.switch1.isChecked = AppCompatDelegate.getApplicationLocales().get(0)?.language == "in"
 
+        binding.testCrash.setOnClickListener {
+            throw RuntimeException("Test Crash") // Force a crash
+        }
+
         language()
         theme()
         logout()

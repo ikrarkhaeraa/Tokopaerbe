@@ -72,11 +72,13 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
         itemTransaction = ArrayList()
         model.transaction.observe(viewLifecycleOwner) {
             if (it.code == 200) {
+                showLoading(true)
                 binding.imageView5.visibility = GONE
                 binding.textView5.visibility = GONE
                 binding.descempty.visibility = GONE
                 binding.buttonRefresh.visibility = GONE
 
+                showLoading(false)
                 binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
                 val adapter = TransactionAdapter(this)
                 binding.recyclerView.adapter = adapter
@@ -119,6 +121,14 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
                     (requireActivity() as MainActivity).goToStatus(item.itemTransaction[i])
                 }
             }
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
         }
     }
 

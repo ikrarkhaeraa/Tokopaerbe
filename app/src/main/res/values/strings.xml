@@ -1,162 +1,172 @@
 <resources>
-<string name="app_name">Tokopaerbe</string>
-<!-- TODO: Remove or change this placeholder text -->
-<string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Tokopaerbe</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
-<!--    Onboarding-->
-<string name="gabungSekarang">Join Now</string>
-<string name="lewati">Skip</string>
-<string name="selanjutnya">Next</string>
+    <!--    Onboarding-->
+    <string name="gabungSekarang">Join Now</string>
+    <string name="lewati">Skip</string>
+    <string name="selanjutnya">Next</string>
 
-<!-- Login and Register-->
-<string name="Masuk">Login</string>
-<string name="Email">Email</string>
-<string name="contohEmail">Example: test@gmail.com</string>
-<string name="Password">Password</string>
-<string name="contohPassword">Minimum 8 character</string>
-<string name="atauDaftarDengan">or register with</string>
-<string name="atauMasukDengan">or login with</string>
-<string name="Daftar">Register</string>
-<string name="registerInvalid">Register Invalid</string>
-<string name="profileInvalid">Profile Invalid</string>
-<string name="AUTHinvalid">AUTH Invalid</string>
-<string name="loginInvalid">Login Invalid</string>
-<string name="EmailTidakValid">Email is not valid</string>
-<string name="PasswordTidakValid">Password is not valid</string>
-<string name="persetujuan">By entering here, you agree to the Terms &amp; Condition and Privacy Policy at TokoPhincon.</string>
-<string name="persetujuanDaftar">By register here, you agree to the Terms &amp; Condition and Privacy Policy at TokoPhincon.</string>
-<string name="syaratdanketentuan">Terms &amp; Condition</string>
-<string name="kebijakanprivasi">Privacy Policy</string>
+    <!-- Login and Register-->
+    <string name="Masuk">Login</string>
+    <string name="Email">Email</string>
+    <string name="contohEmail">Example: test@gmail.com</string>
+    <string name="Password">Password</string>
+    <string name="contohPassword">Minimum 8 character</string>
+    <string name="atauDaftarDengan">or register with</string>
+    <string name="atauMasukDengan">or login with</string>
+    <string name="Daftar">Register</string>
+    <string name="registerInvalid">Register Invalid</string>
+    <string name="profileInvalid">Profile Invalid</string>
+    <string name="AUTHinvalid">AUTH Invalid</string>
+    <string name="loginInvalid">Login Invalid</string>
+    <string name="EmailTidakValid">Email is not valid</string>
+    <string name="PasswordTidakValid">Password is not valid</string>
+    <string name="persetujuan">By entering here, you agree to the Terms &amp; Condition and Privacy Policy at TokoPhincon.</string>
+    <string name="persetujuanDaftar">By register here, you agree to the Terms &amp; Condition and Privacy Policy at TokoPhincon.</string>
+    <string name="syaratdanketentuan">Terms &amp; Condition</string>
+    <string name="kebijakanprivasi">Privacy Policy</string>
 
-<!-- Profile-->
-<string name="Profile">Profile</string>
-<string name="Name">Name</string>
-<string name="Selesai">Finish</string>
-<string name="pilihGambar">Choose a Picture</string>
-<string name="Kamera">Camera</string>
-<string name="Galeri">Galery</string>
+    <!-- Profile-->
+    <string name="Profile">Profile</string>
+    <string name="Name">Name</string>
+    <string name="Selesai">Finish</string>
+    <string name="pilihGambar">Choose a Picture</string>
+    <string name="Kamera">Camera</string>
+    <string name="Galeri">Galery</string>
 
-<!-- Home-->
-<string name="johnDoe">John Doe</string>
-<string name="en">EN</string>
-<string name="id">ID</string>
-<string name="light">Light</string>
-<string name="dark">Dark</string>
-<string name="logout">Logout</string>
-<string name="home">Home</string>
-<string name="store">Store</string>
-<string name="wishlist">Wishlist</string>
-<string name="transaction">Transaction</string>
+    <!-- Home-->
+    <string name="johnDoe">John Doe</string>
+    <string name="en">EN</string>
+    <string name="id">ID</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="logout">Logout</string>
+    <string name="home">Home</string>
+    <string name="store">Store</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="transaction">Transaction</string>
 
-<!--Store-->
-<string name="Search">Search</string>
-<string name="Filter">Filter</string>
-<string name="Title">Nama Barang</string>
-<string name="Price">Harga Barang</string>
-<string name="Store">Toko</string>
-<string name="Rating">5.0 | Terjual 10</string>
+    <!--Store-->
+    <string name="Search">Search</string>
+    <string name="Filter">Filter</string>
+    <string name="Title">Nama Barang</string>
+    <string name="Price">Harga Barang</string>
+    <string name="Store">Toko</string>
+    <string name="Rating">5.0 | Terjual 10</string>
 
-<!--Filter-->
-<string name="urutkan">Sort</string>
-<string name="ulasan">Rating</string>
-<string name="penjualan">Sale</string>
-<string name="hargaTerendah">Lowest Price</string>
-<string name="hargaTertinggi">Highest Price</string>
-<string name="kategori">Category</string>
-<string name="apple">Apple</string>
-<string name="asus">Asus</string>
-<string name="dell">Dell</string>
-<string name="lenovo">Lenovo</string>
-<string name="harga">Price</string>
-<string name="tampilkanProduk">Show Product</string>
-<string name="terendah">Minimum</string>
-<string name="tertinggi">Maximum</string>
+    <!--Filter-->
+    <string name="urutkan">Sort</string>
+    <string name="ulasan">Rating</string>
+    <string name="penjualan">Sale</string>
+    <string name="hargaTerendah">Lowest Price</string>
+    <string name="hargaTertinggi">Highest Price</string>
+    <string name="kategori">Category</string>
+    <string name="apple">Apple</string>
+    <string name="asus">Asus</string>
+    <string name="dell">Dell</string>
+    <string name="lenovo">Lenovo</string>
+    <string name="harga">Price</string>
+    <string name="tampilkanProduk">Show Product</string>
+    <string name="terendah">Minimum</string>
+    <string name="tertinggi">Maximum</string>
 
-<!--Error-->
-<string name="errorTitle">Empty</string>
-<string name="errorTitleConnection">Connection</string>
-<string name="errorTitle500">500</string>
-<string name="errorDesc">Your requested data is unavailable</string>
-<string name="errorDescConnection">Your connection is unavailable</string>
-<string name="errorDesc500">Internal Server Error</string>
-<string name="resetButtonError">Reset</string>
-<string name="refreshButtonError">Refresh</string>
+    <!--Error-->
+    <string name="errorTitle">Empty</string>
+    <string name="errorTitleConnection">Connection</string>
+    <string name="errorTitle500">500</string>
+    <string name="errorDesc">Your requested data is unavailable</string>
+    <string name="errorDescConnection">Your connection is unavailable</string>
+    <string name="errorDesc500">Internal Server Error</string>
+    <string name="resetButtonError">Reset</string>
+    <string name="refreshButtonError">Refresh</string>
 
-<!--    Detail Product-->
-<string name="detailProduk">Product Detail</string>
-<string name="price">Rp23.499.000</string>
-<string name="spec">Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS</string>
-<string name="sold">Terjual 10</string>
-<string name="productRating">4.5</string>
-<string name="totalRating">(2)</string>
-<string name="pilihVarian">Choose Variant</string>
-<string name="labelVarian">Variant</string>
-<string name="deskripsiProductTitle">Product Description</string>
-<string name="descProduct">This is the desc</string>
-<string name="ulasanPembeli">Buyer Reviews</string>
-<string name="lihatSemua">See all</string>
-<string name="ratingKecildibawah">/5.0</string>
-<string name="totalSatisfaction">100% buyers are satisfied</string>
-<string name="ratingTitle">2 rating 2 reviews</string>
-<string name="beliLangsung">Buy Now</string>
-<string name="keranjang">+ Cart</string>
+    <!--    Detail Product-->
+    <string name="detailProduk">Product Detail</string>
+    <string name="price">Rp23.499.000</string>
+    <string name="spec">Lenovo Legion 7 16 I7 11800 16GB 1TB SSD RTX3070 8GB Windows 11 QHD IPS</string>
+    <string name="sold">Terjual 10</string>
+    <string name="productRating">4.5</string>
+    <string name="totalRating">(2)</string>
+    <string name="pilihVarian">Choose Variant</string>
+    <string name="labelVarian">Variant</string>
+    <string name="deskripsiProductTitle">Product Description</string>
+    <string name="descProduct">This is the desc</string>
+    <string name="ulasanPembeli">Buyer Reviews</string>
+    <string name="lihatSemua">See all</string>
+    <string name="ratingKecildibawah">/5.0</string>
+    <string name="totalSatisfaction">100% buyers are satisfied</string>
+    <string name="ratingTitle">2 rating 2 reviews</string>
+    <string name="beliLangsung">Buy Now</string>
+    <string name="keranjang">+ Cart</string>
 
-<!--    Review-->
-<string name="reviewerName">John Doe</string>
-<string name="review">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
-
-
-<!--    Cart-->
-<string name="keranjangTitle">Cart</string>
-<string name="pilihSemua">Choose all</string>
-<string name="hapus">Delete</string>
-<string name="totalBayar">Total Payment</string>
-<string name="priceTotal">Rp0</string>
-<string name="Beli">Buy</string>
-<string name="variant">16GB, 1TB SSD</string>
-<string name="stock">Remaining 5</string>
-<string name="quantity">1</string>
+    <!--    Review-->
+    <string name="reviewerName">John Doe</string>
+    <string name="review">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
 
 
-<!-- Wishlist-->
-<string name="totalBarang">3 Product</string>
+    <!--    Cart-->
+    <string name="keranjangTitle">Cart</string>
+    <string name="pilihSemua">Choose all</string>
+    <string name="hapus">Delete</string>
+    <string name="totalBayar">Total Payment</string>
+    <string name="priceTotal">Rp0</string>
+    <string name="Beli">Buy</string>
+    <string name="variant">16GB, 1TB SSD</string>
+    <string name="stock">Remaining 5</string>
+    <string name="quantity">1</string>
 
 
-<!-- Checkout-->
-<string name="Checkout">Checkout</string>
-<string name="barangYangDibeli">Items purchased</string>
-<string name="pembayaran">Payment</string>
-<string name="pilihPembayaran">Choose Payment</string>
-<string name="bayar">Pay</string>
-
-<!-- Pilih Pembayaran-->
-<string name="transferVA">Virtual Account Transfer </string>
-<string name="transferBank"> Bank Transfer</string>
-<string name="pembayaranInstan">Instant Payment</string>
-<string name="metodeBayar">Payment Method</string>
+    <!-- Wishlist-->
+    <string name="totalBarang">3 Product</string>
 
 
-<!-- Status-->
-<string name="status">Status</string>
-<string name="pembayaranBerhasil">Payment Success</string>
-<string name="beriUlasan">Give Review</string>
-<string name="detailTransaksi">Detail Transaction</string>
-<string name="idTransaksi">Transaction ID</string>
-<string name="tanggal">Date</string>
-<string name="waktu">Time</string>
-<string name="metodePembayaran">Payment Method</string>
-<string name="totalPembayaran">Total Payment</string>
-<string name="idTransaksiValue">abcd-efgh-ijkl-mnop</string>
-<string name="statusValue">Berhasil</string>
-<string name="tanggalValue">3 Jun 2023</string>
-<string name="waktuValue">22:00</string>
-<string name="metodePembayaranValue">BCA Virtual Account</string>
-<string name="totalPembayaranValue">Rp23.499.000</string>
+    <!-- Checkout-->
+    <string name="Checkout">Checkout</string>
+    <string name="barangYangDibeli">Items purchased</string>
+    <string name="pembayaran">Payment</string>
+    <string name="pilihPembayaran">Choose Payment</string>
+    <string name="bayar">Pay</string>
+
+    <!-- Pilih Pembayaran-->
+    <string name="transferVA">Virtual Account Transfer </string>
+    <string name="transferBank"> Bank Transfer</string>
+    <string name="pembayaranInstan">Instant Payment</string>
+    <string name="metodeBayar">Payment Method</string>
 
 
-<!--Transaksi-->
-<string name="belanja">Shopping</string>
-<string name="selesai">Finish</string>
-<string name="totalBelanja">Total Shopping</string>
-<string name="ulas">Review</string>
+    <!-- Status-->
+    <string name="status">Status</string>
+    <string name="pembayaranBerhasil">Payment Success</string>
+    <string name="beriUlasan">Give Review</string>
+    <string name="detailTransaksi">Detail Transaction</string>
+    <string name="idTransaksi">Transaction ID</string>
+    <string name="tanggal">Date</string>
+    <string name="waktu">Time</string>
+    <string name="metodePembayaran">Payment Method</string>
+    <string name="totalPembayaran">Total Payment</string>
+    <string name="idTransaksiValue">abcd-efgh-ijkl-mnop</string>
+    <string name="statusValue">Berhasil</string>
+    <string name="tanggalValue">3 Jun 2023</string>
+    <string name="waktuValue">22:00</string>
+    <string name="metodePembayaranValue">BCA Virtual Account</string>
+    <string name="totalPembayaranValue">Rp23.499.000</string>
+
+
+    <!--Transaksi-->
+    <string name="belanja">Shopping</string>
+    <string name="selesai">Finish</string>
+    <string name="totalBelanja">Total Shopping</string>
+    <string name="ulas">Review</string>
+
+    <!--Notifikasi-->
+    <string name="notifTitle">Notifications</string>
+    <string name="info">Info</string>
+    <string name="transaksiBerhasil">Transaction Success</string>
+    <string name="notifBody">Notif Body</string>
+    <string name="notifDate">12 Jun 2023</string>
+    <string name="notifTime">11:45</string>
+    <string name="default_notification_channel_id">fcm_default_channel</string>
+
 </resources>

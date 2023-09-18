@@ -8,11 +8,11 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -21,11 +21,15 @@ import com.example.tokopaerbe.databinding.FragmentLoginBinding
 import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+
 
 class LoginFragment : Fragment() {
 
@@ -43,6 +47,7 @@ class LoginFragment : Fragment() {
     private var API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     private var firebaseToken = ""
     private val delayMillis = 5000L
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +60,9 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
 
         val text = getString(R.string.persetujuan)
         val spannableStringBuilder = SpannableStringBuilder(text)
@@ -153,6 +161,7 @@ class LoginFragment : Fragment() {
         binding.apply {
 
             buttonMasuk.setOnClickListener {
+
                 showLoading(true)
                 model.postDataLogin(API_KEY, email, password, firebaseToken)
 

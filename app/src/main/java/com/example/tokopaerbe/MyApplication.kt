@@ -18,6 +18,7 @@ import com.example.tokopaerbe.room.CartDao
 import com.example.tokopaerbe.room.WishlistDao
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.InternalCoroutinesApi
 import okhttp3.OkHttpClient
@@ -40,6 +41,8 @@ class MyApplication : Application() {
     @InternalCoroutinesApi
     override fun onCreate() {
         super.onCreate()
+
+        FirebaseApp.initializeApp(this)
 
         val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 

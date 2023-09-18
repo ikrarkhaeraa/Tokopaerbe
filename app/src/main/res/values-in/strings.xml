@@ -160,4 +160,14 @@
     <string name="selesai">Selesai</string>
     <string name="totalBelanja">Total Belanja</string>
     <string name="ulas">Ulas</string>
+
+    <!--Notifikasi-->
+    <string name="notifTitle">Notifikasi</string>
+    <string name="info">Info</string>
+    <string name="transaksiBerhasil">Transaksi Berhasil</string>
+    <string name="notifBody">Notif Body</string>
+    <string name="notifDate">12 Jun 2023</string>
+    <string name="notifTime">11:45</string>
+    <string name="default_notification_channel_id">fcm_default_channel</string>
+
 </resources>

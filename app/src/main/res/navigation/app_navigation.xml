@@ -30,6 +30,10 @@
         app:destination="@id/cartFragment" />
 
     <action
+        android:id="@+id/action_main_to_notificationsFragment"
+        app:destination="@id/notificationsFragment" />
+
+    <action
         android:id="@+id/store_to_detail"
         app:destination="@id/detailProduct" />
 
@@ -169,6 +173,7 @@
 
         <action
             android:id="@+id/action_statusFragment_to_main_navigation"
+            app:popUpTo="@navigation/app_navigation"
             app:destination="@id/main_navigation" />
         <argument
             android:name="item"
@@ -188,6 +193,11 @@
         android:label="fragment_transaction"
         tools:layout="@layout/fragment_transaction">
     </fragment>
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.tokopaerbe.home.notification.NotificationsFragment"
+        android:label="fragment_notifications"
+        tools:layout="@layout/fragment_notifications" />
 
 
 </navigation>

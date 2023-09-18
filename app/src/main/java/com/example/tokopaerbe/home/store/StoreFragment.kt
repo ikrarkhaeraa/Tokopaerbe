@@ -99,7 +99,6 @@ class StoreFragment : Fragment() {
         binding.errorDesc.visibility = GONE
         binding.resetButton.visibility = GONE
 
-
         // Set up the refresh listener
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.chipgroup.removeAllViews()

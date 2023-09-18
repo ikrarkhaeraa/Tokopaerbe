@@ -81,8 +81,6 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
         val configSettings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600
         }
-        val gson = Gson()
-        val stringJson = remoteConfig.getString("Payment")
         remoteConfig.setConfigSettingsAsync(configSettings)
 
         remoteConfig.fetchAndActivate().addOnCompleteListener(requireActivity()) { task ->
@@ -94,6 +92,9 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
                     "Fetch and activate succeeded",
                     Toast.LENGTH_SHORT,
                 ).show()
+
+                val gson = Gson()
+                val stringJson = remoteConfig.getString("Payment")
 
                 if (stringJson.isNotEmpty()) {
                     jsonModel = gson.fromJson(stringJson, PaymentResponse::class.java)
@@ -114,9 +115,17 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
 
         remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
             override fun onUpdate(configUpdate: ConfigUpdate) {
+
                 Log.d("cekUpdateKey", "Updated keys: " + configUpdate.updatedKeys)
-                jsonModel = gson.fromJson(stringJson, PaymentResponse::class.java)
-                adapter.submitList(jsonModel.data)
+                if (configUpdate.updatedKeys.contains("Payment")) {
+                    remoteConfig.activate().addOnCompleteListener {
+                        Log.d("cekRealtime", "masuk")
+                        val gson = Gson()
+                        val stringJson = remoteConfig.getString("Payment")
+                        jsonModel = gson.fromJson(stringJson, PaymentResponse::class.java)
+                        adapter.submitList(jsonModel.data)
+                    }
+                }
             }
 
             override fun onError(error: FirebaseRemoteConfigException) {

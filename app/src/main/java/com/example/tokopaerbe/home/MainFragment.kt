@@ -60,7 +60,7 @@ class MainFragment : Fragment() {
         binding.topAppBar.setOnMenuItemClickListener {
             when(it.itemId) {
                 R.id.menu_item_1 -> {
-                    // ke notif
+                    findNavController().navigate(R.id.action_main_to_notificationsFragment)
                 } R.id.menu_item_2 -> {
                     findNavController().navigate(R.id.action_main_to_cartFragment)
                 } R.id.menu_item_3 -> {

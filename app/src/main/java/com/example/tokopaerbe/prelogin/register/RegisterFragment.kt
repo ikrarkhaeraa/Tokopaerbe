@@ -1,5 +1,8 @@
 package com.example.tokopaerbe.prelogin.register
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.Spannable
@@ -13,6 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -21,6 +26,11 @@ import com.example.tokopaerbe.databinding.FragmentRegisterBinding
 import com.example.tokopaerbe.retrofit.user.UserRegister
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -43,6 +53,27 @@ class RegisterFragment : Fragment() {
     private var API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     private var firebaseToken = ""
     private val delayMillis = 5000L
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(requireContext(), "Notifications permission granted", Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "FCM can't post notifications without POST_NOTIFICATIONS permission",
+                Toast.LENGTH_LONG,
+            ).show()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        firebaseAnalytics = Firebase.analytics
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +87,24 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        Firebase.messaging.token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("cekTask", "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+                firebaseToken = token
+
+                // Log and toast
+                Log.d("cekFCMToken", firebaseToken)
+                Toast.makeText(requireContext(), token, Toast.LENGTH_SHORT).show()
+            },
+        )
+
 
         val text = getString(R.string.persetujuanDaftar)
         val spannableStringBuilder = SpannableStringBuilder(text)
@@ -128,6 +177,7 @@ class RegisterFragment : Fragment() {
             binding.textFieldEmail.error = null
             isEmailValid = true
         }
+
     }
 
     private fun validatePassword() {
@@ -158,6 +208,7 @@ class RegisterFragment : Fragment() {
             }
 
             buttonDaftar.setOnClickListener {
+
                 showLoading(true)
                 model.postDataRegister(API_KEY, email, password, firebaseToken)
 
