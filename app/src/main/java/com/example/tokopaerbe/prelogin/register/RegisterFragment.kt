@@ -29,6 +29,7 @@ import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.Dispatchers
@@ -208,6 +209,10 @@ class RegisterFragment : Fragment() {
             }
 
             buttonDaftar.setOnClickListener {
+
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
+                    param(FirebaseAnalytics.Param.METHOD, email)
+                }
 
                 showLoading(true)
                 model.postDataRegister(API_KEY, email, password, firebaseToken)

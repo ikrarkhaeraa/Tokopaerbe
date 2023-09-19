@@ -193,6 +193,8 @@
         android:label="fragment_transaction"
         tools:layout="@layout/fragment_transaction">
     </fragment>
+
+
     <fragment
         android:id="@+id/notificationsFragment"
         android:name="com.example.tokopaerbe.home.notification.NotificationsFragment"

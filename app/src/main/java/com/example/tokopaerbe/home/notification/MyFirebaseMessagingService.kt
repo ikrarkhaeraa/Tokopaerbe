@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavDeepLinkBuilder
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.retrofit.DataSource
@@ -30,9 +31,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var model: ViewModel
-
-//    @Inject
-//    lateinit var data:DataSource
 
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -72,14 +70,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private fun sendNotification(messageBody: MutableMap<String, String>) {
         val requestCode = 0
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            requestCode,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE,
-        )
+//        val intent = Intent(this, MainActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+//        val pendingIntent = PendingIntent.getActivity(
+//            this,
+//            requestCode,
+//            intent,
+//            PendingIntent.FLAG_IMMUTABLE,
+//        )
+        val pendingIntent = NavDeepLinkBuilder(this)
+            .setGraph(R.navigation.app_navigation)
+            .setDestination(R.id.notificationsFragment)
+            .createPendingIntent()
+
+
 
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)

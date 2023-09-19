@@ -13,10 +13,16 @@ import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.ItemProductBinding
 import com.example.tokopaerbe.retrofit.response.Product
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import java.text.NumberFormat
 import java.util.Locale
 
 class ProductAdapter (private val onProductClick: (Product) -> Unit) : PagingDataAdapter<Product, ProductAdapter.ListViewHolder>(DIFF_CALLBACK) {
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Product>() {
@@ -47,6 +53,12 @@ class ProductAdapter (private val onProductClick: (Product) -> Unit) : PagingDat
             holder.bind(productData)
             holder.itemView.setOnClickListener {
                 onProductClick(productData)
+
+                firebaseAnalytics = Firebase.analytics
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+                    param(FirebaseAnalytics.Param.ITEM_NAME, productData.productName)
+                }
+
             }
         }
     }

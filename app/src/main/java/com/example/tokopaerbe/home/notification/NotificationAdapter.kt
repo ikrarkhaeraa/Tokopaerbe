@@ -3,6 +3,9 @@ package com.example.tokopaerbe.home.notification
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -48,20 +51,12 @@ class NotificationAdapter(private val model: ViewModel) :
                 timedate.text = "${data.notifDate}, ${data.notifTime}"
 
                 if (!data.isChecked) {
-                    cardView.alpha = 0.4f
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.bgSelesai))
                 }
 
             }
         }
-        private fun formatPrice(price: Double): String {
-            val numberFormat = NumberFormat.getNumberInstance(
-                Locale(
-                    "id",
-                    "ID"
-                )
-            )
-            return numberFormat.format(price)
-        }
+
     }
 
     private class NotificationsEntityDiffCallback : DiffUtil.ItemCallback<NotificationsEntity>() {

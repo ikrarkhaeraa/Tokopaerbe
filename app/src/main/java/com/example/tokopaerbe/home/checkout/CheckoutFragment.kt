@@ -23,6 +23,10 @@ import com.example.tokopaerbe.retrofit.response.Item
 import com.example.tokopaerbe.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -43,6 +47,7 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
     private var totalPrice = 0.0
     private lateinit var listProductFulfillment: ArrayList<com.example.tokopaerbe.retrofit.Item>
     private val item: TransactionDataClass? = null
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +60,8 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        firebaseAnalytics = Firebase.analytics
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.cartToolbar
 
@@ -98,6 +105,10 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
             Glide.with(requireContext()).load(image).into(binding.addCardIcon)
             binding.metodePembayaran.text = label
 
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_PAYMENT_INFO) {
+                param(FirebaseAnalytics.Param.ITEMS, label!!)
+            }
+
             binding.buttonBayar.isEnabled = true
 
             listProductFulfillment = ArrayList()
@@ -125,6 +136,11 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
                         model.fulfillment.observe(viewLifecycleOwner){
                             if (it.code == 200) {
                                 findNavController().navigate(R.id.action_checkoutFragment_to_statusFragment, StatusFragmentArgs(item).toBundle(), navOptions = null)
+
+                                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.PURCHASE) {
+                                    param(FirebaseAnalytics.Param.CURRENCY, totalPrice)
+                                }
+
                             }
                         }
                     }

@@ -20,6 +20,10 @@ import com.example.tokopaerbe.home.checkout.ListCheckout
 import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -35,11 +39,14 @@ class CartFragment : Fragment() {
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
     private lateinit var adapter: CartAdapter
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        firebaseAnalytics = Firebase.analytics
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         adapter = CartAdapter(model)
@@ -54,6 +61,11 @@ class CartFragment : Fragment() {
         }
 
         model.getCartProduct().observe(viewLifecycleOwner) { cartList ->
+
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_CART) {
+                param(FirebaseAnalytics.Param.ITEMS, cartList.toString())
+            }
+
             if (cartList.isNullOrEmpty()) {
                 hideEmptyCartUI()
             } else {
@@ -101,6 +113,11 @@ class CartFragment : Fragment() {
                         CheckoutFragmentArgs(productCheckout).toBundle(),
                         navOptions = null
                     )
+
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT) {
+                        param(FirebaseAnalytics.Param.ITEMS, productCheckout.toString())
+                    }
+
                 }
 
             }

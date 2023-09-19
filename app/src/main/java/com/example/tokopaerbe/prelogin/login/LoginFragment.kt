@@ -23,6 +23,7 @@ import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -161,6 +162,10 @@ class LoginFragment : Fragment() {
         binding.apply {
 
             buttonMasuk.setOnClickListener {
+
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
+                    param(FirebaseAnalytics.Param.METHOD, email)
+                }
 
                 showLoading(true)
                 model.postDataLogin(API_KEY, email, password, firebaseToken)

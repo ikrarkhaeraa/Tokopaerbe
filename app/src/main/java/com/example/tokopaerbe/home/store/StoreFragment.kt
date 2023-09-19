@@ -36,6 +36,10 @@ import com.example.tokopaerbe.retrofit.user.UserFilter
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.chip.Chip
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -72,6 +76,7 @@ class StoreFragment : Fragment() {
 
     private val delayMillis = 1000L
     private val filterParams = MutableStateFlow(UserFilter(null, null, null, null, null))
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,6 +90,9 @@ class StoreFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Obtain the FirebaseAnalytics instance.
+        firebaseAnalytics = Firebase.analytics
 
         if (!model.rvStateStore) {
             binding.shimmer.visibility = GONE
@@ -101,27 +109,37 @@ class StoreFragment : Fragment() {
 
         // Set up the refresh listener
         binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = false
             binding.chipgroup.removeAllViews()
+            binding.shimmer.visibility = VISIBLE
             searchText = null
             selectedText1 = null
             selectedText2 = null
             textTerendah = null
             textTertinggi = null
+            binding.shimmer.visibility = GONE
             updateFilterAndRequestData()
-            val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-            resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
-                paggingModel.sendFilter(
-                    filterResetEmpty.search,
-                    filterResetEmpty.sort,
-                    filterResetEmpty.brand,
-                    filterResetEmpty.lowest,
-                    filterResetEmpty.highest
-                ).observe(viewLifecycleOwner) { reset ->
-                    Log.d("cekResetFilter", resetFilter.toString())
-                    linearProductAdapter.submitData(lifecycle, reset)
-                    binding.swipeRefreshLayout.isRefreshing = false
-                }
-            }
+//            binding.chipgroup.removeAllViews()
+//            searchText = null
+//            selectedText1 = null
+//            selectedText2 = null
+//            textTerendah = null
+//            textTertinggi = null
+//            updateFilterAndRequestData()
+//            val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+//            resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
+//                paggingModel.sendFilter(
+//                    filterResetEmpty.search,
+//                    filterResetEmpty.sort,
+//                    filterResetEmpty.brand,
+//                    filterResetEmpty.lowest,
+//                    filterResetEmpty.highest
+//                ).observe(viewLifecycleOwner) { reset ->
+//                    Log.d("cekResetFilter", resetFilter.toString())
+//                    linearProductAdapter.submitData(lifecycle, reset)
+//                    binding.swipeRefreshLayout.isRefreshing = false
+//                }
+//            }
         }
 
         GlobalScope.launch(Dispatchers.Main) {
@@ -146,6 +164,12 @@ class StoreFragment : Fragment() {
             Log.d("searchText", searchText!!)
             binding.searchTextField.setText(searchText)
             updateFilterAndRequestData()
+
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS) {
+                param(FirebaseAnalytics.Param.SEARCH_TERM, searchText!!)
+            }
+
+
         }
 
         binding.changeRV.setOnClickListener {
@@ -194,6 +218,9 @@ class StoreFragment : Fragment() {
 
                         200 -> {
                             gridProductAdapter.submitData(lifecycle, result)
+                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
+                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
+                            }
                         }
 
                         404 -> {
@@ -206,20 +233,20 @@ class StoreFragment : Fragment() {
                             binding.resetButton.visibility = VISIBLE
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
-//                                searchText = null
-//                                selectedText1 = null
-//                                selectedText2 = null
-//                                textTerendah = null
-//                                textTertinggi = null
+                                searchText = null
+                                selectedText1 = null
+                                selectedText2 = null
+                                textTerendah = null
+                                textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null
+                                        filterResetEmpty.search,
+                                        filterResetEmpty.sort,
+                                        filterResetEmpty.brand,
+                                        filterResetEmpty.lowest,
+                                        filterResetEmpty.highest
                                     ).observe(viewLifecycleOwner) { reset ->
                                         Log.d("cekResetFilter", resetFilter.toString())
                                         linearProductAdapter.submitData(lifecycle, reset)
@@ -247,20 +274,20 @@ class StoreFragment : Fragment() {
                             binding.resetButton.text = getString(R.string.refreshButtonError)
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
-//                                searchText = null
-//                                selectedText1 = null
-//                                selectedText2 = null
-//                                textTerendah = null
-//                                textTertinggi = null
+                                searchText = null
+                                selectedText1 = null
+                                selectedText2 = null
+                                textTerendah = null
+                                textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null
+                                        filterResetEmpty.search,
+                                        filterResetEmpty.sort,
+                                        filterResetEmpty.brand,
+                                        filterResetEmpty.lowest,
+                                        filterResetEmpty.highest
                                     ).observe(viewLifecycleOwner) { reset ->
                                         linearProductAdapter.submitData(lifecycle, reset)
 
@@ -287,25 +314,20 @@ class StoreFragment : Fragment() {
                             binding.resetButton.text = getString(R.string.refreshButtonError)
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
-//                                searchText = null
-//                                selectedText1 = null
-//                                selectedText2 = null
-//                                textTerendah = null
-//                                textTertinggi = null
+                                searchText = null
+                                selectedText1 = null
+                                selectedText2 = null
+                                textTerendah = null
+                                textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
-//                                        filterResetEmpty.search,
-//                                        filterResetEmpty.sort,
-//                                        filterResetEmpty.brand,
-//                                        filterResetEmpty.lowest,
-//                                        filterResetEmpty.highest
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null
+                                        filterResetEmpty.search,
+                                        filterResetEmpty.sort,
+                                        filterResetEmpty.brand,
+                                        filterResetEmpty.lowest,
+                                        filterResetEmpty.highest
                                     ).observe(viewLifecycleOwner) { reset ->
                                         linearProductAdapter.submitData(lifecycle, reset)
 
@@ -359,6 +381,9 @@ class StoreFragment : Fragment() {
                     when (it) {
                         200, 0 -> {
                             linearProductAdapter.submitData(lifecycle, result)
+                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
+                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
+                            }
                         }
 
                         404 -> {
@@ -371,25 +396,20 @@ class StoreFragment : Fragment() {
                             binding.resetButton.visibility = VISIBLE
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
-//                                searchText = null
-//                                selectedText1 = null
-//                                selectedText2 = null
-//                                textTerendah = null
-//                                textTertinggi = null
+                                searchText = null
+                                selectedText1 = null
+                                selectedText2 = null
+                                textTerendah = null
+                                textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
-//                                        filterResetEmpty.search,
-//                                        filterResetEmpty.sort,
-//                                        filterResetEmpty.brand,
-//                                        filterResetEmpty.lowest,
-//                                        filterResetEmpty.highest
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null
+                                        filterResetEmpty.search,
+                                        filterResetEmpty.sort,
+                                        filterResetEmpty.brand,
+                                        filterResetEmpty.lowest,
+                                        filterResetEmpty.highest
                                     ).observe(viewLifecycleOwner) { reset ->
                                         binding.chipgroup.removeAllViews()
                                         Log.d("cekResetFilter", resetFilter.toString())
@@ -418,20 +438,20 @@ class StoreFragment : Fragment() {
                             binding.resetButton.text = getString(R.string.refreshButtonError)
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
-//                                searchText = null
-//                                selectedText1 = null
-//                                selectedText2 = null
-//                                textTerendah = null
-//                                textTertinggi = null
+                                searchText = null
+                                selectedText1 = null
+                                selectedText2 = null
+                                textTerendah = null
+                                textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null
+                                        filterResetEmpty.search,
+                                        filterResetEmpty.sort,
+                                        filterResetEmpty.brand,
+                                        filterResetEmpty.lowest,
+                                        filterResetEmpty.highest
                                     ).observe(viewLifecycleOwner) { reset ->
                                         linearProductAdapter.submitData(lifecycle, reset)
 
@@ -458,25 +478,20 @@ class StoreFragment : Fragment() {
                             binding.resetButton.text = getString(R.string.refreshButtonError)
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
-//                                searchText = null
-//                                selectedText1 = null
-//                                selectedText2 = null
-//                                textTerendah = null
-//                                textTertinggi = null
+                                searchText = null
+                                selectedText1 = null
+                                selectedText2 = null
+                                textTerendah = null
+                                textTertinggi = null
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
                                     paggingModel.sendFilter(
-//                                        filterResetEmpty.search,
-//                                        filterResetEmpty.sort,
-//                                        filterResetEmpty.brand,
-//                                        filterResetEmpty.lowest,
-//                                        filterResetEmpty.highest
-                                        null,
-                                        null,
-                                        null,
-                                        null,
-                                        null
+                                        filterResetEmpty.search,
+                                        filterResetEmpty.sort,
+                                        filterResetEmpty.brand,
+                                        filterResetEmpty.lowest,
+                                        filterResetEmpty.highest
                                     ).observe(viewLifecycleOwner) { reset ->
                                         linearProductAdapter.submitData(lifecycle, reset)
 

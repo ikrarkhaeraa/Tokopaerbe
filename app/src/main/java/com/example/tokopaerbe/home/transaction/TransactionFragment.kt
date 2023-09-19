@@ -63,6 +63,8 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showLoading(false)
+
         lifecycleScope.launch {
             token = model.getUserToken().first()
             auth = "Bearer $token"

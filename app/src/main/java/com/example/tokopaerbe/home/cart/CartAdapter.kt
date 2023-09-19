@@ -11,6 +11,10 @@ import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.ItemCartBinding
 import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -18,6 +22,7 @@ class CartAdapter(private val model: ViewModel) :
     ListAdapter<CartEntity, CartAdapter.ListViewHolder>(CartEntityDiffCallback()) {
 
     private var totalToggleValue = 1
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
         val binding = ItemCartBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
@@ -50,6 +55,12 @@ class CartAdapter(private val model: ViewModel) :
         val deleteIcon = holder.binding.deleteIcon
         deleteIcon.setOnClickListener {
             model.deleteCartProduct(cartEntity.productId)
+
+            firebaseAnalytics = Firebase.analytics
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.REMOVE_FROM_CART) {
+                param(FirebaseAnalytics.Param.ITEMS, cartEntity.productName)
+            }
+
         }
 
         togglePlus.setOnClickListener {

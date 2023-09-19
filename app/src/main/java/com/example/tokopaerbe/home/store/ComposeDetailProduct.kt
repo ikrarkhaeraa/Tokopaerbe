@@ -82,6 +82,10 @@ import com.example.tokopaerbe.home.checkout.ListCheckout
 import com.example.tokopaerbe.retrofit.response.ProductVariant
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -103,6 +107,7 @@ class ComposeDetailProduct : Fragment() {
 
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -111,7 +116,7 @@ class ComposeDetailProduct : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MyComposeTheme {
-                    DetailProductScreenViewModel ()
+                    DetailProductScreenViewModel()
                 }
             }
         }
@@ -233,6 +238,13 @@ class ComposeDetailProduct : Fragment() {
         sale: Int? = 0,
     ) {
 
+        firebaseAnalytics = Firebase.analytics
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM) {
+            if (productName != null) {
+                param(FirebaseAnalytics.Param.ITEMS, productName)
+            }
+        }
+
         var priceState = remember { mutableStateOf(price) }
         var itemPriceState = remember { mutableStateOf(itemPrice) }
         var selectedVariantState = remember { mutableStateOf(selectedVariant) }
@@ -345,6 +357,10 @@ class ComposeDetailProduct : Fragment() {
                                     navOptions = null
                                 )
 
+                                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT) {
+                                    param(FirebaseAnalytics.Param.ITEMS, productCheckout.toString())
+                                }
+
 
                             }, modifier = Modifier
                                 .weight(1f)
@@ -355,6 +371,13 @@ class ComposeDetailProduct : Fragment() {
                         Button(
                             onClick = {
                                 lifecycleScope.launch {
+
+                                    firebaseAnalytics = Firebase.analytics
+                                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART) {
+                                        if (productName != null) {
+                                            param(FirebaseAnalytics.Param.ITEMS, productName)
+                                        }
+                                    }
 
                                     val productCart = model.getCartforDetail(productId)
                                     Log.d("cekProductCart", productCart?.productId.toString())
@@ -487,7 +510,8 @@ class ComposeDetailProduct : Fragment() {
                             horizontalArrangement = Arrangement.Center
                         ) {
                             repeat(it) { iteration ->
-                                val color = if (pagerState.currentPage == iteration) colorResource(id = R.color.primaryColor) else Color.LightGray
+                                val color =
+                                    if (pagerState.currentPage == iteration) colorResource(id = R.color.primaryColor) else Color.LightGray
                                 Box(
                                     modifier = Modifier
                                         .padding(2.dp)
@@ -537,6 +561,14 @@ class ComposeDetailProduct : Fragment() {
                             .clickable {
                                 //Handle clickable here
                                 lifecycleScope.launch {
+
+                                    firebaseAnalytics = Firebase.analytics
+                                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST) {
+                                        if (productName != null) {
+                                            param(FirebaseAnalytics.Param.ITEMS, productName)
+                                        }
+                                    }
+
                                     val productWishlist = model.getWishlistforDetail(productId)
                                     if (productWishlist.toString() == "null") {
 

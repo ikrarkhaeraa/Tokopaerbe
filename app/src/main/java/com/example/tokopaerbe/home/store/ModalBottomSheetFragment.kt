@@ -28,6 +28,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -51,6 +55,7 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by activityViewModels()
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
 
 
@@ -71,6 +76,7 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        firebaseAnalytics = Firebase.analytics
 
         binding.reset.visibility = GONE
 
@@ -132,6 +138,11 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
                 selectedText1 = ""
                 model.sort = selectedText1
             }
+
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+                param(FirebaseAnalytics.Param.ITEM_NAME, selectedText1)
+            }
+
         }
 
 
@@ -143,6 +154,9 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             } else {
                 selectedText2 = ""
                 model.brand = selectedText2
+            }
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+                param(FirebaseAnalytics.Param.ITEM_NAME, selectedText2)
             }
         }
 
