@@ -9,12 +9,31 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.retrofit.DataSource
+import com.example.tokopaerbe.viewmodel.ViewModel
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    @Inject
+    lateinit var model: ViewModel
+
+//    @Inject
+//    lateinit var data:DataSource
+
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
@@ -25,6 +44,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             Log.d(TAG, "Message Notification Body: $it")
             sendNotification(it)
         }
+
+        Log.d("cekNotif", remoteMessage.data["body"].toString())
+
+
+        model.addNotifications(
+            remoteMessage.data["type"].toString(),
+            remoteMessage.data["title"].toString(),
+            remoteMessage.data["body"].toString(),
+            remoteMessage.data["date"].toString(),
+            remoteMessage.data["time"].toString(),
+            remoteMessage.data["image"].toString(),
+            false
+        )
 
     }
 
@@ -78,5 +110,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     companion object {
         private const val TAG = "MyFirebaseMsgService"
     }
+
 
 }

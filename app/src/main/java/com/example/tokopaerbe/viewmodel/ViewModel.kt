@@ -23,12 +23,15 @@ import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.retrofit.user.UserRegister
 import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import com.example.tokopaerbe.room.CartEntity
+import com.example.tokopaerbe.room.NotificationsEntity
 import com.example.tokopaerbe.room.WishlistEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import javax.inject.Inject
 
-class ViewModel(private val data: DataSource) : ViewModel() {
+class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() {
 
     var profile: Flow<ProfileResponse> = data.profile
     var signIn: Flow<LoginResponse> = data.signIn
@@ -97,6 +100,10 @@ class ViewModel(private val data: DataSource) : ViewModel() {
         return data.isChecked(id, isChecked)
     }
 
+    fun notifIsChecked(id: Int, isChecked: Boolean) {
+        return data.notifIsChecked(id, isChecked)
+    }
+
     fun addCartProduct(
         id: String,
         productName: String,
@@ -155,6 +162,32 @@ class ViewModel(private val data: DataSource) : ViewModel() {
 
     fun getWishList(): LiveData<List<WishlistEntity>?> {
         return data.getWishList()
+    }
+
+    fun addNotifications(
+        notifType: String,
+        notifTitle: String,
+        notifBody: String,
+        notifDate: String,
+        notifTime: String,
+        notifImage: String,
+        isChecked: Boolean
+    ) {
+        viewModelScope.launch {
+            data.addNotifications(
+                notifType,
+                notifTitle,
+                notifBody,
+                notifDate,
+                notifTime,
+                notifImage,
+                isChecked
+            )
+        }
+    }
+
+    fun getNotification(): LiveData<List<NotificationsEntity>?> {
+        return data.getNotification()
     }
 
     fun deleteCartProduct(id: String) {

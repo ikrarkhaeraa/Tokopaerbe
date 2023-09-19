@@ -21,6 +21,8 @@ import com.example.tokopaerbe.retrofit.user.UserRegister
 import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import com.example.tokopaerbe.room.CartDao
 import com.example.tokopaerbe.room.CartEntity
+import com.example.tokopaerbe.room.NotificationDao
+import com.example.tokopaerbe.room.NotificationsEntity
 import com.example.tokopaerbe.room.WishlistDao
 import com.example.tokopaerbe.room.WishlistEntity
 import kotlinx.coroutines.flow.Flow
@@ -30,15 +32,21 @@ import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class DataSource(private val pref: UserPreferences, private val cartDao: CartDao, private val wishDao: WishlistDao) {
+class DataSource @Inject constructor(
+    private val pref: UserPreferences,
+    private val cartDao: CartDao,
+    private val wishDao: WishlistDao,
+    private val notifDao: NotificationDao
+) {
 
     companion object {
         @Volatile
         private var instance: DataSource? = null
-        fun getInstance(preferences: UserPreferences, cartDao: CartDao, wishDao: WishlistDao): DataSource =
+        fun getInstance(preferences: UserPreferences, cartDao: CartDao, wishDao: WishlistDao, notifDao: NotificationDao): DataSource =
             instance ?: synchronized(this) {
-                instance ?: DataSource(preferences, cartDao, wishDao)
+                instance ?: DataSource(preferences, cartDao, wishDao, notifDao)
             }.also { instance = it }
     }
 
@@ -385,6 +393,10 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
         return cartDao.isChecked(id, isChecked)
     }
 
+    fun notifIsChecked(id: Int, isChecked: Boolean) {
+        return notifDao.notifIsChecked(id, isChecked)
+    }
+
     fun quantity(id: String, quantity: Int) {
         return cartDao.quantity(id, quantity)
     }
@@ -417,6 +429,20 @@ class DataSource(private val pref: UserPreferences, private val cartDao: CartDao
 
     fun getIsFavorite(id: String): LiveData<List<WishlistEntity>?> {
         return wishDao.getIsFavorite(id)
+    }
+
+    suspend fun addNotifications(notifType: String,
+                         notifTitle: String,
+                         notifBody: String,
+                         notifDate: String,
+                         notifTime: String,
+                         notifImage: String,
+                         isChecked: Boolean) {
+        return notifDao.addNotifications(notifType, notifTitle, notifBody, notifDate, notifTime, notifImage, isChecked)
+    }
+
+    fun getNotification() : LiveData<List<NotificationsEntity>?> {
+        return notifDao.getNotifications()
     }
 
 }

@@ -37,7 +37,6 @@ class MyApplication : Application() {
     @Inject
     lateinit var chucker: Context
 
-
     @InternalCoroutinesApi
     override fun onCreate() {
         super.onCreate()

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.tokopaerbe.MyApplication
 import com.example.tokopaerbe.pagging.PaggingRepository
 import com.example.tokopaerbe.room.CartDatabase
+import com.example.tokopaerbe.viewmodel.ViewModel
 
 val Context.database: DataStore<Preferences> by preferencesDataStore("token")
 
@@ -17,7 +18,8 @@ object Injection {
         val database = CartDatabase.getInstance(context)
         val dao = database.productDao()
         val wishDao = database.wishlistDao()
-        return DataSource.getInstance(preferences, dao, wishDao)
+        val notifDao = database.notificationDao()
+        return DataSource.getInstance(preferences, dao, wishDao, notifDao)
     }
 
     fun providePaging(context: Context): PaggingRepository {

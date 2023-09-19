@@ -91,6 +91,17 @@ class MainFragment : Fragment() {
             }
         }
 
+        val badgeDrawableNotif = BadgeDrawable.create(requireContext())
+        BadgeUtils.attachBadgeDrawable(badgeDrawableNotif, binding.topAppBar, R.id.menu_item_1)
+        model.getNotification().observe(viewLifecycleOwner) {
+            if (it.isNullOrEmpty()) {
+                badgeDrawableNotif.isVisible = false
+            } else {
+                badgeDrawableNotif.isVisible = true
+                badgeDrawableNotif.number = it.size
+            }
+        }
+
 
         model.getWishList().observe(viewLifecycleOwner) {
             val badgeDrawableWishList = binding.navView.getOrCreateBadge(R.id.navigation_wishlist)

@@ -44,7 +44,7 @@
             tools:text="@string/info" />
 
         <TextView
-            android:id="@+id/item_price"
+            android:id="@+id/transactionSuccess"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -56,20 +56,21 @@
             tools:text="@string/transaksiBerhasil" />
 
         <TextView
+            android:id="@+id/body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginStart="8dp"
             android:text="@string/notifBody"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
-            card_view:layout_constraintTop_toBottomOf="@+id/item_price" />
+            card_view:layout_constraintTop_toBottomOf="@+id/transactionSuccess" />
 
         <TextView
+            android:id="@+id/timedate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
             android:text="@string/notifDate"
-
             android:textSize="12sp"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
