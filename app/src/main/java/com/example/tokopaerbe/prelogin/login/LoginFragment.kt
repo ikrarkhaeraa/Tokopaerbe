@@ -30,6 +30,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class LoginFragment : Fragment() {
@@ -61,6 +62,14 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        runBlocking {
+            val userFirstInstallState = model.getUserFirstInstallState().first()
+            if (userFirstInstallState) {
+//                model.userInstall()
+                findNavController().navigate(R.id.action_loginFragment_to_onBoardingFragment)
+            }
+        }
 
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
@@ -206,6 +215,9 @@ class LoginFragment : Fragment() {
 
             buttonDaftar.setOnClickListener {
                 findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+                firebaseAnalytics.logEvent("button_click") {
+                    param(FirebaseAnalytics.Param.METHOD, "Register Button")
+                }
             }
         }
     }

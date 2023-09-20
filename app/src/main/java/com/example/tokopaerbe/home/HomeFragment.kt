@@ -18,6 +18,10 @@ import com.example.tokopaerbe.prelogin.login.LoginFragment
 import com.example.tokopaerbe.prelogin.register.RegisterFragment
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -29,6 +33,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +47,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        firebaseAnalytics = Firebase.analytics
 
         binding.switch1.isChecked = AppCompatDelegate.getApplicationLocales().get(0)?.language == "in"
 
@@ -59,6 +66,10 @@ class HomeFragment : Fragment() {
 
             Log.d("cekLogout", "LogoutSuccess")
             (requireActivity() as MainActivity).logout()
+
+            firebaseAnalytics.logEvent("button_click") {
+                param(FirebaseAnalytics.Param.METHOD, "Logout Button")
+            }
         }
     }
 

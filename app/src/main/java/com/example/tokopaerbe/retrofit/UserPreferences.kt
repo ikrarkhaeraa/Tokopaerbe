@@ -168,7 +168,11 @@ class UserPreferences (private val database: DataStore<Preferences>) {
 
     suspend fun logout() {
         database.edit { preferences ->
-            preferences.clear()
+//            preferences.clear()
+            preferences.remove(STATE_KEY)
+            preferences.remove(ACCESSTOKEN_KEY)
+            preferences.remove(REFRESHTOKEN_KEY)
+            preferences.remove(EXPIRESAT_KEY)
         }
     }
 }

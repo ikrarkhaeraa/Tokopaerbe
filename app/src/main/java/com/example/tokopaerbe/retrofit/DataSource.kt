@@ -397,6 +397,10 @@ class DataSource @Inject constructor(
         return notifDao.notifIsChecked(id, isChecked)
     }
 
+    fun getUnReadNotifications(isChecked: Boolean): LiveData<List<NotificationsEntity>?> {
+        return notifDao.getUnreadNotifications(isChecked)
+    }
+
     fun quantity(id: String, quantity: Int) {
         return cartDao.quantity(id, quantity)
     }

@@ -106,7 +106,11 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
             binding.metodePembayaran.text = label
 
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_PAYMENT_INFO) {
-                param(FirebaseAnalytics.Param.ITEMS, label!!)
+                param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                param(FirebaseAnalytics.Param.VALUE, totalPrice)
+                param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
+                param(FirebaseAnalytics.Param.PAYMENT_TYPE, label.toString())
+                param(FirebaseAnalytics.Param.ITEMS, arrayOf(productCheckout).toString())
             }
 
             binding.buttonBayar.isEnabled = true
@@ -136,15 +140,15 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
                         model.fulfillment.observe(viewLifecycleOwner){
                             if (it.code == 200) {
                                 findNavController().navigate(R.id.action_checkoutFragment_to_statusFragment, StatusFragmentArgs(item).toBundle(), navOptions = null)
-
-                                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.PURCHASE) {
-                                    param(FirebaseAnalytics.Param.CURRENCY, totalPrice)
-                                }
-
                             }
                         }
                     }
                 }
+
+                firebaseAnalytics.logEvent("button_click") {
+                    param(FirebaseAnalytics.Param.METHOD, "Payment Button")
+                }
+
             }
         }
 

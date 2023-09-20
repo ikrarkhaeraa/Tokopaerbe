@@ -206,6 +206,9 @@ class RegisterFragment : Fragment() {
 
             buttonMasuk.setOnClickListener {
                 findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                firebaseAnalytics.logEvent("button_click") {
+                    param(FirebaseAnalytics.Param.METHOD, "Login Button")
+                }
             }
 
             buttonDaftar.setOnClickListener {

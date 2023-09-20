@@ -9,6 +9,10 @@ interface NotificationDao {
     @Query ("UPDATE notificationList SET isChecked = :isChecked WHERE notifId = :id ")
     fun notifIsChecked(id: Int, isChecked:Boolean)
 
+    @Query("SELECT * FROM notificationList WHERE isChecked = :isChecked")
+    fun getUnreadNotifications(isChecked: Boolean): LiveData<List<NotificationsEntity>?>
+
+
     @Query(
         "INSERT INTO notificationList (notifType," +
                 "notifTitle, " +

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@id/prelogin_navigation">
+    app:startDestination="@id/main_navigation"
+    >
 
     <include app:graph="@navigation/prelogin_navigation" />
 
@@ -173,7 +174,7 @@
 
         <action
             android:id="@+id/action_statusFragment_to_main_navigation"
-            app:popUpTo="@navigation/app_navigation"
+            app:popUpTo="@id/app_navigation"
             app:destination="@id/main_navigation" />
         <argument
             android:name="item"

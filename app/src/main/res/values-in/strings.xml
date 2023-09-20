@@ -44,10 +44,10 @@
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="logout">Keluar</string>
-    <string name="home">Home</string>
-    <string name="store">Store</string>
-    <string name="wishlist">Wishlist</string>
-    <string name="transaction">Transaction</string>
+    <string name="home">Beranda</string>
+    <string name="store">Belanja</string>
+    <string name="wishlist">Favorit</string>
+    <string name="transaction">Transaksi</string>
 
     <!--Store-->
     <string name="Search">Cari</string>

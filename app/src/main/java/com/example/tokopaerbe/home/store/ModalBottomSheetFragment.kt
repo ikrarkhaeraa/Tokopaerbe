@@ -139,9 +139,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
                 model.sort = selectedText1
             }
 
-            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
-                param(FirebaseAnalytics.Param.ITEM_NAME, selectedText1)
-            }
 
         }
 
@@ -154,9 +151,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             } else {
                 selectedText2 = ""
                 model.brand = selectedText2
-            }
-            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
-                param(FirebaseAnalytics.Param.ITEM_NAME, selectedText2)
             }
         }
 
@@ -184,6 +178,13 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             Log.d("cekSelectedText", selectedText1.toString())
             Log.d("cekSelectedText", selectedText2.toString())
             setFragmentResult("filter", filter)
+
+            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
+                param(FirebaseAnalytics.Param.ITEM_LIST_ID, "Filter")
+                param(FirebaseAnalytics.Param.ITEM_LIST_NAME, "Filter")
+                param(FirebaseAnalytics.Param.ITEMS, arrayOf(filter))
+            }
+
 
             dismiss()
         }

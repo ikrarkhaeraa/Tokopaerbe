@@ -58,7 +58,9 @@ class CartAdapter(private val model: ViewModel) :
 
             firebaseAnalytics = Firebase.analytics
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.REMOVE_FROM_CART) {
-                param(FirebaseAnalytics.Param.ITEMS, cartEntity.productName)
+                param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                param(FirebaseAnalytics.Param.VALUE, cartEntity.productPrice.toString())
+                param(FirebaseAnalytics.Param.ITEMS, arrayOf(cartEntity).toString())
             }
 
         }

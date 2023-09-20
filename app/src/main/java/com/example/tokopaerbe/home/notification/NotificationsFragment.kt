@@ -53,7 +53,8 @@ class NotificationsFragment : Fragment() {
                 binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
                 val adapter = NotificationAdapter(model)
                 binding.recyclerView.adapter = adapter
-                adapter.submitList(it)
+
+                adapter.submitList(it.reversed())
             }
         }
 

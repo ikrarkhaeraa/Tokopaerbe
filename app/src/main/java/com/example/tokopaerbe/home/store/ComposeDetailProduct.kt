@@ -3,6 +3,7 @@ package com.example.tokopaerbe.home.store
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings.Global.putLong
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -32,20 +33,25 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.InputChip
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -90,6 +96,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -128,11 +135,12 @@ class ComposeDetailProduct : Fragment() {
     fun DetailProductScreenViewModel(
     ) {
 
-
-        val userToken = model.getUserToken().collectAsState(initial = null).value
-        val token = "Bearer $userToken"
-        Log.d("cekTokenForDetail", token)
-        model.getDetailProductData(token, productId)
+//        val userToken = model.getUserToken().collectAsState(initial = null).value
+//        val token = "Bearer $userToken"
+//        Log.d("cekTokenForDetail", token)
+        productId = args.productIdCompose
+        Log.d("cekComposeId", productId)
+        model.getDetailProductData(productId)
 
 
         var price: Int? = 0
@@ -150,8 +158,7 @@ class ComposeDetailProduct : Fragment() {
         var stock: Int? = 0
         var store: String? = ""
         var sale: Int? = 0
-
-        if (token.isNotEmpty()) {
+        var code: Int? = 0
 
             price = model.detail.observeAsState().value?.data?.productPrice
             productName = model.detail.observeAsState().value?.data?.productName
@@ -168,6 +175,7 @@ class ComposeDetailProduct : Fragment() {
             stock = model.detail.observeAsState().value?.data?.stock
             store = model.detail.observeAsState().value?.data?.store
             sale = model.detail.observeAsState().value?.data?.sale
+            code = model.detail.observeAsState().value?.code
 
             Log.d("cekPriceDetailCompose", itemPrice.toString())
 
@@ -175,7 +183,6 @@ class ComposeDetailProduct : Fragment() {
             Log.d("cekImage", listSearchResult.toString())
 
             if (price != null) {
-
                 fun formatPrice(price: Double?): String {
                     val numberFormat = NumberFormat.getNumberInstance(
                         Locale(
@@ -184,34 +191,67 @@ class ComposeDetailProduct : Fragment() {
                     ) // Use the appropriate locale for your formatting
                     return numberFormat.format(price)
                 }
-
                 itemPrice = formatPrice(price.toDouble())
-
             }
 
+            Log.d("cekCodeDetail", code.toString())
+
+        ProgressBarDemo(isLoading = true)
+        var showDetail by remember { mutableStateOf(false) }
+        val coroutineScope = rememberCoroutineScope()
+
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                delay(500)
+                showDetail = true
+            }
         }
 
-        DetailProductScreen(
-            price,
-            itemPrice,
-            productName,
-            sold,
-            rating,
-            review,
-            selectedVariant,
-            descProduct,
-            ratingGedeDibawah,
-            satisfaction,
-            totalRating,
-            listSearchResult,
-            productVariant,
-            index,
-            stock,
-            store,
-            sale,
-        )
+        if (code != 200 && showDetail) {
+            Log.d("test","null")
+            ErrorStateScreen()
+        } else if (showDetail) {
+            Log.d("test", "non null")
+            ProgressBarDemo(isLoading = false)
+            DetailProductScreen(
+                price,
+                itemPrice,
+                productName,
+                sold,
+                rating,
+                review,
+                selectedVariant,
+                descProduct,
+                ratingGedeDibawah,
+                satisfaction,
+                totalRating,
+                listSearchResult,
+                productVariant,
+                index,
+                stock,
+                store,
+                sale,
+            )
+        }
+
 
     }
+
+    @Composable
+    fun ProgressBarDemo(isLoading: Boolean) {
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(40.dp),
+                    color = colorResource(id = R.color.primaryColor)
+                )
+            }
+        }
+    }
+
 
     @OptIn(
         ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
@@ -240,9 +280,9 @@ class ComposeDetailProduct : Fragment() {
 
         firebaseAnalytics = Firebase.analytics
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM) {
-            if (productName != null) {
-                param(FirebaseAnalytics.Param.ITEMS, productName)
-            }
+            param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+            param(FirebaseAnalytics.Param.VALUE, price.toString())
+            param(FirebaseAnalytics.Param.ITEMS, productName.toString())
         }
 
         var priceState = remember { mutableStateOf(price) }
@@ -264,8 +304,8 @@ class ComposeDetailProduct : Fragment() {
         }
 
 
-        productId = args.productIdCompose
-        Log.d("cekComposeId", productId)
+//        productId = args.productIdCompose
+//        Log.d("cekComposeId", productId)
 
         fun formatPrice(price: Double?): String {
             val numberFormat = NumberFormat.getNumberInstance(
@@ -358,7 +398,10 @@ class ComposeDetailProduct : Fragment() {
                                 )
 
                                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT) {
-                                    param(FirebaseAnalytics.Param.ITEMS, productCheckout.toString())
+                                    param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                                    param(FirebaseAnalytics.Param.VALUE, price.toString())
+                                    param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
+                                    param(FirebaseAnalytics.Param.ITEMS, arrayOf(productCheckout).toString())
                                 }
 
 
@@ -371,13 +414,6 @@ class ComposeDetailProduct : Fragment() {
                         Button(
                             onClick = {
                                 lifecycleScope.launch {
-
-                                    firebaseAnalytics = Firebase.analytics
-                                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART) {
-                                        if (productName != null) {
-                                            param(FirebaseAnalytics.Param.ITEMS, productName)
-                                        }
-                                    }
 
                                     val productCart = model.getCartforDetail(productId)
                                     Log.d("cekProductCart", productCart?.productId.toString())
@@ -454,7 +490,13 @@ class ComposeDetailProduct : Fragment() {
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
+                                    }
+                                    firebaseAnalytics = Firebase.analytics
 
+                                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART) {
+                                        param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                                        param(FirebaseAnalytics.Param.VALUE, (2 * price!!).toString())
+                                        param(FirebaseAnalytics.Param.ITEMS, arrayOf(productCart).toString())
                                     }
                                 }
                             }, modifier = Modifier
@@ -562,13 +604,6 @@ class ComposeDetailProduct : Fragment() {
                                 //Handle clickable here
                                 lifecycleScope.launch {
 
-                                    firebaseAnalytics = Firebase.analytics
-                                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST) {
-                                        if (productName != null) {
-                                            param(FirebaseAnalytics.Param.ITEMS, productName)
-                                        }
-                                    }
-
                                     val productWishlist = model.getWishlistforDetail(productId)
                                     if (productWishlist.toString() == "null") {
 
@@ -603,7 +638,12 @@ class ComposeDetailProduct : Fragment() {
                                                 Toast.LENGTH_SHORT
                                             )
                                             .show()
-
+                                    }
+                                    firebaseAnalytics = Firebase.analytics
+                                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST) {
+                                        param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                                        param(FirebaseAnalytics.Param.VALUE, (2 * price!!).toString())
+                                        param(FirebaseAnalytics.Param.ITEMS, arrayOf(productWishlist).toString())
                                     }
                                 }
                             })
@@ -785,6 +825,68 @@ class ComposeDetailProduct : Fragment() {
                         .fillMaxWidth()
                         .padding(top = 18.dp)
                 )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun ErrorStateScreen() {
+        Scaffold(topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.detailProduk),
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                },
+                navigationIcon = {
+                    Image(painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .clickable {
+                                // Handle click action here
+                                findNavController().navigateUp()
+                            })
+                },
+            )
+        }) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.smartphone),
+                    modifier = Modifier.size(128.dp),
+                    contentDescription = null
+                )
+
+                Text(
+                    text = resources.getString(R.string.errorTitle),
+                    fontFamily = FontFamily(Font(R.font.medium)),
+                    fontSize = 32.sp,
+                )
+
+                Text(
+                    text = resources.getString(R.string.errorDesc),
+                    fontFamily = FontFamily(Font(R.font.poppins)),
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                )
+
+                Button(
+                    onClick = {
+                            model.getDetailProductData(productId)
+                    }
+                ) {
+                    Text(text = stringResource(id = R.string.refreshButtonError))
+                }
             }
         }
     }

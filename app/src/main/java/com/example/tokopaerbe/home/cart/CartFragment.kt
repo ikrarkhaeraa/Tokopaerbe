@@ -62,10 +62,6 @@ class CartFragment : Fragment() {
 
         model.getCartProduct().observe(viewLifecycleOwner) { cartList ->
 
-            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_CART) {
-                param(FirebaseAnalytics.Param.ITEMS, cartList.toString())
-            }
-
             if (cartList.isNullOrEmpty()) {
                 hideEmptyCartUI()
             } else {
@@ -84,6 +80,11 @@ class CartFragment : Fragment() {
 
                 binding.buttonHapus.setOnClickListener {
                     model.deleteAllCheckedProduct(selectedItem)
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.REMOVE_FROM_CART) {
+                        param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                        param(FirebaseAnalytics.Param.VALUE, totalPrice)
+                        param(FirebaseAnalytics.Param.ITEMS, arrayOf(cartList).toString())
+                    }
                 }
 
                 listCheckout = ArrayList()
@@ -114,8 +115,17 @@ class CartFragment : Fragment() {
                         navOptions = null
                     )
 
+                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_CART) {
+                        param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                        param(FirebaseAnalytics.Param.VALUE, totalPrice)
+                        param(FirebaseAnalytics.Param.ITEMS, arrayOf(cartList).toString())
+                    }
+
                     firebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT) {
-                        param(FirebaseAnalytics.Param.ITEMS, productCheckout.toString())
+                        param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                        param(FirebaseAnalytics.Param.VALUE, totalPrice)
+                        param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
+                        param(FirebaseAnalytics.Param.ITEMS, arrayOf(cartList).toString())
                     }
 
                 }

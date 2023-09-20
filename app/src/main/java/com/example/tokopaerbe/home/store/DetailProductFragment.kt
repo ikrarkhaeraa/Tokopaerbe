@@ -90,7 +90,7 @@ class DetailProductFragment : Fragment() {
                 val userToken = model.getUserToken().first()
                 val token = "Bearer $userToken"
                 Log.d("cekTokenForDetail", token)
-                model.getDetailProductData(token, productId)
+//                model.getDetailProductData(token, productId)
             }
 
             model.detail.observe(viewLifecycleOwner) {
@@ -105,7 +105,7 @@ class DetailProductFragment : Fragment() {
                             val userToken = model.getUserToken().first()
                             val token = "Bearer $userToken"
                             Log.d("cekTokenForDetail", token)
-                            model.getDetailProductData(token, productId)
+//                            model.getDetailProductData(token, productId)
                         }
                     }
                 } else {

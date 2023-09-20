@@ -34,6 +34,10 @@ import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -56,6 +60,7 @@ class ProfileFragment : Fragment() {
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
     private val delayMillis = 5000L
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     companion object {
         const val CAMERA_X_RESULT = 700
@@ -94,6 +99,8 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        firebaseAnalytics = Firebase.analytics
 
         val text = getString(R.string.persetujuanDaftar)
         val spannableStringBuilder = SpannableStringBuilder(text)
@@ -139,6 +146,10 @@ class ProfileFragment : Fragment() {
                         1 -> startGallery()
                     }
                 }.show()
+
+            firebaseAnalytics.logEvent("button_click") {
+                param(FirebaseAnalytics.Param.METHOD, "Profile Button")
+            }
         }
 
         sendData()
@@ -198,6 +209,10 @@ class ProfileFragment : Fragment() {
                     ).show()
                 }
 
+            }
+
+            firebaseAnalytics.logEvent("button_click") {
+                param(FirebaseAnalytics.Param.METHOD, "Profile Finish Button")
             }
 
         }

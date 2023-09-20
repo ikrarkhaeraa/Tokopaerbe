@@ -21,6 +21,10 @@ import com.example.tokopaerbe.prelogin.register.RegisterFragment
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 
 class MainOnBoardingFragment : Fragment() {
 
@@ -29,6 +33,7 @@ class MainOnBoardingFragment : Fragment() {
     private val model: ViewModel by activityViewModels()
 
     private var currentFragmentPosition = 0
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
 
     override fun onCreateView(
@@ -42,6 +47,8 @@ class MainOnBoardingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        firebaseAnalytics = Firebase.analytics
 
         val sectionsPagerAdapter = SectionsPagerAdapter(this.requireActivity())
         binding.viewpager.adapter = sectionsPagerAdapter
@@ -63,17 +70,26 @@ class MainOnBoardingFragment : Fragment() {
         binding.buttonGabungSekarang.setOnClickListener {
             model.userInstall()
             findNavController().navigate(R.id.action_onboardingFragment_to_registerFragment)
+            firebaseAnalytics.logEvent("button_click") {
+                param(FirebaseAnalytics.Param.METHOD, "Join Now Button")
+            }
         }
 
         binding.buttonLewati.setOnClickListener {
             model.userInstall()
             findNavController().navigate(R.id.action_onboardingFragment_to_loginFragment)
+            firebaseAnalytics.logEvent("button_click") {
+                param(FirebaseAnalytics.Param.METHOD, "Skip Button")
+            }
         }
 
         binding.buttonSelanjutnya.setOnClickListener {
             if (currentFragmentPosition < 2) {
                 currentFragmentPosition++
                 binding.viewpager.setCurrentItem(currentFragmentPosition, true)
+            }
+            firebaseAnalytics.logEvent("button_click") {
+                param(FirebaseAnalytics.Param.METHOD, "Next Button")
             }
         }
 

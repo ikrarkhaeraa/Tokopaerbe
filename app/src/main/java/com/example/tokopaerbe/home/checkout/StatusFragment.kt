@@ -20,6 +20,10 @@ import com.example.tokopaerbe.home.transaction.ItemTransaction
 import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -36,11 +40,13 @@ class StatusFragment : Fragment() {
 
     private val args: StatusFragmentArgs? by navArgs()
     private var itemTransaction: TransactionDataClass? = null
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        firebaseAnalytics = Firebase.analytics
         itemTransaction = args?.item
 
         binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
@@ -74,6 +80,18 @@ class StatusFragment : Fragment() {
                         }
                     }
                 }
+
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.PURCHASE) {
+                    param(FirebaseAnalytics.Param.TRANSACTION_ID, it.data.invoiceId)
+                    param(FirebaseAnalytics.Param.AFFILIATION, "Google Store")
+                    param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+                    param(FirebaseAnalytics.Param.VALUE, it.data.total.toString())
+//                    param(FirebaseAnalytics.Param.TAX, 2.58)
+//                    param(FirebaseAnalytics.Param.SHIPPING, 5.34)
+                    param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
+                    param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemTransaction).toString())
+                }
+
             }
         } else {
             Log.d("cekItemTransaction", itemTransaction.toString())
@@ -99,6 +117,11 @@ class StatusFragment : Fragment() {
                             }
                         }
                     }
+
+                    firebaseAnalytics.logEvent("button_click") {
+                        param(FirebaseAnalytics.Param.METHOD, "Finish Transaction Button")
+                    }
+
                 }
         }
 
@@ -110,7 +133,12 @@ class StatusFragment : Fragment() {
                     Log.d("cekKlik", "cek1")
                     findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
                 } else {
-                    findNavController().popBackStack()
+                    var stack = 0
+                    for (i in 1..100000) {
+                        findNavController().navigateUp()
+                        stack++
+                    }
+                    Log.d("cekStack", stack.toString())
                     Log.d("cekKlik", "cek2")
                 }
             }

@@ -22,6 +22,7 @@ import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class MainFragment : Fragment() {
@@ -49,6 +50,19 @@ class MainFragment : Fragment() {
     @androidx.annotation.OptIn(com.google.android.material.badge.ExperimentalBadgeUtils::class)
     override fun  onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        runBlocking {
+            val userLoginState = model.getUserLoginState().first()
+            val userName = model.getUserName().first()
+            if (!userLoginState) {
+                findNavController().navigate(R.id.main_to_prelogin)
+            } else if (userLoginState && userName.isEmpty()) {
+                findNavController().navigate(R.id.action_main_to_profileFragment)
+            }
+//            if (userName.isEmpty()) {
+//                findNavController()
+//            }
+        }
 
         val navView: BottomNavigationView = binding.navView
         val appBarConfiguration = AppBarConfiguration(
@@ -93,7 +107,15 @@ class MainFragment : Fragment() {
 
         val badgeDrawableNotif = BadgeDrawable.create(requireContext())
         BadgeUtils.attachBadgeDrawable(badgeDrawableNotif, binding.topAppBar, R.id.menu_item_1)
-        model.getNotification().observe(viewLifecycleOwner) {
+//        model.getNotification().observe(viewLifecycleOwner) {
+//            if (it.isNullOrEmpty()) {
+//                badgeDrawableNotif.isVisible = false
+//            } else {
+//                badgeDrawableNotif.isVisible = true
+//                badgeDrawableNotif.number = it.size
+//            }
+//        }
+        model.getUnreadNotificatios(false).observe(viewLifecycleOwner) {
             if (it.isNullOrEmpty()) {
                 badgeDrawableNotif.isVisible = false
             } else {

@@ -17,6 +17,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import java.lang.reflect.Array
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -56,8 +57,11 @@ class ProductAdapter (private val onProductClick: (Product) -> Unit) : PagingDat
 
                 firebaseAnalytics = Firebase.analytics
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
-                    param(FirebaseAnalytics.Param.ITEM_NAME, productData.productName)
+                    param(FirebaseAnalytics.Param.ITEM_LIST_ID, productData.productId)
+                    param(FirebaseAnalytics.Param.ITEM_LIST_NAME, productData.productName)
+                    param(FirebaseAnalytics.Param.ITEMS, productData.toString())
                 }
+
 
             }
         }

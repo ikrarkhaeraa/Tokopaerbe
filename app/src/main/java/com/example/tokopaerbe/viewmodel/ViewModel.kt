@@ -1,5 +1,6 @@
 package com.example.tokopaerbe.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,6 +28,7 @@ import com.example.tokopaerbe.room.NotificationsEntity
 import com.example.tokopaerbe.room.WishlistEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import javax.inject.Inject
@@ -102,6 +104,10 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
 
     fun notifIsChecked(id: Int, isChecked: Boolean) {
         return data.notifIsChecked(id, isChecked)
+    }
+
+    fun getUnreadNotificatios(isChecked: Boolean): LiveData<List<NotificationsEntity>?> {
+        return data.getUnReadNotifications(isChecked)
     }
 
     fun addCartProduct(
@@ -316,8 +322,11 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         }
     }
 
-    fun getDetailProductData(auth: String, id: String) {
+    fun getDetailProductData(id: String) {
         viewModelScope.launch {
+            val token = getUserToken().first()
+            val auth = "Bearer $token"
+            Log.d("cekAuthDetail", auth)
             data.getDetailProductData(auth, id)
         }
     }
