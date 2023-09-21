@@ -20,6 +20,8 @@ import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.navigationrail.NavigationRailView
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -60,7 +62,9 @@ class MainFragment : Fragment() {
             }
         }
 
-        val navView: BottomNavigationView = binding.navView
+        val bottomNav: BottomNavigationView? = binding.navView
+        val railView: NavigationRailView? = binding.navView600
+        val navView: NavigationView? = binding.navView840
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_store, R.id.navigation_wishlist, R.id.navigation_transaction
@@ -82,8 +86,12 @@ class MainFragment : Fragment() {
 
         val appCompatActivity = requireActivity() as AppCompatActivity
         setupActionBarWithNavController(appCompatActivity, navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-        navView.itemIconTintList = null
+        bottomNav?.setupWithNavController(navController)
+        bottomNav?.itemIconTintList = null
+        railView?.setupWithNavController(navController)
+        railView?.itemIconTintList = null
+        navView?.setupWithNavController(navController)
+        navView?.itemIconTintList = null
 
         lifecycleScope.launch {
             val userName = model.getUserName().first()
@@ -114,12 +122,16 @@ class MainFragment : Fragment() {
 
 
         model.getWishList().observe(viewLifecycleOwner) {
-            val badgeDrawableWishList = binding.navView.getOrCreateBadge(R.id.navigation_wishlist)
+            val badgeDrawableWishList = binding.navView?.getOrCreateBadge(R.id.navigation_wishlist)
+            val badgeDrawableWishList600 = binding.navView600?.getOrCreateBadge(R.id.navigation_wishlist)
             if (it.isNullOrEmpty()) {
-                badgeDrawableWishList.isVisible = false
+                badgeDrawableWishList?.isVisible = false
+                badgeDrawableWishList600?.isVisible = false
             } else {
-                badgeDrawableWishList.isVisible = true
-                badgeDrawableWishList.number = it.size
+                badgeDrawableWishList?.isVisible = true
+                badgeDrawableWishList?.number = it.size
+                badgeDrawableWishList600?.isVisible = true
+                badgeDrawableWishList600?.number = it.size
             }
         }
 

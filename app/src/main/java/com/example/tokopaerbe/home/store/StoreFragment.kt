@@ -2,8 +2,6 @@ package com.example.tokopaerbe.home.store
 
 import DialogSearchFragment
 import android.annotation.SuppressLint
-import android.os.Binder
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,29 +9,19 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
-import androidx.core.os.bundleOf
-import androidx.core.view.isNotEmpty
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import androidx.navigation.Navigation
-import androidx.paging.LoadState
-import androidx.paging.PagingSource
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentModalBottomSheetBinding
 import com.example.tokopaerbe.pagging.LoadingStateAdapter
 import com.example.tokopaerbe.pagging.PaggingModel
 import com.example.tokopaerbe.databinding.FragmentStoreBinding
-import com.example.tokopaerbe.pagging.ProductPagingSource
 import com.example.tokopaerbe.retrofit.user.UserFilter
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
@@ -47,7 +35,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 
@@ -58,8 +45,7 @@ class StoreFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
-    private val bottomSheetModel: ViewModel by activityViewModels()
+    private val model: ViewModel by activityViewModels()
 
     private val paggingModel: PaggingModel by viewModels {
         com.example.tokopaerbe.pagging.ViewModelFactory(requireContext())
@@ -100,7 +86,6 @@ class StoreFragment : Fragment() {
 
         // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
-
 
         binding.filterChip.visibility = GONE
         binding.changeRV.visibility = GONE
@@ -171,6 +156,9 @@ class StoreFragment : Fragment() {
                             binding.errorDesc.visibility = VISIBLE
                             binding.errorDesc.text = getString(R.string.errorDesc)
                             binding.resetButton.visibility = VISIBLE
+                            binding.resetButton.setOnClickListener {
+                                resetOrRefresh()
+                            }
                         }
                     }
                 }
@@ -214,6 +202,9 @@ class StoreFragment : Fragment() {
                             binding.errorDesc.visibility = VISIBLE
                             binding.errorDesc.text = getString(R.string.errorDesc)
                             binding.resetButton.visibility = VISIBLE
+                            binding.resetButton.setOnClickListener {
+                                resetOrRefresh()
+                            }
                         }
                     }
                 }
@@ -310,140 +301,14 @@ class StoreFragment : Fragment() {
                                 param(FirebaseAnalytics.Param.ITEMS, result.toString())
                             }
                         }
-
                         404 -> {
-                            binding.recyclerView.visibility = GONE
-                            binding.gambarerror.visibility = VISIBLE
-                            binding.errorTitle.visibility = VISIBLE
-                            binding.errorTitle.text = getString(R.string.errorTitle)
-                            binding.errorDesc.visibility = VISIBLE
-                            binding.errorDesc.text = getString(R.string.errorDesc)
-                            binding.resetButton.visibility = VISIBLE
-                            binding.resetButton.setOnClickListener { view ->
-                                binding.chipgroup.removeAllViews()
-                                binding.searchTextField.setText("")
-                                searchText = null
-                                selectedText1 = null
-                                selectedText2 = null
-                                textTerendah = null
-                                textTertinggi = null
-                                model.sort = ""
-                                model.brand = ""
-                                model.textTerendah = ""
-                                model.textTertinggi = ""
-                                updateFilterAndRequestData()
-                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
-                                    paggingModel.sendFilter(
-                                        filterResetEmpty.search,
-                                        filterResetEmpty.sort,
-                                        filterResetEmpty.brand,
-                                        filterResetEmpty.lowest,
-                                        filterResetEmpty.highest
-                                    ).observe(viewLifecycleOwner) { reset ->
-                                        Log.d("cekResetFilter", resetFilter.toString())
-                                        linearProductAdapter.submitData(lifecycle, reset)
-
-                                        binding.recyclerView.visibility = VISIBLE
-                                        binding.gambarerror.visibility = GONE
-                                        binding.errorTitle.visibility = GONE
-                                        binding.errorTitle.text = getString(R.string.errorTitle)
-                                        binding.errorDesc.visibility = GONE
-                                        binding.errorDesc.text = getString(R.string.errorDesc)
-                                        binding.resetButton.visibility = GONE
-                                    }
-                                }
-                            }
+                            emptyData()
                         }
-
                         500 -> {
-                            binding.recyclerView.visibility = GONE
-                            binding.gambarerror.visibility = VISIBLE
-                            binding.errorTitle.visibility = VISIBLE
-                            binding.errorTitle.text = getString(R.string.errorTitle500)
-                            binding.errorDesc.visibility = VISIBLE
-                            binding.errorDesc.text = getString(R.string.errorDesc500)
-                            binding.resetButton.visibility = VISIBLE
-                            binding.resetButton.text = getString(R.string.refreshButtonError)
-                            binding.resetButton.setOnClickListener { view ->
-                                binding.chipgroup.removeAllViews()
-                                binding.searchTextField.setText("")
-                                searchText = null
-                                selectedText1 = null
-                                selectedText2 = null
-                                textTerendah = null
-                                textTertinggi = null
-                                model.sort = ""
-                                model.brand = ""
-                                model.textTerendah = ""
-                                model.textTertinggi = ""
-                                updateFilterAndRequestData()
-                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
-                                    paggingModel.sendFilter(
-                                        filterResetEmpty.search,
-                                        filterResetEmpty.sort,
-                                        filterResetEmpty.brand,
-                                        filterResetEmpty.lowest,
-                                        filterResetEmpty.highest
-                                    ).observe(viewLifecycleOwner) { reset ->
-                                        linearProductAdapter.submitData(lifecycle, reset)
-
-                                        binding.recyclerView.visibility = VISIBLE
-                                        binding.gambarerror.visibility = GONE
-                                        binding.errorTitle.visibility = GONE
-                                        binding.errorTitle.text = getString(R.string.errorTitle)
-                                        binding.errorDesc.visibility = GONE
-                                        binding.errorDesc.text = getString(R.string.errorDesc)
-                                        binding.resetButton.visibility = GONE
-                                    }
-                                }
-                            }
+                            errorState()
                         }
-
                         else -> {
-                            binding.recyclerView.visibility = GONE
-                            binding.gambarerror.visibility = VISIBLE
-                            binding.errorTitle.visibility = VISIBLE
-                            binding.errorTitle.text = getString(R.string.errorTitleConnection)
-                            binding.errorDesc.visibility = VISIBLE
-                            binding.errorDesc.text = getString(R.string.errorDescConnection)
-                            binding.resetButton.visibility = VISIBLE
-                            binding.resetButton.text = getString(R.string.refreshButtonError)
-                            binding.resetButton.setOnClickListener { view ->
-                                binding.chipgroup.removeAllViews()
-                                binding.searchTextField.setText("")
-                                searchText = null
-                                selectedText1 = null
-                                selectedText2 = null
-                                textTerendah = null
-                                textTertinggi = null
-                                model.sort = ""
-                                model.brand = ""
-                                model.textTerendah = ""
-                                model.textTertinggi = ""
-                                updateFilterAndRequestData()
-                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
-                                    paggingModel.sendFilter(
-                                        filterResetEmpty.search,
-                                        filterResetEmpty.sort,
-                                        filterResetEmpty.brand,
-                                        filterResetEmpty.lowest,
-                                        filterResetEmpty.highest
-                                    ).observe(viewLifecycleOwner) { reset ->
-                                        linearProductAdapter.submitData(lifecycle, reset)
-
-                                        binding.recyclerView.visibility = VISIBLE
-                                        binding.gambarerror.visibility = GONE
-                                        binding.errorTitle.visibility = GONE
-                                        binding.errorTitle.text = getString(R.string.errorTitle)
-                                        binding.errorDesc.visibility = GONE
-                                        binding.errorDesc.text = getString(R.string.errorDesc)
-                                        binding.resetButton.visibility = GONE
-                                    }
-                                }
-                            }
+                            errorState()
                         }
                     }
 
@@ -459,7 +324,6 @@ class StoreFragment : Fragment() {
         binding.shimmer.visibility = GONE
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = linearProductAdapter
-
 
         settingFilter()
 
@@ -488,141 +352,14 @@ class StoreFragment : Fragment() {
                                 param(FirebaseAnalytics.Param.ITEMS, result.toString())
                             }
                         }
-
                         404 -> {
-                            binding.recyclerView.visibility = GONE
-                            binding.gambarerror.visibility = VISIBLE
-                            binding.errorTitle.visibility = VISIBLE
-                            binding.errorTitle.text = getString(R.string.errorTitle)
-                            binding.errorDesc.visibility = VISIBLE
-                            binding.errorDesc.text = getString(R.string.errorDesc)
-                            binding.resetButton.visibility = VISIBLE
-                            binding.resetButton.setOnClickListener { view ->
-                                binding.chipgroup.removeAllViews()
-                                binding.searchTextField.setText("")
-                                searchText = null
-                                selectedText1 = null
-                                selectedText2 = null
-                                textTerendah = null
-                                textTertinggi = null
-                                bottomSheetModel.sort = ""
-                                bottomSheetModel.brand = ""
-                                bottomSheetModel.textTerendah = ""
-                                bottomSheetModel.textTertinggi = ""
-                                updateFilterAndRequestData()
-                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
-                                    paggingModel.sendFilter(
-                                        filterResetEmpty.search,
-                                        filterResetEmpty.sort,
-                                        filterResetEmpty.brand,
-                                        filterResetEmpty.lowest,
-                                        filterResetEmpty.highest
-                                    ).observe(viewLifecycleOwner) { reset ->
-                                        binding.chipgroup.removeAllViews()
-                                        Log.d("cekResetFilter", resetFilter.toString())
-                                        linearProductAdapter.submitData(lifecycle, reset)
-
-                                        binding.recyclerView.visibility = VISIBLE
-                                        binding.gambarerror.visibility = GONE
-                                        binding.errorTitle.visibility = GONE
-                                        binding.errorTitle.text = getString(R.string.errorTitle)
-                                        binding.errorDesc.visibility = GONE
-                                        binding.errorDesc.text = getString(R.string.errorDesc)
-                                        binding.resetButton.visibility = GONE
-                                    }
-                                }
-                            }
+                            emptyData()
                         }
-
                         500 -> {
-                            binding.recyclerView.visibility = GONE
-                            binding.gambarerror.visibility = VISIBLE
-                            binding.errorTitle.visibility = VISIBLE
-                            binding.errorTitle.text = getString(R.string.errorTitle500)
-                            binding.errorDesc.visibility = VISIBLE
-                            binding.errorDesc.text = getString(R.string.errorDesc500)
-                            binding.resetButton.visibility = VISIBLE
-                            binding.resetButton.text = getString(R.string.refreshButtonError)
-                            binding.resetButton.setOnClickListener { view ->
-                                binding.chipgroup.removeAllViews()
-                                binding.searchTextField.setText("")
-                                searchText = null
-                                selectedText1 = null
-                                selectedText2 = null
-                                textTerendah = null
-                                textTertinggi = null
-                                model.sort = ""
-                                model.brand = ""
-                                model.textTerendah = ""
-                                model.textTertinggi = ""
-                                updateFilterAndRequestData()
-                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
-                                    paggingModel.sendFilter(
-                                        filterResetEmpty.search,
-                                        filterResetEmpty.sort,
-                                        filterResetEmpty.brand,
-                                        filterResetEmpty.lowest,
-                                        filterResetEmpty.highest
-                                    ).observe(viewLifecycleOwner) { reset ->
-                                        linearProductAdapter.submitData(lifecycle, reset)
-
-                                        binding.recyclerView.visibility = VISIBLE
-                                        binding.gambarerror.visibility = GONE
-                                        binding.errorTitle.visibility = GONE
-                                        binding.errorTitle.text = getString(R.string.errorTitle)
-                                        binding.errorDesc.visibility = GONE
-                                        binding.errorDesc.text = getString(R.string.errorDesc)
-                                        binding.resetButton.visibility = GONE
-                                    }
-                                }
-                            }
+                            errorState()
                         }
-
                         else -> {
-                            binding.recyclerView.visibility = GONE
-                            binding.gambarerror.visibility = VISIBLE
-                            binding.errorTitle.visibility = VISIBLE
-                            binding.errorTitle.text = getString(R.string.errorTitleConnection)
-                            binding.errorDesc.visibility = VISIBLE
-                            binding.errorDesc.text = getString(R.string.errorDescConnection)
-                            binding.resetButton.visibility = VISIBLE
-                            binding.resetButton.text = getString(R.string.refreshButtonError)
-                            binding.resetButton.setOnClickListener { view ->
-                                binding.chipgroup.removeAllViews()
-                                binding.searchTextField.setText("")
-                                searchText = null
-                                selectedText1 = null
-                                selectedText2 = null
-                                textTerendah = null
-                                textTertinggi = null
-                                model.sort = ""
-                                model.brand = ""
-                                model.textTerendah = ""
-                                model.textTertinggi = ""
-                                updateFilterAndRequestData()
-                                val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-                                resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
-                                    paggingModel.sendFilter(
-                                        filterResetEmpty.search,
-                                        filterResetEmpty.sort,
-                                        filterResetEmpty.brand,
-                                        filterResetEmpty.lowest,
-                                        filterResetEmpty.highest
-                                    ).observe(viewLifecycleOwner) { reset ->
-                                        linearProductAdapter.submitData(lifecycle, reset)
-
-                                        binding.recyclerView.visibility = VISIBLE
-                                        binding.gambarerror.visibility = GONE
-                                        binding.errorTitle.visibility = GONE
-                                        binding.errorTitle.text = getString(R.string.errorTitle)
-                                        binding.errorDesc.visibility = GONE
-                                        binding.errorDesc.text = getString(R.string.errorDesc)
-                                        binding.resetButton.visibility = GONE
-                                    }
-                                }
-                            }
+                            errorState()
                         }
                     }
                 }
@@ -713,5 +450,65 @@ class StoreFragment : Fragment() {
         filterParams.value = newFilter
     }
 
+    private fun emptyData() {
+        binding.recyclerView.visibility = GONE
+        binding.gambarerror.visibility = VISIBLE
+        binding.errorTitle.visibility = VISIBLE
+        binding.errorTitle.text = getString(R.string.errorTitle)
+        binding.errorDesc.visibility = VISIBLE
+        binding.errorDesc.text = getString(R.string.errorDesc)
+        binding.resetButton.visibility = VISIBLE
+        binding.resetButton.setOnClickListener { view ->
+            resetOrRefresh()
+        }
+    }
 
+    private fun errorState() {
+        binding.recyclerView.visibility = GONE
+        binding.gambarerror.visibility = VISIBLE
+        binding.errorTitle.visibility = VISIBLE
+        binding.errorTitle.text = getString(R.string.errorTitle500)
+        binding.errorDesc.visibility = VISIBLE
+        binding.errorDesc.text = getString(R.string.errorDesc500)
+        binding.resetButton.visibility = VISIBLE
+        binding.resetButton.text = getString(R.string.refreshButtonError)
+        binding.resetButton.setOnClickListener { view ->
+            resetOrRefresh()
+        }
+    }
+
+    private fun resetOrRefresh() {
+        binding.chipgroup.removeAllViews()
+        binding.searchTextField.setText("")
+        searchText = null
+        selectedText1 = null
+        selectedText2 = null
+        textTerendah = null
+        textTertinggi = null
+        model.sort = ""
+        model.brand = ""
+        model.textTerendah = ""
+        model.textTertinggi = ""
+        updateFilterAndRequestData()
+        val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
+        resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
+            paggingModel.sendFilter(
+                filterResetEmpty.search,
+                filterResetEmpty.sort,
+                filterResetEmpty.brand,
+                filterResetEmpty.lowest,
+                filterResetEmpty.highest
+            ).observe(viewLifecycleOwner) { reset ->
+                Log.d("cekResetFilter", resetFilter.toString())
+                linearProductAdapter.submitData(lifecycle, reset)
+                binding.recyclerView.visibility = VISIBLE
+                binding.gambarerror.visibility = GONE
+                binding.errorTitle.visibility = GONE
+                binding.errorTitle.text = getString(R.string.errorTitle)
+                binding.errorDesc.visibility = GONE
+                binding.errorDesc.text = getString(R.string.errorDesc)
+                binding.resetButton.visibility = GONE
+            }
+        }
+    }
 }
