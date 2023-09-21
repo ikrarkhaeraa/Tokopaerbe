@@ -13,6 +13,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
+import androidx.core.view.isNotEmpty
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -52,11 +53,13 @@ import kotlinx.coroutines.launch
 
 class StoreFragment : Fragment() {
 
+
     private var _binding: FragmentStoreBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
+    private val bottomSheetModel: ViewModel by activityViewModels()
 
     private val paggingModel: PaggingModel by viewModels {
         com.example.tokopaerbe.pagging.ViewModelFactory(requireContext())
@@ -79,6 +82,7 @@ class StoreFragment : Fragment() {
     private val delayMillis = 1000L
     private val filterParams = MutableStateFlow(UserFilter(null, null, null, null, null))
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -317,11 +321,16 @@ class StoreFragment : Fragment() {
                             binding.resetButton.visibility = VISIBLE
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
+                                binding.searchTextField.setText("")
                                 searchText = null
                                 selectedText1 = null
                                 selectedText2 = null
                                 textTerendah = null
                                 textTertinggi = null
+                                model.sort = ""
+                                model.brand = ""
+                                model.textTerendah = ""
+                                model.textTertinggi = ""
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
@@ -358,11 +367,16 @@ class StoreFragment : Fragment() {
                             binding.resetButton.text = getString(R.string.refreshButtonError)
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
+                                binding.searchTextField.setText("")
                                 searchText = null
                                 selectedText1 = null
                                 selectedText2 = null
                                 textTerendah = null
                                 textTertinggi = null
+                                model.sort = ""
+                                model.brand = ""
+                                model.textTerendah = ""
+                                model.textTertinggi = ""
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
@@ -398,11 +412,16 @@ class StoreFragment : Fragment() {
                             binding.resetButton.text = getString(R.string.refreshButtonError)
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
+                                binding.searchTextField.setText("")
                                 searchText = null
                                 selectedText1 = null
                                 selectedText2 = null
                                 textTerendah = null
                                 textTertinggi = null
+                                model.sort = ""
+                                model.brand = ""
+                                model.textTerendah = ""
+                                model.textTertinggi = ""
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
@@ -480,11 +499,16 @@ class StoreFragment : Fragment() {
                             binding.resetButton.visibility = VISIBLE
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
+                                binding.searchTextField.setText("")
                                 searchText = null
                                 selectedText1 = null
                                 selectedText2 = null
                                 textTerendah = null
                                 textTertinggi = null
+                                bottomSheetModel.sort = ""
+                                bottomSheetModel.brand = ""
+                                bottomSheetModel.textTerendah = ""
+                                bottomSheetModel.textTertinggi = ""
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
@@ -522,11 +546,16 @@ class StoreFragment : Fragment() {
                             binding.resetButton.text = getString(R.string.refreshButtonError)
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
+                                binding.searchTextField.setText("")
                                 searchText = null
                                 selectedText1 = null
                                 selectedText2 = null
                                 textTerendah = null
                                 textTertinggi = null
+                                model.sort = ""
+                                model.brand = ""
+                                model.textTerendah = ""
+                                model.textTertinggi = ""
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
@@ -562,11 +591,16 @@ class StoreFragment : Fragment() {
                             binding.resetButton.text = getString(R.string.refreshButtonError)
                             binding.resetButton.setOnClickListener { view ->
                                 binding.chipgroup.removeAllViews()
+                                binding.searchTextField.setText("")
                                 searchText = null
                                 selectedText1 = null
                                 selectedText2 = null
                                 textTerendah = null
                                 textTertinggi = null
+                                model.sort = ""
+                                model.brand = ""
+                                model.textTerendah = ""
+                                model.textTertinggi = ""
                                 updateFilterAndRequestData()
                                 val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
                                 resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
@@ -639,6 +673,7 @@ class StoreFragment : Fragment() {
                 chip.isClickable = true
                 if (chip.text.isNotEmpty()) {
                     binding.chipgroup.addView(chip)
+                    Log.d("cekAddChip", "add")
                 }
             }
             updateFilterAndRequestData()

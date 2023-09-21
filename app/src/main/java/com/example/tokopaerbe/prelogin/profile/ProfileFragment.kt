@@ -55,7 +55,7 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var getMyFile: File
+    private var getMyFile: File? = null
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
@@ -174,9 +174,9 @@ class ProfileFragment : Fragment() {
                 val username = binding.nameedittext.text.toString()
                 val userName = MultipartBody.Part.createFormData("userName", username)
 
-                val fileRequestBody = getMyFile.asRequestBody("image/*".toMediaTypeOrNull())
+                val fileRequestBody = getMyFile!!.asRequestBody("image/*".toMediaTypeOrNull())
                 val imagePart =
-                    MultipartBody.Part.createFormData("userImage", getMyFile.name, fileRequestBody)
+                    MultipartBody.Part.createFormData("userImage", getMyFile!!.name, fileRequestBody)
 
                 if (it.isNotEmpty()) {
                     model.postDataProfile(auth, userName, imagePart)
@@ -277,7 +277,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateSubmitButtonState() {
-        val isBothFieldsNotEmpty = binding.nameedittext.text?.isNotEmpty() == true
+        val isBothFieldsNotEmpty = binding.nameedittext.text?.isNotEmpty() == true && getMyFile != null
         binding.buttonSelesai.isEnabled = isBothFieldsNotEmpty
     }
 

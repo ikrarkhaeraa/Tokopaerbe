@@ -47,6 +47,7 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     val transaction: LiveData<TransactionResponse> = data.transaction
 
 
+
     private var _search: String = ""
     var searchFilter: String = ""
     fun setSearchValue(searchText: String) {
@@ -55,26 +56,26 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
 
     private var _sort: String = ""
     var sort: String = ""
-    fun setSortValue(selectedText: String) {
-        _sort = selectedText
+    fun clearSortValue() {
+        sort = ""
     }
 
     private var _brand: String = ""
     var brand: String = ""
-    fun setBrandValue(selectedText: String) {
-        _brand = selectedText
+    fun clearBrandValue() {
+        brand = ""
     }
 
     private var _textTerendah: String = ""
     var textTerendah: String = ""
-    fun setTerendahValue(selectedText: String) {
-        _textTerendah = selectedText
+    fun clearTerendahValue() {
+        textTerendah = ""
     }
 
     private var _textTertinggi: String = ""
     var textTertinggi: String = ""
-    fun setTertinggiValue(selectedText: String) {
-        _textTertinggi = selectedText
+    fun clearTertinggiValue() {
+        textTertinggi = ""
     }
 
 

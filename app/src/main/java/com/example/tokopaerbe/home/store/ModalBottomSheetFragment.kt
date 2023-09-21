@@ -57,8 +57,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
     private val model: ViewModel by activityViewModels()
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
-
-
     companion object {
         const val TAG = "ModalBottomSheet"
     }
@@ -197,5 +195,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
         }
 
     }
+
 
 }

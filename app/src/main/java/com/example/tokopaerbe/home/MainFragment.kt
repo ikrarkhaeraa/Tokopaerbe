@@ -41,7 +41,6 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
@@ -59,9 +58,6 @@ class MainFragment : Fragment() {
             } else if (userLoginState && userName.isEmpty()) {
                 findNavController().navigate(R.id.action_main_to_profileFragment)
             }
-//            if (userName.isEmpty()) {
-//                findNavController()
-//            }
         }
 
         val navView: BottomNavigationView = binding.navView
@@ -107,14 +103,6 @@ class MainFragment : Fragment() {
 
         val badgeDrawableNotif = BadgeDrawable.create(requireContext())
         BadgeUtils.attachBadgeDrawable(badgeDrawableNotif, binding.topAppBar, R.id.menu_item_1)
-//        model.getNotification().observe(viewLifecycleOwner) {
-//            if (it.isNullOrEmpty()) {
-//                badgeDrawableNotif.isVisible = false
-//            } else {
-//                badgeDrawableNotif.isVisible = true
-//                badgeDrawableNotif.number = it.size
-//            }
-//        }
         model.getUnreadNotificatios(false).observe(viewLifecycleOwner) {
             if (it.isNullOrEmpty()) {
                 badgeDrawableNotif.isVisible = false
