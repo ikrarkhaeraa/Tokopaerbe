@@ -12,7 +12,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins"
-        android:textColor="@color/lightonsurface"
         android:text="@string/Masuk"
         android:layout_marginTop="18dp"
         android:textSize="22sp"

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -57,13 +58,27 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
     ): View? {
         _binding = FragmentTransactionBinding.inflate(inflater, container, false)
         factory = ViewModelFactory.getInstance(requireContext())
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        showLoading(false)
+        binding.imageView5.visibility = GONE
+        binding.textView5.visibility = GONE
+        binding.descempty.visibility = GONE
+        binding.buttonRefresh.visibility = GONE
+
+        showLoading(true)
 
         lifecycleScope.launch {
             token = model.getUserToken().first()
@@ -72,40 +87,42 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
         }
 
         itemTransaction = ArrayList()
-        model.transaction.observe(viewLifecycleOwner) {
-            if (it.code == 200) {
-                showLoading(true)
-                binding.imageView5.visibility = GONE
-                binding.textView5.visibility = GONE
-                binding.descempty.visibility = GONE
-                binding.buttonRefresh.visibility = GONE
 
-                showLoading(false)
-                binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                val adapter = TransactionAdapter(this)
-                binding.recyclerView.adapter = adapter
-                adapter.submitList(it.data)
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(1000)
+            model.transaction.observe(viewLifecycleOwner) {
+                if (it.code == 200) {
+                    showLoading(false)
+                    binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    val adapter = TransactionAdapter(this@TransactionFragment)
+                    binding.recyclerView.adapter = adapter
+                    adapter.submitList(it.data)
 
-                it.data.map { transaction ->
-                    invoiceId = transaction.invoiceId
-                    StatusValue = "Berhasil"
-                    tanggalValue = transaction.date
-                    waktuValue = transaction.time
-                    metodePembayaranValue =  transaction.payment
-                    totalPembayaranValue = transaction.total
-                    val product = TransactionDataClass(
-                        invoiceId,
-                        StatusValue,
-                        tanggalValue,
-                        waktuValue,
-                        metodePembayaranValue,
-                        totalPembayaranValue
-                    )
-                    itemTransaction.add(product)
-                }
-            } else {
-                binding.buttonRefresh.setOnClickListener {
-                    model.getTransactionData(auth)
+                    it.data.map { transaction ->
+                        invoiceId = transaction.invoiceId
+                        StatusValue = "Berhasil"
+                        tanggalValue = transaction.date
+                        waktuValue = transaction.time
+                        metodePembayaranValue = transaction.payment
+                        totalPembayaranValue = transaction.total
+                        val product = TransactionDataClass(
+                            invoiceId,
+                            StatusValue,
+                            tanggalValue,
+                            waktuValue,
+                            metodePembayaranValue,
+                            totalPembayaranValue
+                        )
+                        itemTransaction.add(product)
+                    }
+                } else {
+                    binding.imageView5.visibility = GONE
+                    binding.textView5.visibility = GONE
+                    binding.descempty.visibility = GONE
+                    binding.buttonRefresh.visibility = GONE
+                    binding.buttonRefresh.setOnClickListener {
+                        model.getTransactionData(auth)
+                    }
                 }
             }
         }
@@ -118,7 +135,7 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
         Log.d("cekItemTransaction", item.itemTransaction.size.toString())
 
         item.itemTransaction.map {
-            for(i in item.itemTransaction.indices) {
+            for (i in item.itemTransaction.indices) {
                 if (invoiceId == item.itemTransaction[i].invoiceId) {
                     (requireActivity() as MainActivity).goToStatus(item.itemTransaction[i])
                 }

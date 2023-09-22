@@ -39,7 +39,6 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/item_image"
             android:fontFamily="@font/poppins"
-            android:textColor="@color/lightonsurfacevariant"
             android:textSize="12sp"
             android:textStyle="bold"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
@@ -53,7 +52,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
             android:fontFamily="@font/bold"
-            android:textColor="@color/lightonsurfacevariant"
             android:textSize="14sp"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
             card_view:layout_constraintTop_toBottomOf="@+id/item_title"
@@ -65,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/account_circle_filled_24px"
+            android:src="@drawable/baseline_account_circle_12_black"
             card_view:layout_constraintStart_toEndOf="@id/item_image"
             card_view:layout_constraintTop_toBottomOf="@id/item_price" />
 
@@ -77,7 +75,6 @@
             android:layout_marginTop="2dp"
             android:fontFamily="@font/poppins"
             android:text="@string/store"
-            android:textColor="@color/lightonsurfacevariant"
             android:textSize="10sp"
             card_view:layout_constraintStart_toEndOf="@+id/imageView3"
             card_view:layout_constraintTop_toBottomOf="@+id/item_price"
@@ -89,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/star"
+            android:src="@drawable/baseline_star_12_black"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
             card_view:layout_constraintTop_toBottomOf="@+id/store" />
 
@@ -101,7 +98,6 @@
             android:layout_marginTop="2dp"
             android:fontFamily="@font/poppins"
             android:text="@string/Rating"
-            android:textColor="@color/lightonsurfacevariant"
             android:textSize="10sp"
             card_view:layout_constraintStart_toEndOf="@+id/imageView4"
             card_view:layout_constraintTop_toBottomOf="@+id/store"
@@ -114,7 +110,17 @@
             android:layout_height="32dp"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
-            android:src="@drawable/deleteungu_24px"
+            android:src="@drawable/baseline_delete_24"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="7dp"
+            android:background="@drawable/border"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintStart_toStartOf="parent" />
 
@@ -124,7 +130,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="48dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="@string/keranjang"
             card_view:layout_constraintStart_toEndOf="@+id/deleteIcon"
             card_view:layout_constraintTop_toBottomOf="@+id/rating_terjual"

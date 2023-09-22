@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/account_circle_filled_24px"
+            android:src="@drawable/baseline_account_circle_12_black"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@id/item_price"
             tools:ignore="MissingConstraints" />
@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/star"
+            android:src="@drawable/baseline_star_12_black"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/store"
             tools:ignore="MissingConstraints" />
@@ -119,10 +119,21 @@
             android:layout_height="32dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:src="@drawable/deleteungu_24px"
+            android:src="@drawable/baseline_delete_24"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/rating_terjual"
             tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/border"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/rating_terjual"
+            card_view:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/addCart"

@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/account_circle_filled_24px"
+            android:src="@drawable/baseline_account_circle_12_black"
             card_view:layout_constraintTop_toBottomOf="@id/item_price"
             card_view:layout_constraintStart_toStartOf="parent"
             tools:ignore="MissingConstraints" />
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/star"
+            android:src="@drawable/baseline_star_12_black"
             card_view:layout_constraintTop_toBottomOf="@+id/store"
             card_view:layout_constraintStart_toStartOf="parent"
             tools:ignore="MissingConstraints" />

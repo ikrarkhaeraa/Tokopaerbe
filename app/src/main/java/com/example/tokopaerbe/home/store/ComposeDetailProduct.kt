@@ -671,10 +671,9 @@ class ComposeDetailProduct : Fragment() {
                         )
                         Row {
                             Image(
-                                painter = painterResource(id = R.drawable.star),
+                                painter = painterResource(id = R.drawable.star_15),
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(width = 15.dp, height = 15.dp)
                                     .padding(top = 3.dp, start = 4.dp)
                             )
                             Text(

@@ -107,7 +107,7 @@
                         android:layout_width="70dp"
                         android:layout_height="60dp"
                         android:padding="16dp"
-                        android:src="@drawable/add_card"
+                        android:src="@drawable/baseline_add_card_24"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

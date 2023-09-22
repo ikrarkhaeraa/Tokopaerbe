@@ -18,9 +18,8 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorSurfaceContainerLowest"
             app:menu="@menu/top_app_bar_menu"
-            app:navigationIcon="@drawable/iconpeople"
+            app:navigationIcon="@drawable/baseline_account_circle_24"
             app:title="@string/johnDoe" />
     </com.google.android.material.appbar.AppBarLayout>
 

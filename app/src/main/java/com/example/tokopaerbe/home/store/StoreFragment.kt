@@ -9,12 +9,15 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
@@ -33,6 +36,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -77,6 +81,15 @@ class StoreFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentStoreBinding.inflate(inflater, container, false)
         factory = ViewModelFactory.getInstance(requireContext())
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
         return binding.root
     }
 
@@ -213,7 +226,9 @@ class StoreFragment : Fragment() {
 
         GlobalScope.launch(Dispatchers.Main) {
             delay(delayMillis)
-            settingAdapter()
+            if (isAdded) {
+                settingAdapter()
+            }
         }
 
 
@@ -511,4 +526,5 @@ class StoreFragment : Fragment() {
             }
         }
     }
+
 }

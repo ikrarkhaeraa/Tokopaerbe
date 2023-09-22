@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.navigateUp
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentPilihPembayaranBinding
 import com.example.tokopaerbe.databinding.FragmentStatusBinding
@@ -136,6 +137,9 @@ class StatusFragment : Fragment() {
                     var stack = 0
                     for (i in 1..100000) {
                         findNavController().navigateUp()
+                        if (!isAdded) {
+                            break
+                        }
                         stack++
                     }
                     Log.d("cekStack", stack.toString())
