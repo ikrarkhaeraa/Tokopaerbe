@@ -90,41 +90,45 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
 
         GlobalScope.launch(Dispatchers.Main) {
             delay(1000)
-            model.transaction.observe(viewLifecycleOwner) {
-                if (it.code == 200) {
-                    showLoading(false)
-                    binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                    val adapter = TransactionAdapter(this@TransactionFragment)
-                    binding.recyclerView.adapter = adapter
-                    adapter.submitList(it.data)
 
-                    it.data.map { transaction ->
-                        invoiceId = transaction.invoiceId
-                        StatusValue = "Berhasil"
-                        tanggalValue = transaction.date
-                        waktuValue = transaction.time
-                        metodePembayaranValue = transaction.payment
-                        totalPembayaranValue = transaction.total
-                        val product = TransactionDataClass(
-                            invoiceId,
-                            StatusValue,
-                            tanggalValue,
-                            waktuValue,
-                            metodePembayaranValue,
-                            totalPembayaranValue
-                        )
-                        itemTransaction.add(product)
-                    }
-                } else {
-                    binding.imageView5.visibility = GONE
-                    binding.textView5.visibility = GONE
-                    binding.descempty.visibility = GONE
-                    binding.buttonRefresh.visibility = GONE
-                    binding.buttonRefresh.setOnClickListener {
-                        model.getTransactionData(auth)
+            if(isAdded) {
+                model.transaction.observe(viewLifecycleOwner) {
+                    if (it.code == 200) {
+                        showLoading(false)
+                        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                        val adapter = TransactionAdapter(this@TransactionFragment)
+                        binding.recyclerView.adapter = adapter
+                        adapter.submitList(it.data)
+
+                        it.data.map { transaction ->
+                            invoiceId = transaction.invoiceId
+                            StatusValue = "Berhasil"
+                            tanggalValue = transaction.date
+                            waktuValue = transaction.time
+                            metodePembayaranValue = transaction.payment
+                            totalPembayaranValue = transaction.total
+                            val product = TransactionDataClass(
+                                invoiceId,
+                                StatusValue,
+                                tanggalValue,
+                                waktuValue,
+                                metodePembayaranValue,
+                                totalPembayaranValue
+                            )
+                            itemTransaction.add(product)
+                        }
+                    } else {
+                        binding.imageView5.visibility = GONE
+                        binding.textView5.visibility = GONE
+                        binding.descempty.visibility = GONE
+                        binding.buttonRefresh.visibility = GONE
+                        binding.buttonRefresh.setOnClickListener {
+                            model.getTransactionData(auth)
+                        }
                     }
                 }
             }
+
         }
 
     }
