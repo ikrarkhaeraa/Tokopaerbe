@@ -107,10 +107,10 @@ class ComposeDetailProduct : Fragment() {
     private val model: ViewModel by activityViewModels()
     private val args: ComposeDetailProductArgs by navArgs()
     private var productId: String = ""
+    private var token: String = ""
     private var listSearchResult: List<String>? = listOf()
     private var productVariant: List<ProductVariant>? = listOf()
     private var isIconBorder = true
-//    private var index: Int = 0
 
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
@@ -135,12 +135,12 @@ class ComposeDetailProduct : Fragment() {
     fun DetailProductScreenViewModel(
     ) {
 
-//        val userToken = model.getUserToken().collectAsState(initial = null).value
-//        val token = "Bearer $userToken"
-//        Log.d("cekTokenForDetail", token)
+        val userToken = model.getUserToken().collectAsState(initial = null).value
+        token = "Bearer $userToken"
+        Log.d("cekTokenForDetail", token)
         productId = args.productIdCompose
         Log.d("cekComposeId", productId)
-        model.getDetailProductData(productId)
+        model.getDetailProductData(token, productId)
 
 
         var price: Int? = 0
@@ -881,7 +881,7 @@ class ComposeDetailProduct : Fragment() {
 
                 Button(
                     onClick = {
-                            model.getDetailProductData(productId)
+                            model.getDetailProductData(token, productId)
                     }
                 ) {
                     Text(text = stringResource(id = R.string.refreshButtonError))

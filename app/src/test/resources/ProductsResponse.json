@@ -1,0 +1,32 @@
+{
+  "code": 200,
+  "message": "OK",
+  "data": {
+    "itemsPerPage": 10,
+    "currentItemCount": 10,
+    "pageIndex": 1,
+    "totalPages": 3,
+    "items": [
+      {
+        "productId": "601bb59a-4170-4b0a-bd96-f34538922c7c",
+        "productName": "Lenovo Legion 3",
+        "productPrice": 10000000,
+        "image": "image1",
+        "brand": "Lenovo",
+        "store": "LenovoStore",
+        "sale": 2,
+        "productRating": 4.0
+      },
+      {
+        "productId": "3134a179-dff6-464f-b76e-d7507b06887b",
+        "productName": "Lenovo Legion 5",
+        "productPrice": 15000000,
+        "image": "image1",
+        "brand": "Lenovo",
+        "store": "LenovoStore",
+        "sale": 4,
+        "productRating": 4.0
+      }
+    ]
+  }
+}

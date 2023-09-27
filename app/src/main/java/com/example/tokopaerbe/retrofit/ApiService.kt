@@ -53,18 +53,6 @@ interface ApiService {
     ): Call<RefreshResponse>
 
     @POST("products")
-    fun uploadDataProducts(
-        @Header("Authorization") auth: String,
-        @Query("search") search: String?,
-        @Query("brand") brand: String?,
-        @Query("lowest") lowest: Int?,
-        @Query("highest") highest: Int?,
-        @Query("sort") sort: String?,
-        @Query("limit") limit: Int?,
-        @Query("page") page: Int?,
-    ): Call<ProductsResponse>
-
-    @POST("products")
     suspend fun uploadDataProductsPagging(
         @Header("Authorization") auth: String,
         @Query("search") search: String?,

@@ -14,8 +14,9 @@ import com.example.tokopaerbe.retrofit.user.UserRegister
 import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class UserPreferences (private val database: DataStore<Preferences>) {
+class UserPreferences @Inject constructor (private val database: DataStore<Preferences>) {
 
     companion object {
         @Volatile
@@ -35,13 +36,13 @@ class UserPreferences (private val database: DataStore<Preferences>) {
         private val HIGHEST_KEY = stringPreferencesKey("highest")
         private val DARKTHEME_KEY = booleanPreferencesKey("darkTheme")
 
-        fun getInstance(database: DataStore<Preferences>): UserPreferences {
-            return INSTANCE ?: synchronized(this) {
-                val instance = UserPreferences(database)
-                INSTANCE = instance
-                instance
-            }
-        }
+//        fun getInstance(database: DataStore<Preferences>): UserPreferences {
+//            return INSTANCE ?: synchronized(this) {
+//                val instance = UserPreferences(database)
+//                INSTANCE = instance
+//                instance
+//            }
+//        }
     }
 
     suspend fun saveCode(errorState: ErrorState) {

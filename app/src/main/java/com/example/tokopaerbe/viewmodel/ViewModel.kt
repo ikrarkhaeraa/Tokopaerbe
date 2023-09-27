@@ -47,7 +47,6 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     val transaction: LiveData<TransactionResponse> = data.transaction
 
 
-
     private var _search: String = ""
     var searchFilter: String = ""
     fun setSearchValue(searchText: String) {
@@ -323,11 +322,11 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         }
     }
 
-    fun getDetailProductData(id: String) {
+    fun getDetailProductData(auth: String, id: String) {
         viewModelScope.launch {
-            val token = getUserToken().first()
-            val auth = "Bearer $token"
-            Log.d("cekAuthDetail", auth)
+//            val token = getUserToken().first()
+//            val auth = "Bearer $token"
+//            Log.d("cekAuthDetail", auth)
             data.getDetailProductData(auth, id)
         }
     }

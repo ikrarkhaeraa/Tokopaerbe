@@ -1,0 +1,8 @@
+{
+  "code": 200,
+  "message": "OK",
+  "data": {
+    "userName": "Test",
+    "userImage": "1d32ba79-e879-4425-a011-2da4281f1c1b-test.png"
+  }
+}

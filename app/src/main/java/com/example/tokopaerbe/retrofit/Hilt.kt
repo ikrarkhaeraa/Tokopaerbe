@@ -12,8 +12,8 @@ import androidx.room.Room
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.tokopaerbe.MyApplication
 import com.example.tokopaerbe.room.CartDao
-import com.example.tokopaerbe.room.CartDatabase
 import com.example.tokopaerbe.room.NotificationDao
+import com.example.tokopaerbe.room.ProductDatabase
 import com.example.tokopaerbe.room.WishlistDao
 import com.example.tokopaerbe.viewmodel.ViewModel
 import dagger.Module
@@ -50,8 +50,14 @@ object Hilt {
 
     @Singleton
     @Provides
-    fun provideUserPreferences(@ApplicationContext context: Context): UserPreferences {
-        return UserPreferences(context.database)
+    fun provideUserPreferences(dataStore: DataStore<Preferences>): UserPreferences {
+        return UserPreferences(dataStore)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return context.database
     }
 
     @Singleton
@@ -72,28 +78,28 @@ object Hilt {
 
     @Singleton
     @Provides
-    fun providecartDao(database: CartDatabase): CartDao{
+    fun providecartDao(database: ProductDatabase): CartDao{
         return database.productDao()
     }
 
     @Singleton
     @Provides
-    fun providewishDao(database: CartDatabase): WishlistDao{
+    fun providewishDao(database: ProductDatabase): WishlistDao{
         return database.wishlistDao()
     }
 
     @Singleton
     @Provides
-    fun providenotifDao(database: CartDatabase): NotificationDao{
+    fun providenotifDao(database: ProductDatabase): NotificationDao{
         return database.notificationDao()
     }
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context): CartDatabase {
+    fun provideDatabase(@ApplicationContext context: Context): ProductDatabase {
        return Room.databaseBuilder(
             context.applicationContext,
-            CartDatabase::class.java, "productAdded.db"
+           ProductDatabase::class.java, "productAdded.db"
         ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
     }
 }

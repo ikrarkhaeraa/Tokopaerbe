@@ -1,0 +1,25 @@
+{
+  "code": 200,
+  "message": "OK",
+  "data": [
+    {
+      "invoiceId": "8cad85b1-a28f-42d8-9479-72ce4b7f3c7d",
+      "status": true,
+      "date": "09 Jun 2023",
+      "time": "09:05",
+      "payment": "Bank BCA",
+      "total": 48998000,
+      "items": [
+        {
+          "productId": "bee98108-660c-4ac0-97d3-63cdc1492f53",
+          "variantName": "RAM 16GB",
+          "quantity": 2
+        }
+      ],
+      "rating": 4,
+      "review": "LGTM",
+      "image": "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/6/0a49c399-cf6b-47f5-91c9-8cbd0b86462d.jpg",
+      "name": "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray"
+    }
+  ]
+}

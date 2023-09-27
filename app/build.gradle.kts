@@ -71,7 +71,9 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics-ktx:18.4.3")
     implementation("com.google.firebase:firebase-config-ktx:21.4.1")
     implementation("com.google.firebase:firebase-messaging-ktx:23.2.1")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
@@ -156,6 +158,18 @@ dependencies {
 
     //Lottie
     implementation ("com.airbnb.android:lottie:4.2.2")
+
+    //Testing
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("androidx.test:core:1.5.0")
+    testImplementation ("org.mockito:mockito-core:5.4.0")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:5.0.0")
+    testImplementation ("io.mockk:mockk:1.4.1")
+    testImplementation ("com.squareup.okhttp3:mockwebserver:4.11.0")
+    testImplementation ("org.robolectric:robolectric:4.10.3")
+    testImplementation ("androidx.arch.core:core-testing:2.2.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation ("io.mockk:mockk:1.4.1")
 
 }
 

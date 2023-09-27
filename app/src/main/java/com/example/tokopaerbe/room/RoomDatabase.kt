@@ -8,19 +8,19 @@ import androidx.room.RoomDatabase
 @Database(entities = [CartEntity::class, WishlistEntity::class, NotificationsEntity::class],
     version = 2,
     exportSchema = false,)
-abstract class CartDatabase : RoomDatabase() {
+abstract class ProductDatabase : RoomDatabase() {
     abstract fun productDao(): CartDao
     abstract fun wishlistDao(): WishlistDao
     abstract fun notificationDao(): NotificationDao
 
     companion object {
         @Volatile
-        private var instance: CartDatabase? = null
-        fun getInstance(context: Context): CartDatabase =
+        private var instance: ProductDatabase? = null
+        fun getInstance(context: Context): ProductDatabase =
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext,
-                    CartDatabase::class.java, "productAdded.db"
+                    ProductDatabase::class.java, "productAdded.db"
                 ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
             }
     }
