@@ -8,6 +8,7 @@ plugins {
     id ("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("org.gradle.jacoco")
 }
 
 android {
@@ -58,6 +59,43 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    val jacocoTestReport = tasks.create("jacocoTestReport")
+
+
+    androidComponents.onVariants { variant ->
+        val testTaskName = "test${variant.name.capitalize()}UnitTest"
+
+
+        val reportTask =
+            tasks.register("jacoco${testTaskName.capitalize()}Report", JacocoReport::class) {
+                dependsOn(testTaskName)
+
+
+                reports {
+                    html.required.set(true)
+                }
+
+
+                classDirectories.setFrom(
+                    fileTree("$buildDir/tmp/kotlin-classes/${variant.name}") {
+                        exclude(coverageExclusions)
+                    }
+                )
+
+
+                sourceDirectories.setFrom(
+                    files("$projectDir/src/main/java")
+                )
+                 executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
+//                executionData.setFrom(file("$buildDir/outputs/unit_test_code_coverage/${variant.name}UnitTest/$testTaskName.exec"))
+            }
+
+
+        jacocoTestReport.dependsOn(reportTask)
+    }
+
+
 }
 
 dependencies {
@@ -172,4 +210,25 @@ dependencies {
     testImplementation ("io.mockk:mockk:1.4.1")
 
 }
+
+private val coverageExclusions = listOf(
+    "**/R.class",
+    "**/R\$*.class",
+    "**/BuildConfig.*",
+    "**/Manifest*.*"
+)
+
+
+configure<JacocoPluginExtension> {
+    toolVersion = "0.8.10"
+}
+
+
+tasks.withType<Test>().configureEach {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
+}
+
 

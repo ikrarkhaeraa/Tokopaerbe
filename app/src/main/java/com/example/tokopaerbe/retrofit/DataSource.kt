@@ -277,6 +277,7 @@ class DataSource @Inject constructor(
                     _transaction.value = response.body()
                 } else {
                     Log.e("transaction", "onResponse: ${response.message()}")
+                    _transaction.value = response.body()
                 }
             }
             override fun onFailure(call: Call<TransactionResponse>, t: Throwable) {

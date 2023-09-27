@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentTransaction
@@ -93,7 +94,18 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
 
             if(isAdded) {
                 model.transaction.observe(viewLifecycleOwner) {
-                    if (it.code == 200) {
+                    if (it == null) {
+                        Log.d("transaction", it.toString())
+                        showLoading(false)
+                        binding.imageView5.visibility = VISIBLE
+                        binding.textView5.visibility = VISIBLE
+                        binding.descempty.visibility = VISIBLE
+                        binding.buttonRefresh.visibility = VISIBLE
+                        binding.buttonRefresh.setOnClickListener {
+                            refresh()
+                        }
+                    } else if (it.code == 200) {
+                        Log.d("transaction", it.code.toString())
                         showLoading(false)
                         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
                         val adapter = TransactionAdapter(this@TransactionFragment)
@@ -118,12 +130,14 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
                             itemTransaction.add(product)
                         }
                     } else {
-                        binding.imageView5.visibility = GONE
-                        binding.textView5.visibility = GONE
-                        binding.descempty.visibility = GONE
-                        binding.buttonRefresh.visibility = GONE
+                        Log.d("transaction", it.toString())
+                        showLoading(false)
+                        binding.imageView5.visibility = VISIBLE
+                        binding.textView5.visibility = VISIBLE
+                        binding.descempty.visibility = VISIBLE
+                        binding.buttonRefresh.visibility = VISIBLE
                         binding.buttonRefresh.setOnClickListener {
-                            model.getTransactionData(auth)
+                            refresh()
                         }
                     }
                 }
@@ -152,6 +166,18 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
             binding.progressBar.visibility = View.VISIBLE
         } else {
             binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun refresh() {
+        binding.imageView5.visibility = GONE
+        binding.textView5.visibility = GONE
+        binding.descempty.visibility = GONE
+        binding.buttonRefresh.visibility = GONE
+        showLoading(true)
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(1000)
+            model.getTransactionData(auth)
         }
     }
 

@@ -202,7 +202,7 @@ class ComposeDetailProduct : Fragment() {
 
         LaunchedEffect(Unit) {
             coroutineScope.launch {
-                delay(500)
+                delay(1000)
                 showDetail = true
             }
         }

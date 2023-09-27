@@ -15,6 +15,7 @@
             android:id="@+id/lottieAnimationView"
             android:layout_width="300dp"
             android:layout_height="300dp"
+            app:lottie_loop="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.684"
             app:layout_constraintStart_toStartOf="parent"

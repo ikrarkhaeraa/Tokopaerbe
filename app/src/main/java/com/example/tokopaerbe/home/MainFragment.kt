@@ -1,6 +1,7 @@
 package com.example.tokopaerbe.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,9 @@ import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -50,7 +54,7 @@ class MainFragment : Fragment() {
     }
 
     @androidx.annotation.OptIn(com.google.android.material.badge.ExperimentalBadgeUtils::class)
-    override fun  onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         runBlocking {
@@ -68,18 +72,25 @@ class MainFragment : Fragment() {
         val navView: NavigationView? = binding.navView840
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_store, R.id.navigation_wishlist, R.id.navigation_transaction
+                R.id.navigation_home,
+                R.id.navigation_store,
+                R.id.navigation_wishlist,
+                R.id.navigation_transaction
             )
         )
 
 
         binding.topAppBar.setOnMenuItemClickListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.menu_item_1 -> {
                     findNavController().navigate(R.id.action_main_to_notificationsFragment)
-                } R.id.menu_item_2 -> {
+                }
+
+                R.id.menu_item_2 -> {
                     findNavController().navigate(R.id.action_main_to_cartFragment)
-                } R.id.menu_item_3 -> {
+                }
+
+                R.id.menu_item_3 -> {
                     // ke menu
                 }
             }
@@ -114,6 +125,7 @@ class MainFragment : Fragment() {
         val badgeDrawableNotif = BadgeDrawable.create(requireContext())
         BadgeUtils.attachBadgeDrawable(badgeDrawableNotif, binding.topAppBar, R.id.menu_item_1)
         model.getUnreadNotificatios(false).observe(viewLifecycleOwner) {
+            Log.d("cekNotifSize", it?.size.toString())
             if (it.isNullOrEmpty()) {
                 badgeDrawableNotif.isVisible = false
             } else {
@@ -125,7 +137,8 @@ class MainFragment : Fragment() {
 
         model.getWishList().observe(viewLifecycleOwner) {
             val badgeDrawableWishList = binding.navView?.getOrCreateBadge(R.id.navigation_wishlist)
-            val badgeDrawableWishList600 = binding.navView600?.getOrCreateBadge(R.id.navigation_wishlist)
+            val badgeDrawableWishList600 =
+                binding.navView600?.getOrCreateBadge(R.id.navigation_wishlist)
             if (it.isNullOrEmpty()) {
                 badgeDrawableWishList?.isVisible = false
                 badgeDrawableWishList600?.isVisible = false
@@ -136,7 +149,7 @@ class MainFragment : Fragment() {
                 badgeDrawableWishList600?.number = it.size
             }
         }
-
     }
+
 
 }

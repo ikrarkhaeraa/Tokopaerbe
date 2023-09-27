@@ -40,8 +40,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         remoteMessage.data.let {
             Log.d(TAG, "Message Notification Body: $it")
-            sendNotification(it)
         }
+
+        sendNotification(remoteMessage.data)
 
         Log.d("cekNotif", remoteMessage.data["body"].toString())
 
@@ -107,7 +108,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val notificationId = 0
+        val notificationId = System.currentTimeMillis().toInt()
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
 

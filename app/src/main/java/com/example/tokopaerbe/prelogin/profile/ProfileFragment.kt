@@ -59,7 +59,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
-    private val delayMillis = 5000L
+    private val delayMillis = 3000L
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     companion object {

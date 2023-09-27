@@ -48,7 +48,7 @@ class LoginFragment : Fragment() {
     private lateinit var password: String
     private var API_KEY = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
     private var firebaseToken = ""
-    private val delayMillis = 5000L
+    private val delayMillis = 3000L
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
