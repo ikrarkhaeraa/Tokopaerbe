@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/modalBottomSheet"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".home.store.ModalBottomSheetFragment">
 
@@ -44,54 +44,54 @@
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipgroup1"
-        app:singleSelection="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:closeIconVisible="false"
-            app:checkedIconVisible="false"
-            style="@style/Widget.Material3.Chip.Input"
+            android:fontFamily="@font/medium"
             android:text="@string/ulasan"
-            android:fontFamily="@font/medium"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIconVisible="false" />
 
         <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Input"
+            android:fontFamily="@font/medium"
             android:text="@string/penjualan"
-            app:closeIconVisible="false"
+            android:textSize="14sp"
             app:checkedIconVisible="false"
-            android:fontFamily="@font/medium"
-            android:textSize="14sp"/>
+            app:closeIconVisible="false" />
 
         <com.google.android.material.chip.Chip
-            android:layout_width="wrap_content"
             style="@style/Widget.Material3.Chip.Input"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/medium"
             android:text="@string/hargaTerendah"
-            app:closeIconVisible="false"
+            android:textSize="14sp"
             app:checkedIconVisible="false"
-            android:fontFamily="@font/medium"
-            android:textSize="14sp"/>
+            app:closeIconVisible="false" />
 
         <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Input"
-            android:text="@string/hargaTertinggi"
-            app:closeIconVisible="false"
-            app:checkedIconVisible="false"
             android:fontFamily="@font/medium"
-            android:textSize="14sp"/>
+            android:text="@string/hargaTertinggi"
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIconVisible="false" />
 
     </com.google.android.material.chip.ChipGroup>
 
@@ -111,52 +111,52 @@
         android:id="@+id/chipgroup2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:singleSelection="true"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:singleSelection="true">
 
         <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Input"
+            android:fontFamily="@font/medium"
             android:text="@string/apple"
-            app:closeIconVisible="false"
+            android:textSize="14sp"
             app:checkedIconVisible="false"
-            android:fontFamily="@font/medium"
-            android:textSize="14sp"/>
+            app:closeIconVisible="false" />
 
         <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Input"
+            android:fontFamily="@font/medium"
             android:text="@string/asus"
-            app:closeIconVisible="false"
+            android:textSize="14sp"
             app:checkedIconVisible="false"
-            android:fontFamily="@font/medium"
-            android:textSize="14sp"/>
+            app:closeIconVisible="false" />
 
         <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Input"
+            android:fontFamily="@font/medium"
             android:text="@string/dell"
-            app:closeIconVisible="false"
+            android:textSize="14sp"
             app:checkedIconVisible="false"
-            android:fontFamily="@font/medium"
-            android:textSize="14sp"/>
+            app:closeIconVisible="false" />
 
         <com.google.android.material.chip.Chip
+            style="@style/Widget.Material3.Chip.Input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Material3.Chip.Input"
-            android:text="@string/lenovo"
-            app:closeIconVisible="false"
-            app:checkedIconVisible="false"
             android:fontFamily="@font/medium"
-            android:textSize="14sp"/>
+            android:text="@string/lenovo"
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIconVisible="false" />
 
     </com.google.android.material.chip.ChipGroup>
 
@@ -176,8 +176,8 @@
         android:id="@+id/textFieldterendah"
         android:layout_width="182dp"
         android:layout_height="wrap_content"
-        android:hint="@string/terendah"
         android:layout_marginStart="16dp"
+        android:hint="@string/terendah"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4">
 
@@ -185,7 +185,7 @@
             android:id="@+id/editTextTerendah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"/>
+            android:inputType="number" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -208,8 +208,8 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        style="@style/Widget.Material3.Button.IconButton.Filled"
         android:id="@+id/tampilkanproduk"
+        style="@style/Widget.Material3.Button.IconButton.Filled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"

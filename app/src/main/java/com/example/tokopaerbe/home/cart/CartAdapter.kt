@@ -25,7 +25,8 @@ class CartAdapter(private val model: ViewModel) :
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
-        val binding = ItemCartBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding =
+            ItemCartBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return ListViewHolder(binding)
     }
 
@@ -51,7 +52,6 @@ class CartAdapter(private val model: ViewModel) :
             }
         }
 
-
         val deleteIcon = holder.binding.deleteIcon
         deleteIcon.setOnClickListener {
             model.deleteCartProduct(cartEntity.productId)
@@ -62,7 +62,6 @@ class CartAdapter(private val model: ViewModel) :
                 param(FirebaseAnalytics.Param.VALUE, cartEntity.productPrice.toString())
                 param(FirebaseAnalytics.Param.ITEMS, arrayOf(cartEntity).toString())
             }
-
         }
 
         togglePlus.setOnClickListener {
@@ -82,7 +81,6 @@ class CartAdapter(private val model: ViewModel) :
             totalToggleValue = newTotal
             model.quantity(cartEntity.productId, totalToggleValue)
         }
-
     }
 
     class ListViewHolder(var binding: ItemCartBinding) :
@@ -108,6 +106,7 @@ class CartAdapter(private val model: ViewModel) :
                 checkBox2.isChecked = data.isChecked
             }
         }
+
         private fun formatPrice(price: Double): String {
             val numberFormat = NumberFormat.getNumberInstance(
                 Locale(
@@ -129,5 +128,4 @@ class CartAdapter(private val model: ViewModel) :
             return oldItem == newItem
         }
     }
-
 }

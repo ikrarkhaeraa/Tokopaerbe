@@ -7,13 +7,13 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.tokopaerbe.databinding.ItemProductBinding
 import com.example.tokopaerbe.databinding.ItemProductGridBinding
 import com.example.tokopaerbe.retrofit.response.Product
 import java.text.NumberFormat
 import java.util.Locale
 
-class GridProductAdapter (private val onProductClick: (Product) -> Unit) : PagingDataAdapter<Product, GridProductAdapter.ListViewHolder>(DIFF_CALLBACK) {
+class GridProductAdapter(private val onProductClick: (Product) -> Unit) :
+    PagingDataAdapter<Product, GridProductAdapter.ListViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Product>() {
@@ -34,7 +34,8 @@ class GridProductAdapter (private val onProductClick: (Product) -> Unit) : Pagin
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
-        val binding = ItemProductGridBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding =
+            ItemProductGridBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return ListViewHolder(binding)
     }
 
@@ -48,11 +49,11 @@ class GridProductAdapter (private val onProductClick: (Product) -> Unit) : Pagin
         }
     }
 
-
-    class ListViewHolder(var binding: ItemProductGridBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ListViewHolder(var binding: ItemProductGridBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
-        fun bind(productData: Product){
-            binding.apply{
+        fun bind(productData: Product) {
+            binding.apply {
                 Glide.with(itemView)
                     .load(productData.image)
                     .into(binding.itemImage)
@@ -60,14 +61,19 @@ class GridProductAdapter (private val onProductClick: (Product) -> Unit) : Pagin
                 val itemPrice = formatPrice(productData.productPrice.toDouble())
                 binding.itemPrice.text = "Rp$itemPrice"
                 binding.store.text = productData.store
-                binding.ratingTerjual.text = "${productData.productRating} | Terjual ${productData.sale}"
+                binding.ratingTerjual.text =
+                    "${productData.productRating} | Terjual ${productData.sale}"
             }
         }
 
         private fun formatPrice(price: Double): String {
-            val numberFormat = NumberFormat.getNumberInstance(Locale("id", "ID")) // Use the appropriate locale for your formatting
+            val numberFormat = NumberFormat.getNumberInstance(
+                Locale(
+                    "id",
+                    "ID"
+                )
+            ) // Use the appropriate locale for your formatting
             return numberFormat.format(price)
         }
     }
-
 }

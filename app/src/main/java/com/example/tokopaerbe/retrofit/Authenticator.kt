@@ -3,12 +3,10 @@ import android.util.Log
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.tokopaerbe.retrofit.ApiService
 import com.example.tokopaerbe.retrofit.RefreshRequestBody
-import com.example.tokopaerbe.retrofit.RegisterRequestBody
 import com.example.tokopaerbe.retrofit.UserPreferences
 import com.example.tokopaerbe.retrofit.response.RefreshResponse
-import com.google.gson.GsonBuilder
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -19,43 +17,37 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
-class Authenticator @Inject constructor(val preferences: UserPreferences, val chucker:Context) : Authenticator {
-
+class Authenticator @Inject constructor(val preferences: UserPreferences, val chucker: Context) :
+    Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
         synchronized(this) {
             return runBlocking {
-                        val refreshToken = refreshAuthToken()
-                        Log.d("cekNewToken", refreshToken.toString())
-                        if (refreshToken != null) {
-                           response.request.newBuilder()
-                                .header("Authorization", "Bearer $refreshToken")
-                                .build()
-                        } else {
-                            null
+                val refreshToken = refreshAuthToken()
+                Log.d("cekNewToken", refreshToken.toString())
+                if (refreshToken != null) {
+                    response.request.newBuilder()
+                        .header("Authorization", "Bearer $refreshToken")
+                        .build()
+                } else {
+                    null
                 }
             }
         }
     }
 
-
     private suspend fun refreshAuthToken(): String? {
-
         val apiKey = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
         val refreshToken = preferences.getRefreshToken().first().toString()
 
         Log.d("cekToken", refreshToken)
 
         return try {
-
-            val refreshResponse = getNewToken(apiKey,refreshToken).execute()
+            val refreshResponse = getNewToken(apiKey, refreshToken).execute()
 
             if (refreshResponse.isSuccessful) {
                 refreshResponse.body()?.data?.accessToken
-
             } else if (refreshResponse.code() == 401) {
                 preferences.logout()
                 preferences.install()
@@ -63,14 +55,12 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
             } else {
                 "error"
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d("cekE", e.toString())
             null
         }
     }
-
 
     private fun getNewToken(apiKey: String, token: String): Call<RefreshResponse> {
         val loggingInterceptor = HttpLoggingInterceptor()
@@ -79,7 +69,8 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
         val chuckerInterceptor = ChuckerInterceptor.Builder(chucker)
             .build()
 
-        val okHttpClient = OkHttpClient.Builder().addInterceptor(loggingInterceptor).addInterceptor(chuckerInterceptor).build()
+        val okHttpClient = OkHttpClient.Builder().addInterceptor(loggingInterceptor)
+            .addInterceptor(chuckerInterceptor).build()
 
         val retrofit = Retrofit.Builder()
             .baseUrl("http://172.17.20.114:5000/")
@@ -91,16 +82,4 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
         val requestBody = RefreshRequestBody(token)
         return service.uploadDataRefresh(apiKey, requestBody)
     }
-
-
 }
-
-
-
-
-
-
-
-
-
-

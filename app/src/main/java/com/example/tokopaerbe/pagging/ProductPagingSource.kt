@@ -7,7 +7,6 @@ import com.example.tokopaerbe.retrofit.ApiService
 import com.example.tokopaerbe.retrofit.UserPreferences
 import com.example.tokopaerbe.retrofit.response.Product
 import com.example.tokopaerbe.retrofit.user.ErrorState
-import com.example.tokopaerbe.retrofit.user.UserRegister
 import kotlinx.coroutines.flow.first
 import retrofit2.HttpException
 
@@ -53,7 +52,7 @@ class ProductPagingSource(
             Log.d("pagingError", exception.toString())
             when (exception) {
                 is HttpException ->
-                    if (exception.code() == 200){
+                    if (exception.code() == 200) {
                         preferences.saveCode(ErrorState(exception.code()))
                     } else if (exception.code() == 404) {
                         preferences.saveCode(ErrorState(exception.code()))

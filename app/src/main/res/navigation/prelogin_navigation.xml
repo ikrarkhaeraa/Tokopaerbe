@@ -87,8 +87,7 @@
             android:id="@+id/action_onboardingFragment_to_profileFragment"
             app:destination="@id/profileFragment"
             app:popUpTo="@id/prelogin_navigation"
-            app:popUpToInclusive="true"
-            />
+            app:popUpToInclusive="true" />
 
     </fragment>
 

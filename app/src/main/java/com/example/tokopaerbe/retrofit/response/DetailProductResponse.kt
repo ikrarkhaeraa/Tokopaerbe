@@ -2,7 +2,7 @@ package com.example.tokopaerbe.retrofit.response
 
 import com.google.gson.annotations.SerializedName
 
-data class DetailProductResponse (
+data class DetailProductResponse(
 
     @field:SerializedName("data")
     val data: DetailProduct,
@@ -14,57 +14,55 @@ data class DetailProductResponse (
     val message: String
 )
 
-data class DetailProduct (
+data class DetailProduct(
     @field:SerializedName("productId")
-    val productId : String,
+    val productId: String,
 
     @field:SerializedName("productName")
-    val productName : String,
+    val productName: String,
 
     @field:SerializedName("productPrice")
-    val productPrice : Int,
+    val productPrice: Int,
 
     @field:SerializedName("image")
-    val image : List<String>,
+    val image: List<String>,
 
     @field:SerializedName("brand")
-    val brand : String,
+    val brand: String,
 
     @field:SerializedName("description")
-    val description : String,
+    val description: String,
 
     @field:SerializedName("store")
-    val store : String,
+    val store: String,
 
     @field:SerializedName("sale")
-    val sale : Int,
+    val sale: Int,
 
     @field:SerializedName("stock")
-    val stock : Int,
+    val stock: Int,
 
     @field:SerializedName("totalRating")
-    val totalRating : Int,
+    val totalRating: Int,
 
     @field:SerializedName("totalReview")
-    val totalReview : Int,
+    val totalReview: Int,
 
     @field:SerializedName("totalSatisfaction")
-    val totalSatisfaction : Int,
+    val totalSatisfaction: Int,
 
     @field:SerializedName("productRating")
-    val productRating : Float,
+    val productRating: Float,
 
     @field:SerializedName("productVariant")
-    val productVariant : List<ProductVariant>
+    val productVariant: List<ProductVariant>
 )
 
-data class ProductVariant (
+data class ProductVariant(
 
     @field:SerializedName("variantName")
-    val variantName : String,
+    val variantName: String,
 
     @field:SerializedName("variantPrice")
-    val variantPrice : Int
+    val variantPrice: Int
 )
-
-

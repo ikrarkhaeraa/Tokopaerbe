@@ -5,8 +5,8 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardBackgroundColor="?android:attr/windowBackground"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    card_view:cardBackgroundColor="?android:attr/windowBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:id="@+id/materialDivider1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            card_view:layout_constraintTop_toTopOf="parent"/>
+            card_view:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/item_image"
@@ -47,9 +47,9 @@
             style="?attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:numStars="5"
             android:stepSize="1"
-            android:layout_marginStart="8dp"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
             card_view:layout_constraintTop_toBottomOf="@+id/reviewerName" />
 
@@ -57,21 +57,21 @@
             android:id="@+id/review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:text="@string/review"
             card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@id/item_image" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/materialDivider2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            card_view:layout_constraintBottom_toBottomOf="parent"/>
+            card_view:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

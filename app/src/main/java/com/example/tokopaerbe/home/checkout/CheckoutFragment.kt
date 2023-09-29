@@ -3,12 +3,12 @@ package com.example.tokopaerbe.home.checkout
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -19,21 +19,18 @@ import com.bumptech.glide.Glide
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentCheckoutBinding
 import com.example.tokopaerbe.home.transaction.TransactionDataClass
-import com.example.tokopaerbe.retrofit.response.Item
-import com.example.tokopaerbe.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
-import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
+class CheckoutFragment : Fragment(), CheckoutAdapter.OnItemClickListener {
 
     private var _binding: FragmentCheckoutBinding? = null
     private val binding get() = _binding!!
@@ -50,7 +47,8 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentCheckoutBinding.inflate(inflater, container, false)
@@ -120,7 +118,8 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
                 val product = com.example.tokopaerbe.retrofit.Item(
                     it.productId,
                     it.productVariant,
-                    it.productQuantity)
+                    it.productQuantity
+                )
                 listProductFulfillment.add(product)
 
                 Log.d("cekfulfillmentData", listProductFulfillment.toString())
@@ -137,9 +136,13 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
                     model.postDataFulfillment(auth, label!!, listProductFulfillment)
 
                     lifecycleScope.launch {
-                        model.fulfillment.observe(viewLifecycleOwner){
+                        model.fulfillment.observe(viewLifecycleOwner) {
                             if (it.code == 200) {
-                                findNavController().navigate(R.id.action_checkoutFragment_to_statusFragment, StatusFragmentArgs(item).toBundle(), navOptions = null)
+                                findNavController().navigate(
+                                    R.id.action_checkoutFragment_to_statusFragment,
+                                    StatusFragmentArgs(item).toBundle(),
+                                    navOptions = null
+                                )
                             }
                         }
                     }
@@ -148,10 +151,8 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
                 firebaseAnalytics.logEvent("button_click") {
                     param(FirebaseAnalytics.Param.METHOD, "Payment Button")
                 }
-
             }
         }
-
     }
 
     override fun onItemClick(position: Int, item: CheckoutDataClass) {
@@ -186,5 +187,4 @@ class CheckoutFragment : Fragment(),CheckoutAdapter.OnItemClickListener {
             binding.progressBar.visibility = GONE
         }
     }
-
 }

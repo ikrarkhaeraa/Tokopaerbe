@@ -2,7 +2,7 @@ package com.example.tokopaerbe.retrofit.response
 
 import com.google.gson.annotations.SerializedName
 
-data class PaymentResponse (
+data class PaymentResponse(
 
     @field:SerializedName("data")
     val data: List<Payment>,
@@ -14,22 +14,22 @@ data class PaymentResponse (
     val message: String
 )
 
-data class Payment (
+data class Payment(
     @field:SerializedName("title")
-    val title : String,
+    val title: String,
 
     @field:SerializedName("item")
-    val item : List<PaymentMethod>
+    val item: List<PaymentMethod>
 )
 
-data class PaymentMethod (
+data class PaymentMethod(
 
     @field:SerializedName("label")
-    val label : String,
+    val label: String,
 
     @field:SerializedName("image")
-    val image : String,
+    val image: String,
 
     @field:SerializedName("status")
-    var status : Boolean
+    var status: Boolean
 )

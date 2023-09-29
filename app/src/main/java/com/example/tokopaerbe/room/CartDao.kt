@@ -2,18 +2,13 @@ package com.example.tokopaerbe.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.Delete
-import androidx.room.Entity
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
-import retrofit2.http.DELETE
 
 @androidx.room.Dao
 interface CartDao {
 
-    @Query ("UPDATE productList SET isChecked = :isChecked WHERE productId = :id ")
-    fun isChecked(id: String, isChecked:Boolean)
+    @Query("UPDATE productList SET isChecked = :isChecked WHERE productId = :id ")
+    fun isChecked(id: String, isChecked: Boolean)
 
     @Query("UPDATE productList SET quantity = :quantity WHERE productId = :id ")
     fun quantity(id: String, quantity: Int)
@@ -21,14 +16,16 @@ interface CartDao {
     @Query("UPDATE productList SET isChecked = :isChecked")
     fun checkAll(isChecked: Boolean)
 
-    @Query("INSERT OR REPLACE INTO productList (productId, " +
+    @Query(
+        "INSERT OR REPLACE INTO productList (productId, " +
             "productName," +
             " variantName, " +
             "stock, " +
             "productPrice, " +
             "quantity, " +
             "image, " +
-            "isChecked) values (:id, :productName, :variantName, :stock, :productPrice, :quantity, :image, :isChecked)")
+            "isChecked) values (:id, :productName, :variantName, :stock, :productPrice, :quantity, :image, :isChecked)"
+    )
     fun addProduct(
         id: String,
         productName: String,
@@ -50,9 +47,8 @@ interface CartDao {
     fun getProduct(): LiveData<List<CartEntity>?>
 
     @Query("SELECT * FROM productList WHERE productId = :id")
-    suspend fun getCartForDetail(id: String) : CartEntity?
+    suspend fun getCartForDetail(id: String): CartEntity?
 
     @Query("SELECT * FROM productList WHERE productId = :id")
-    suspend fun getCartForWishlist(id: String) : CartEntity?
-
+    suspend fun getCartForWishlist(id: String): CartEntity?
 }

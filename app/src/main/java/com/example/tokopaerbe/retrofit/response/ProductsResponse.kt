@@ -1,9 +1,6 @@
 package com.example.tokopaerbe.retrofit.response
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
-
 
 data class ProductsResponse(
 
@@ -17,7 +14,7 @@ data class ProductsResponse(
     val message: String
 )
 
-data class DataProduct (
+data class DataProduct(
     @field:SerializedName("items")
     val items: List<Product>,
 
@@ -59,4 +56,4 @@ data class Product(
 
     @field:SerializedName("productRating")
     val productRating: Float,
-    )
+)

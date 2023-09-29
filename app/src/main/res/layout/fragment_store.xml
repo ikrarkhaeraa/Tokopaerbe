@@ -45,14 +45,14 @@
 
             <LinearLayout
                 android:id="@+id/linear"
-                app:layout_constraintVertical_bias="0.0"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:orientation="horizontal">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
 
                 <include layout="@layout/shimmer_layout_grid" />
 
@@ -63,11 +63,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/linear"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:orientation="horizontal">
+                app:layout_constraintTop_toBottomOf="@id/linear">
 
                 <include layout="@layout/shimmer_layout_grid" />
 
@@ -84,22 +84,22 @@
         android:id="@+id/searchField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/Search"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        app:startIconDrawable="@drawable/baseline_search_24"
-        app:startIconContentDescription="@string/Search"
+        android:hint="@string/Search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:startIconContentDescription="@string/Search"
+        app:startIconDrawable="@drawable/baseline_search_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchTextField"
-            android:focusable="false"
-            android:cursorVisible="false"
-            android:hint="@string/Search"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:hint="@string/Search" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,8 +108,8 @@
         style="@style/Widget.Material3.Chip.Assist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/Filter"
         app:chipIcon="@drawable/baseline_tune_24"
         app:ensureMinTouchTargetSize="true"
@@ -120,12 +120,11 @@
         android:id="@+id/shimmer_filter"
         android:layout_width="84dp"
         android:layout_height="32dp"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/square_shimmer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchField" >
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/searchField"></com.facebook.shimmer.ShimmerFrameLayout>
 
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
@@ -172,8 +171,7 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/square_shimmer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchField" >
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/searchField"></com.facebook.shimmer.ShimmerFrameLayout>
 
     <!-- Wrap your RecyclerView with SwipeRefreshLayout -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -219,9 +217,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textSize="32sp"
         android:fontFamily="@font/medium"
         android:text="@string/errorTitle"
+        android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gambarerror" />
@@ -231,9 +229,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textSize="16sp"
         android:fontFamily="@font/poppins"
         android:text="@string/errorDesc"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/errorTitle" />
@@ -242,8 +240,8 @@
         android:id="@+id/resetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/resetButtonError"
         android:layout_marginTop="8dp"
+        android:text="@string/resetButtonError"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/errorDesc" />

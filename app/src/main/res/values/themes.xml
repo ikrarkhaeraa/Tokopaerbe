@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.Tokopaerbe" parent="Theme.Material3.Light">
         <!-- Customize your light theme here. -->
@@ -6,6 +6,7 @@
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splashscreen1</item>
         <item name="windowSplashScreenAnimationDuration">5000</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">?attr/colorSurfaceContainerLowest</item>
@@ -17,7 +18,7 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-    <style name="ChipInput" parent="Widget.Material3.Chip.Filter"/>
+    <style name="ChipInput" parent="Widget.Material3.Chip.Filter" />
 
     <style name="styleInputChip" parent="Widget.Material3.Chip.Input">
         <item name="chipIconTint">#1D192B</item>

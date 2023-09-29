@@ -16,15 +16,14 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.databinding.FragmentStoreBinding
 import com.example.tokopaerbe.pagging.LoadingStateAdapter
 import com.example.tokopaerbe.pagging.PaggingModel
-import com.example.tokopaerbe.databinding.FragmentStoreBinding
 import com.example.tokopaerbe.retrofit.user.UserFilter
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
@@ -36,14 +35,11 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-
 class StoreFragment : Fragment() {
-
 
     private var _binding: FragmentStoreBinding? = null
     private val binding get() = _binding!!
@@ -73,9 +69,9 @@ class StoreFragment : Fragment() {
     private val filterParams = MutableStateFlow(UserFilter(null, null, null, null, null))
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -146,7 +142,7 @@ class StoreFragment : Fragment() {
                     textTerendah?.toInt(),
                     textTertinggi?.toInt()
                 ).observe(viewLifecycleOwner) { result ->
-                    model.getCode().observe(viewLifecycleOwner) {code->
+                    model.getCode().observe(viewLifecycleOwner) { code ->
                         if (code == 200) {
                             Log.d("cekCode", code.toString())
                             gridProductAdapter.submitData(lifecycle, result)
@@ -175,7 +171,6 @@ class StoreFragment : Fragment() {
                         }
                     }
                 }
-
             } else {
                 Log.d("cekPullRefresh", "linear")
                 binding.shimmer.visibility = VISIBLE
@@ -192,7 +187,7 @@ class StoreFragment : Fragment() {
                     textTerendah?.toInt(),
                     textTertinggi?.toInt()
                 ).observe(viewLifecycleOwner) { result ->
-                    model.getCode().observe(viewLifecycleOwner) {code->
+                    model.getCode().observe(viewLifecycleOwner) { code ->
                         if (code == 200) {
                             Log.d("cekCode", code.toString())
                             linearProductAdapter.submitData(lifecycle, result)
@@ -231,7 +226,6 @@ class StoreFragment : Fragment() {
             }
         }
 
-
         binding.filterChip.setOnClickListener {
             val modalBottomSheet = ModalBottomSheetFragment()
             modalBottomSheet.show(parentFragmentManager, ModalBottomSheetFragment.TAG)
@@ -252,22 +246,18 @@ class StoreFragment : Fragment() {
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS) {
                 param(FirebaseAnalytics.Param.SEARCH_TERM, searchText!!)
             }
-
-
         }
 
         binding.changeRV.setOnClickListener {
             model.rvStateStore = !model.rvStateStore
             toggleLayoutManager()
         }
-
     }
 
     private fun toggleLayoutManager() {
         if (!model.rvStateStore) {
             setGridLayoutManager()
             binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
-
         } else {
             setLinearLayoutManager()
             binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
@@ -285,15 +275,16 @@ class StoreFragment : Fragment() {
             footer = LoadingStateAdapter { gridProductAdapter.retry() }
         )
 
-        (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =  object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return if (position == gridProductAdapter.itemCount) {
-                    2
-                } else {
-                    1
+        (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (position == gridProductAdapter.itemCount) {
+                        2
+                    } else {
+                        1
+                    }
                 }
             }
-        }
 
         val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
 
@@ -309,30 +300,28 @@ class StoreFragment : Fragment() {
                 model.getCode().observe(viewLifecycleOwner) {
                     Log.d("cekCode", it.toString())
                     when (it) {
-
                         200 -> {
                             gridProductAdapter.submitData(lifecycle, result)
                             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
                                 param(FirebaseAnalytics.Param.ITEMS, result.toString())
                             }
                         }
+
                         404 -> {
                             emptyData()
                         }
+
                         500 -> {
                             errorState()
                         }
+
                         else -> {
                             errorState()
                         }
                     }
-
                 }
             }
-
         }
-
-
     }
 
     private fun setLinearLayoutManager() {
@@ -367,20 +356,21 @@ class StoreFragment : Fragment() {
                                 param(FirebaseAnalytics.Param.ITEMS, result.toString())
                             }
                         }
+
                         404 -> {
                             emptyData()
                         }
+
                         500 -> {
                             errorState()
                         }
+
                         else -> {
                             errorState()
                         }
                     }
                 }
-
             }
-
         }
     }
 
@@ -392,13 +382,10 @@ class StoreFragment : Fragment() {
             setLinearLayoutManager()
             binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
         }
-
     }
 
     @SuppressLint("SetTextI18n")
     private fun settingFilter() {
-
-
         setFragmentResultListener("filter") { _, bundle ->
             binding.chipgroup.removeAllViews()
 
@@ -430,7 +417,6 @@ class StoreFragment : Fragment() {
             }
             updateFilterAndRequestData()
         }
-
     }
 
     private fun updateFilterAndRequestData() {
@@ -526,5 +512,4 @@ class StoreFragment : Fragment() {
             }
         }
     }
-
 }

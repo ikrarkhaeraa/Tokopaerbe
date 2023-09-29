@@ -11,22 +11,17 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import android.widget.Toolbar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.viewpager2.widget.ViewPager2
 import com.example.tokopaerbe.ImageSliderAdapter
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentDetailProductBinding
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
 import com.example.tokopaerbe.home.checkout.ListCheckout
-import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.chip.Chip
@@ -34,12 +29,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
-
 
 class DetailProductFragment : Fragment() {
 
@@ -56,7 +49,6 @@ class DetailProductFragment : Fragment() {
 
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
-
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,7 +86,6 @@ class DetailProductFragment : Fragment() {
             }
 
             model.detail.observe(viewLifecycleOwner) {
-
                 if (it.code != 200) {
                     binding.gambarerror.visibility = VISIBLE
                     binding.errorTitle.visibility = VISIBLE
@@ -119,7 +110,6 @@ class DetailProductFragment : Fragment() {
                     binding.sold.text = "Terjual ${it.data.sale}"
                     binding.rating.text = it.data.productRating.toString()
                     binding.review.text = it.data.totalReview.toString()
-
 
                     var selectedVariant = ""
                     binding.chipGroupVarian.removeAllViews()
@@ -173,11 +163,9 @@ class DetailProductFragment : Fragment() {
                         }.attach()
                     }
 
-
                     binding.keranjangButton.setOnClickListener { _ ->
 
                         lifecycleScope.launch {
-
                             val productCart = model.getCartforDetail(it.data.productId)
                             Log.d("cekProductCart", productCart?.productId.toString())
 
@@ -198,21 +186,25 @@ class DetailProductFragment : Fragment() {
                                         false
                                     )
                                     Toast.makeText(
-                                        requireContext(), "Added to cart", LENGTH_SHORT
+                                        requireContext(),
+                                        "Added to cart",
+                                        LENGTH_SHORT
                                     ).show()
                                 } else if (productCart?.productId == it.data.productId && productCart.quantity < productCart.stock) {
                                     model.quantity(it.data.productId, productCart.quantity.plus(1))
                                     Toast.makeText(
-                                        requireContext(), "Quantity is update", LENGTH_SHORT
+                                        requireContext(),
+                                        "Quantity is update",
+                                        LENGTH_SHORT
                                     ).show()
                                 } else {
                                     Toast.makeText(
-                                        requireContext(), "Stock is unavailable", LENGTH_SHORT
+                                        requireContext(),
+                                        "Stock is unavailable",
+                                        LENGTH_SHORT
                                     ).show()
                                 }
-
                             } else {
-
                                 Log.d("cek2", "klik2")
 
                                 if (productCart.toString() == "null") {
@@ -227,19 +219,24 @@ class DetailProductFragment : Fragment() {
                                         false
                                     )
                                     Toast.makeText(
-                                        requireContext(), "Added to cart", LENGTH_SHORT
+                                        requireContext(),
+                                        "Added to cart",
+                                        LENGTH_SHORT
                                     ).show()
                                 } else if (productCart?.productId == it.data.productId && productCart.quantity < productCart.stock) {
                                     model.quantity(it.data.productId, productCart.quantity.plus(1))
                                     Toast.makeText(
-                                        requireContext(), "Quantity is update", LENGTH_SHORT
+                                        requireContext(),
+                                        "Quantity is update",
+                                        LENGTH_SHORT
                                     ).show()
                                 } else {
                                     Toast.makeText(
-                                        requireContext(), "Stock is unavailable", LENGTH_SHORT
+                                        requireContext(),
+                                        "Stock is unavailable",
+                                        LENGTH_SHORT
                                     ).show()
                                 }
-
                             }
                         }
                     }
@@ -266,10 +263,11 @@ class DetailProductFragment : Fragment() {
                                 model.deleteWishList(it.data.productId)
                                 isIconBorder = !isIconBorder
                                 Toast.makeText(
-                                    requireContext(), "Remove from wishlist", LENGTH_SHORT
+                                    requireContext(),
+                                    "Remove from wishlist",
+                                    LENGTH_SHORT
                                 ).show()
                             }
-
                         } else {
                             binding.favorite.setImageResource(R.drawable.baseline_favorite_border_24)
 
@@ -287,10 +285,11 @@ class DetailProductFragment : Fragment() {
                                     1
                                 )
                                 Toast.makeText(
-                                    requireContext(), "Added to wishlist", LENGTH_SHORT
+                                    requireContext(),
+                                    "Added to wishlist",
+                                    LENGTH_SHORT
                                 ).show()
                             }
-
                         }
                     }
 
@@ -305,7 +304,6 @@ class DetailProductFragment : Fragment() {
                         }
                         startActivity(Intent.createChooser(shareIntent, null))
                     }
-
 
                     listCheckout = ArrayList()
                     binding.buyNow.setOnClickListener { view ->
@@ -357,25 +355,24 @@ class DetailProductFragment : Fragment() {
                         )
                     }
                 }
-
             }
-
         }
-
     }
-
 
     private fun formatPrice(price: Double): String {
         val numberFormat = NumberFormat.getNumberInstance(
             Locale(
-                "id", "ID"
+                "id",
+                "ID"
             )
         ) // Use the appropriate locale for your formatting
         return numberFormat.format(price)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentDetailProductBinding.inflate(inflater, container, false)
@@ -390,5 +387,4 @@ class DetailProductFragment : Fragment() {
             binding.progressBar.visibility = GONE
         }
     }
-
 }

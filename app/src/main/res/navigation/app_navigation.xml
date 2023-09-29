@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@id/main_navigation"
-    >
+    app:startDestination="@id/main_navigation">
 
     <include app:graph="@navigation/prelogin_navigation" />
 
@@ -75,8 +74,7 @@
             app:destination="@id/checkoutFragment" />
         <deepLink
             android:autoVerify="true"
-            app:uri="http://ecommerce.tokopaerbe.com/product/{productId}"
-            />
+            app:uri="http://ecommerce.tokopaerbe.com/product/{productId}" />
 
     </fragment>
 
@@ -92,8 +90,7 @@
             app:argType="string" />
         <deepLink
             android:autoVerify="true"
-            app:uri="http://ecommerce.tokopaerbe.com/product/compose/{productIdCompose}"
-            />
+            app:uri="http://ecommerce.tokopaerbe.com/product/compose/{productIdCompose}" />
     </fragment>
 
 
@@ -174,8 +171,8 @@
 
         <action
             android:id="@+id/action_statusFragment_to_main_navigation"
-            app:popUpTo="@id/app_navigation"
-            app:destination="@id/main_navigation" />
+            app:destination="@id/main_navigation"
+            app:popUpTo="@id/app_navigation" />
         <argument
             android:name="item"
             app:argType="com.example.tokopaerbe.home.transaction.TransactionDataClass"
@@ -192,8 +189,7 @@
         android:id="@+id/transactionFragment"
         android:name="com.example.tokopaerbe.home.transaction.TransactionFragment"
         android:label="fragment_transaction"
-        tools:layout="@layout/fragment_transaction">
-    </fragment>
+        tools:layout="@layout/fragment_transaction"/>
 
 
     <fragment

@@ -13,7 +13,7 @@ data class TransactionResponse(
     val message: String
 )
 
-data class Transaction (
+data class Transaction(
     @field:SerializedName("invoiceId")
     val invoiceId: String,
 
@@ -48,7 +48,7 @@ data class Transaction (
     val name: String,
 )
 
-data class Item (
+data class Item(
     @field:SerializedName("productId")
     val productId: String,
 

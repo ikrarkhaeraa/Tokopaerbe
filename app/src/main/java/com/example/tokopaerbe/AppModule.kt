@@ -1,8 +1,8 @@
-//package com.example.tokopaerbe
+// package com.example.tokopaerbe
 //
-//@Module
-//@InstallIn(SingletonComponent::class)
-//object AppModule {
+// @Module
+// @InstallIn(SingletonComponent::class)
+// object AppModule {
 //    @Provides
 //    @Singleton
 //    fun provideApiService(): ApiService {
@@ -21,15 +21,15 @@
 //
 //        return retrofit.create(ApiService::class.java)
 //    }
-//}
+// }
 //
-//@Module
-//@InstallIn(SingletonComponent::class)
-//object PreferencesModule {
+// @Module
+// @InstallIn(SingletonComponent::class)
+// object PreferencesModule {
 //    @Provides
 //    @Singleton
 //    fun provideUserPreferences(@ApplicationContext context: Context): UserPreferences {
 //        val database: DataStore<Preferences> by context.preferencesDataStore("token")
 //        return UserPreferences.getInstance(database)
 //    }
-//}
+// }

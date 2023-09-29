@@ -3,7 +3,6 @@ package com.example.tokopaerbe.prelogin.profile
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +16,8 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.example.tokopaerbe.R
+import androidx.fragment.app.Fragment
 import com.example.tokopaerbe.databinding.FragmentCameraBinding
-import com.example.tokopaerbe.databinding.FragmentProfileBinding
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -34,9 +32,9 @@ class CameraFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
     private lateinit var window: Window
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -53,8 +51,10 @@ class CameraFragment : Fragment() {
 
         binding.captureImage.setOnClickListener { takePhoto() }
         binding.switchCamera.setOnClickListener {
-            cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) CameraSelector.DEFAULT_FRONT_CAMERA
-            else CameraSelector.DEFAULT_BACK_CAMERA
+            cameraSelector =
+                if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                    CameraSelector.DEFAULT_FRONT_CAMERA
+                } else CameraSelector.DEFAULT_BACK_CAMERA
             startCamera()
         }
     }
@@ -112,7 +112,6 @@ class CameraFragment : Fragment() {
     }
 
     private fun startCamera() {
-
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
         cameraProviderFuture.addListener({
@@ -133,7 +132,6 @@ class CameraFragment : Fragment() {
                     preview,
                     imageCapture
                 )
-
             } catch (exc: Exception) {
                 Toast.makeText(
                     requireContext(),
@@ -155,5 +153,4 @@ class CameraFragment : Fragment() {
             )
         }
     }
-
 }

@@ -2,28 +2,20 @@ package com.example.tokopaerbe.home.transaction
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
-import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentHomeBinding
-import com.example.tokopaerbe.databinding.FragmentMainBinding
 import com.example.tokopaerbe.databinding.FragmentTransactionBinding
-import com.example.tokopaerbe.home.checkout.CheckoutAdapter
-import com.example.tokopaerbe.home.checkout.CheckoutDataClass
-import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
-import com.example.tokopaerbe.home.checkout.ListCheckout
-import com.example.tokopaerbe.home.checkout.StatusFragmentArgs
+import com.example.tokopaerbe.home.checkout.StatusFragment
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.Dispatchers
@@ -52,9 +44,9 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
     private lateinit var itemTransaction: ArrayList<TransactionDataClass>
     private var item: ItemTransaction = ItemTransaction(emptyList())
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTransactionBinding.inflate(inflater, container, false)
@@ -92,7 +84,7 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
         GlobalScope.launch(Dispatchers.Main) {
             delay(1000)
 
-            if(isAdded) {
+            if (isAdded) {
                 model.transaction.observe(viewLifecycleOwner) {
                     if (it == null) {
                         Log.d("transaction", it.toString())
@@ -142,9 +134,7 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
                     }
                 }
             }
-
         }
-
     }
 
     override fun onItemClick(invoiceId: String) {
@@ -180,5 +170,4 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
             model.getTransactionData(auth)
         }
     }
-
 }

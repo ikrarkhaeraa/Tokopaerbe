@@ -6,20 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.ItemCartBinding
 import com.example.tokopaerbe.databinding.ItemWishlistBinding
-import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
@@ -30,7 +24,6 @@ class WishlistAdapter(
     private val context: Context
 ) :
     ListAdapter<WishlistEntity, WishlistAdapter.ListViewHolder>(WishListEntityDiffCallback()) {
-
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
         val binding =
@@ -56,7 +49,6 @@ class WishlistAdapter(
 //            )
 
             coroutineScope.launch {
-
                 val productCart = model.getCartforWishlist(wishlistEntity.productId)
                 Log.d("cekProductCart", productCart?.productId.toString())
 
@@ -72,7 +64,7 @@ class WishlistAdapter(
                         false
                     )
                     Toast.makeText(
-                       context,
+                        context,
                         "Added to cart",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -90,7 +82,6 @@ class WishlistAdapter(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
             }
         }
 
@@ -137,5 +128,4 @@ class WishlistAdapter(
             return oldItem == newItem
         }
     }
-
 }

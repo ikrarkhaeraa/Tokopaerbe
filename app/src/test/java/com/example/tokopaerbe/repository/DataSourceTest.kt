@@ -2,8 +2,6 @@ package com.example.tokopaerbe.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.example.tokopaerbe.home.transaction.TransactionDataClass
-import com.example.tokopaerbe.retrofit.ApiConfig
 import com.example.tokopaerbe.retrofit.ApiService
 import com.example.tokopaerbe.retrofit.DataSource
 import com.example.tokopaerbe.retrofit.FulfillmentRequestBody
@@ -19,14 +17,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -35,7 +28,6 @@ class DataSourceTest {
 
     private lateinit var dataSource: DataSource
     private lateinit var apiService: ApiService
-
 
     fun <T> LiveData<T>.getOrAwaitValue(
         time: Long = 2,
@@ -61,8 +53,6 @@ class DataSourceTest {
         return data as T
     }
 
-
-
     @Before
     fun setUp() {
         val preferences = mock(UserPreferences::class.java)
@@ -73,7 +63,6 @@ class DataSourceTest {
 
         dataSource = DataSource(preferences, cartDao, wishDao, notifDao)
     }
-
 
     @Test
     fun testUploadRegisterData() = runTest {
@@ -244,7 +233,16 @@ class DataSourceTest {
         val quantity = 2
         val image = "string"
         val isChecked = false
-        dataSource.addProductCart(id, productName, variantName, stock, productPrice, quantity, image, isChecked)
+        dataSource.addProductCart(
+            id,
+            productName,
+            variantName,
+            stock,
+            productPrice,
+            quantity,
+            image,
+            isChecked
+        )
         dataSource.deleteProductCart(id)
         backgroundScope.launch {
             val data = dataSource.getProductCart().getOrAwaitValue()
@@ -262,7 +260,16 @@ class DataSourceTest {
         val quantity = 2
         val image = "string"
         val isChecked = false
-        dataSource.addProductCart(id, productName, variantName, stock, productPrice, quantity, image, isChecked)
+        dataSource.addProductCart(
+            id,
+            productName,
+            variantName,
+            stock,
+            productPrice,
+            quantity,
+            image,
+            isChecked
+        )
         dataSource.deleteAllCheckedProduct(mock())
         backgroundScope.launch {
             val data = dataSource.getProductCart().getOrAwaitValue()
@@ -283,7 +290,18 @@ class DataSourceTest {
         val store = "store"
         val productRating = 5f
         val sale = 2
-        dataSource.addWishList(id, productName, productPrice, image, store, productRating, sale, stock, variantName, quantity)
+        dataSource.addWishList(
+            id,
+            productName,
+            productPrice,
+            image,
+            store,
+            productRating,
+            sale,
+            stock,
+            variantName,
+            quantity
+        )
         dataSource.deleteWishList(id)
         backgroundScope.launch {
             val data = dataSource.getWishList().getOrAwaitValue()
@@ -300,7 +318,15 @@ class DataSourceTest {
         val notifTime = "notifTime"
         val notifImage = "notifImage"
         val isChecked = false
-        dataSource.addNotifications(notifType, notifTitle, notifBody, notifDate, notifTime, notifImage, isChecked)
+        dataSource.addNotifications(
+            notifType,
+            notifTitle,
+            notifBody,
+            notifDate,
+            notifTime,
+            notifImage,
+            isChecked
+        )
         backgroundScope.launch {
             val data = dataSource.getNotification().getOrAwaitValue()
             assertEquals(notifType, data?.get(0)?.notifType)
@@ -313,7 +339,6 @@ class DataSourceTest {
         }
     }
 
-
     @Test
     fun testGetUnreadNotifications() = runTest {
         val notifType = "notifType"
@@ -323,7 +348,15 @@ class DataSourceTest {
         val notifTime = "notifTime"
         val notifImage = "notifImage"
         val isChecked = false
-        dataSource.addNotifications(notifType, notifTitle, notifBody, notifDate, notifTime, notifImage, isChecked)
+        dataSource.addNotifications(
+            notifType,
+            notifTitle,
+            notifBody,
+            notifDate,
+            notifTime,
+            notifImage,
+            isChecked
+        )
 
         backgroundScope.launch {
             val data = dataSource.getUnReadNotifications(false).getOrAwaitValue()
@@ -340,13 +373,19 @@ class DataSourceTest {
         val notifTime = "notifTime"
         val notifImage = "notifImage"
         val isChecked = false
-        dataSource.addNotifications(notifType, notifTitle, notifBody, notifDate, notifTime, notifImage, isChecked)
+        dataSource.addNotifications(
+            notifType,
+            notifTitle,
+            notifBody,
+            notifDate,
+            notifTime,
+            notifImage,
+            isChecked
+        )
         dataSource.notifIsChecked(1, true)
         backgroundScope.launch {
             val data = dataSource.getUnReadNotifications(false).getOrAwaitValue()
             assertEquals(null, data)
         }
     }
-
-
 }

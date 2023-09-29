@@ -26,8 +26,6 @@ import com.example.tokopaerbe.room.NotificationsEntity
 import com.example.tokopaerbe.room.WishlistDao
 import com.example.tokopaerbe.room.WishlistEntity
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,7 +42,12 @@ class DataSource @Inject constructor(
     companion object {
         @Volatile
         private var instance: DataSource? = null
-        fun getInstance(preferences: UserPreferences, cartDao: CartDao, wishDao: WishlistDao, notifDao: NotificationDao): DataSource =
+        fun getInstance(
+            preferences: UserPreferences,
+            cartDao: CartDao,
+            wishDao: WishlistDao,
+            notifDao: NotificationDao
+        ): DataSource =
             instance ?: synchronized(this) {
                 instance ?: DataSource(preferences, cartDao, wishDao, notifDao)
             }.also { instance = it }
@@ -80,7 +83,12 @@ class DataSource @Inject constructor(
     private val _transaction = MutableLiveData<TransactionResponse>()
     val transaction: LiveData<TransactionResponse> = _transaction
 
-    fun uploadRegisterData(API_KEY: String, email:String, password:String, firebaseToken: String) {
+    fun uploadRegisterData(
+        API_KEY: String,
+        email: String,
+        password: String,
+        firebaseToken: String
+    ) {
         val requestBody = RegisterRequestBody(email, password, firebaseToken)
         val client = ApiConfig.getApiService().uploadDataRegister(API_KEY, requestBody)
         client.enqueue(object : Callback<RegisterResponse> {
@@ -95,14 +103,14 @@ class DataSource @Inject constructor(
                     Log.e("signUp", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
                 Log.e("signUpFailure", "onFailure: ${t.message}")
             }
         })
     }
 
-
-    fun uploadLoginData(API_KEY: String, email:String, password:String, firebaseToken: String) {
+    fun uploadLoginData(API_KEY: String, email: String, password: String, firebaseToken: String) {
         val requestBody = LoginRequestBody(email, password, firebaseToken)
         val client = ApiConfig.getApiService().uploadDataLogin(API_KEY, requestBody)
         client.enqueue(object : Callback<LoginResponse> {
@@ -117,13 +125,18 @@ class DataSource @Inject constructor(
                     Log.e("signIn", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 Log.e("signInFailure", "onFailure: ${t.message}")
             }
         })
     }
 
-    fun uploadProfileData(auth: String, userName:MultipartBody.Part, userImage: MultipartBody.Part) {
+    fun uploadProfileData(
+        auth: String,
+        userName: MultipartBody.Part,
+        userImage: MultipartBody.Part
+    ) {
         val client = ApiConfig.getApiService().uploadDataProfile(auth, userName, userImage)
         client.enqueue(object : Callback<ProfileResponse> {
             override fun onResponse(
@@ -137,6 +150,7 @@ class DataSource @Inject constructor(
                     Log.e("profile", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
                 Log.e("profileFailure", "onFailure: ${t.message}")
             }
@@ -157,6 +171,7 @@ class DataSource @Inject constructor(
                     Log.e("search", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 Log.e("searchFailure", "onFailure: ${t.message}")
             }
@@ -177,6 +192,7 @@ class DataSource @Inject constructor(
                     Log.e("review", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
                 Log.e("reviewFailure", "onFailure: ${t.message}")
             }
@@ -197,6 +213,7 @@ class DataSource @Inject constructor(
                     Log.e("payment", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<PaymentResponse>, t: Throwable) {
                 Log.e("paymentFailure", "onFailure: ${t.message}")
             }
@@ -217,13 +234,14 @@ class DataSource @Inject constructor(
                     Log.e("detail", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<DetailProductResponse>, t: Throwable) {
                 Log.e("detailFailure", "onFailure: ${t.message}")
             }
         })
     }
 
-    fun uploadFulfillmentData(auth: String, payment: String, items:List<Item>) {
+    fun uploadFulfillmentData(auth: String, payment: String, items: List<Item>) {
         val requestBody = FulfillmentRequestBody(payment, items)
         val client = ApiConfig.getApiService().uploadDataFulfillment(auth, requestBody)
         client.enqueue(object : Callback<FulfillmentResponse> {
@@ -238,13 +256,14 @@ class DataSource @Inject constructor(
                     Log.e("fulfillment", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<FulfillmentResponse>, t: Throwable) {
                 Log.e("fulfillmentFailure", "onFailure: ${t.message}")
             }
         })
     }
 
-    fun uploadRatingData(auth: String, invoiceId: String, rating:Int, review: String) {
+    fun uploadRatingData(auth: String, invoiceId: String, rating: Int, review: String) {
         val requestBody = RatingRequestBody(invoiceId, rating, review)
         val client = ApiConfig.getApiService().uploadDataRating(auth, requestBody)
         client.enqueue(object : Callback<RatingResponse> {
@@ -259,6 +278,7 @@ class DataSource @Inject constructor(
                     Log.e("rating", "onResponse: ${response.message()}")
                 }
             }
+
             override fun onFailure(call: Call<RatingResponse>, t: Throwable) {
                 Log.e("ratingFailure", "onFailure: ${t.message}")
             }
@@ -280,6 +300,7 @@ class DataSource @Inject constructor(
                     _transaction.value = response.body()
                 }
             }
+
             override fun onFailure(call: Call<TransactionResponse>, t: Throwable) {
                 Log.e("transactionFailure", "onFailure: ${t.message}")
             }
@@ -294,7 +315,6 @@ class DataSource @Inject constructor(
         pref.saveUserRegister(sessionRegister)
     }
 
-
     suspend fun saveSessionLogin(sessionLogin: UserLogin) {
         pref.saveUserLogin(sessionLogin)
     }
@@ -308,7 +328,7 @@ class DataSource @Inject constructor(
     }
 
     fun userToken(): Flow<String> {
-       return pref.getAccessToken()
+        return pref.getAccessToken()
     }
 
     fun getCode(): LiveData<Int> {
@@ -355,7 +375,7 @@ class DataSource @Inject constructor(
         pref.logout()
     }
 
-    fun getProductCart() : LiveData<List<CartEntity>?> {
+    fun getProductCart(): LiveData<List<CartEntity>?> {
         return cartDao.getProduct()
     }
 
@@ -379,15 +399,26 @@ class DataSource @Inject constructor(
         return cartDao.deleteAllCheckedProduct(cartEntity)
     }
 
-    fun addProductCart(id: String,
-                       productName: String,
-                       variantName: String,
-                       stock: Int,
-                       productPrice: Int,
-                       quantity: Int,
-                       image: String,
-                       isChecked: Boolean) {
-        return cartDao.addProduct(id, productName, variantName, stock, productPrice, quantity, image, isChecked)
+    fun addProductCart(
+        id: String,
+        productName: String,
+        variantName: String,
+        stock: Int,
+        productPrice: Int,
+        quantity: Int,
+        image: String,
+        isChecked: Boolean
+    ) {
+        return cartDao.addProduct(
+            id,
+            productName,
+            variantName,
+            stock,
+            productPrice,
+            quantity,
+            image,
+            isChecked
+        )
     }
 
     fun isChecked(id: String, isChecked: Boolean) {
@@ -410,21 +441,33 @@ class DataSource @Inject constructor(
         return cartDao.checkAll(isChecked)
     }
 
-
-    fun addWishList(id: String,
-                    productName: String,
-                    productPrice: Int,
-                    image: String,
-                    store: String,
-                    productRating: Float,
-                    sale: Int,
-                    stock: Int,
-                    variantName: String,
-                    quantity: Int) {
-        return wishDao.addWishList(id, productName, productPrice, image, store, productRating, sale, stock, variantName, quantity)
+    fun addWishList(
+        id: String,
+        productName: String,
+        productPrice: Int,
+        image: String,
+        store: String,
+        productRating: Float,
+        sale: Int,
+        stock: Int,
+        variantName: String,
+        quantity: Int
+    ) {
+        return wishDao.addWishList(
+            id,
+            productName,
+            productPrice,
+            image,
+            store,
+            productRating,
+            sale,
+            stock,
+            variantName,
+            quantity
+        )
     }
 
-    fun getWishList() : LiveData<List<WishlistEntity>?> {
+    fun getWishList(): LiveData<List<WishlistEntity>?> {
         return wishDao.getWishList()
     }
 
@@ -436,18 +479,27 @@ class DataSource @Inject constructor(
         return wishDao.getIsFavorite(id)
     }
 
-    suspend fun addNotifications(notifType: String,
-                         notifTitle: String,
-                         notifBody: String,
-                         notifDate: String,
-                         notifTime: String,
-                         notifImage: String,
-                         isChecked: Boolean) {
-        return notifDao.addNotifications(notifType, notifTitle, notifBody, notifDate, notifTime, notifImage, isChecked)
+    suspend fun addNotifications(
+        notifType: String,
+        notifTitle: String,
+        notifBody: String,
+        notifDate: String,
+        notifTime: String,
+        notifImage: String,
+        isChecked: Boolean
+    ) {
+        return notifDao.addNotifications(
+            notifType,
+            notifTitle,
+            notifBody,
+            notifDate,
+            notifTime,
+            notifImage,
+            isChecked
+        )
     }
 
-    fun getNotification() : LiveData<List<NotificationsEntity>?> {
+    fun getNotification(): LiveData<List<NotificationsEntity>?> {
         return notifDao.getNotifications()
     }
-
 }

@@ -2,7 +2,7 @@ package com.example.tokopaerbe.retrofit.response
 
 import com.google.gson.annotations.SerializedName
 
-data class ReviewResponse (
+data class ReviewResponse(
 
     @field:SerializedName("data")
     val data: List<Review>,
@@ -14,16 +14,16 @@ data class ReviewResponse (
     val message: String
 )
 
-data class Review (
+data class Review(
     @field:SerializedName("userName")
-    val userName : String,
+    val userName: String,
 
     @field:SerializedName("userImage")
-    val userImage : String,
+    val userImage: String,
 
     @field:SerializedName("userRating")
-    val userRating : Int,
+    val userRating: Int,
 
     @field:SerializedName("userReview")
-    val userReview : String,
+    val userReview: String,
 )

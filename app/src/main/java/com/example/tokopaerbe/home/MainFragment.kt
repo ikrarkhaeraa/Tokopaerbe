@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -24,13 +23,10 @@ import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-
 
 class MainFragment : Fragment() {
 
@@ -38,14 +34,15 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
 
     private val navController by lazy {
         requireActivity().findNavController(R.id.nav_host_fragment_activity_home)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
@@ -78,7 +75,6 @@ class MainFragment : Fragment() {
                 R.id.navigation_transaction
             )
         )
-
 
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -124,16 +120,25 @@ class MainFragment : Fragment() {
 
         val badgeDrawableNotif = BadgeDrawable.create(requireContext())
         BadgeUtils.attachBadgeDrawable(badgeDrawableNotif, binding.topAppBar, R.id.menu_item_1)
-        model.getUnreadNotificatios(false).observe(viewLifecycleOwner) {
-            Log.d("cekNotifSize", it?.size.toString())
-            if (it.isNullOrEmpty()) {
-                badgeDrawableNotif.isVisible = false
-            } else {
-                badgeDrawableNotif.isVisible = true
-                badgeDrawableNotif.number = it.size
+        lifecycleScope.launch {
+            while (true) {
+                if (isAdded) {
+                    model.getUnreadNotificatios(false).observe(viewLifecycleOwner) {
+                        Log.d("cekNotifSize", it?.size.toString())
+                        if (it.isNullOrEmpty()) {
+                            badgeDrawableNotif.isVisible = false
+                        } else {
+                            badgeDrawableNotif.isVisible = true
+                            badgeDrawableNotif.number = it.size
+                        }
+                    }
+                }
+                if (!isAdded) {
+                    break
+                }
+                delay(500)
             }
         }
-
 
         model.getWishList().observe(viewLifecycleOwner) {
             val badgeDrawableWishList = binding.navView?.getOrCreateBadge(R.id.navigation_wishlist)
@@ -150,6 +155,4 @@ class MainFragment : Fragment() {
             }
         }
     }
-
-
 }

@@ -3,7 +3,6 @@ package com.example.tokopaerbe.home.store
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings.Global.putLong
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +28,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -37,8 +35,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.InputChip
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,7 +44,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -70,20 +65,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import coil.compose.ImagePainter.State.Empty.painter
 import coil.compose.rememberImagePainter
 import com.example.mycompose.ui.theme.MyComposeTheme
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
-import com.example.tokopaerbe.home.checkout.CheckoutFragment
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
-import com.example.tokopaerbe.home.checkout.CheckoutFragmentDirections
 import com.example.tokopaerbe.home.checkout.ListCheckout
 import com.example.tokopaerbe.retrofit.response.ProductVariant
 import com.example.tokopaerbe.viewmodel.ViewModel
@@ -92,14 +81,10 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import java.util.Locale
-
 
 class ComposeDetailProduct : Fragment() {
 
@@ -117,7 +102,9 @@ class ComposeDetailProduct : Fragment() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -129,19 +116,15 @@ class ComposeDetailProduct : Fragment() {
         }
     }
 
-
     @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
-    fun DetailProductScreenViewModel(
-    ) {
-
+    fun DetailProductScreenViewModel() {
         val userToken = model.getUserToken().collectAsState(initial = null).value
         token = "Bearer $userToken"
         Log.d("cekTokenForDetail", token)
         productId = args.productIdCompose
         Log.d("cekComposeId", productId)
         model.getDetailProductData(token, productId)
-
 
         var price: Int? = 0
         var itemPrice: String? = ""
@@ -160,41 +143,42 @@ class ComposeDetailProduct : Fragment() {
         var sale: Int? = 0
         var code: Int? = 0
 
-            price = model.detail.observeAsState().value?.data?.productPrice
-            productName = model.detail.observeAsState().value?.data?.productName
-            sold = "${model.detail.observeAsState().value?.data?.sale}"
-            rating = model.detail.observeAsState().value?.data?.productRating.toString()
-            review = model.detail.observeAsState().value?.data?.totalReview.toString()
-            descProduct = model.detail.observeAsState().value?.data?.description
-            ratingGedeDibawah = model.detail.observeAsState().value?.data?.productRating.toString()
-            satisfaction =
-                "${model.detail.observeAsState().value?.data?.totalSatisfaction} pembeli merasa puas"
-            totalRating =
-                "${model.detail.observeAsState().value?.data?.totalRating} rating ${model.detail.observeAsState().value?.data?.totalReview} ulasan"
-            productVariant = model.detail.observeAsState().value?.data?.productVariant
-            stock = model.detail.observeAsState().value?.data?.stock
-            store = model.detail.observeAsState().value?.data?.store
-            sale = model.detail.observeAsState().value?.data?.sale
-            code = model.detail.observeAsState().value?.code
+        price = model.detail.observeAsState().value?.data?.productPrice
+        productName = model.detail.observeAsState().value?.data?.productName
+        sold = "${model.detail.observeAsState().value?.data?.sale}"
+        rating = model.detail.observeAsState().value?.data?.productRating.toString()
+        review = model.detail.observeAsState().value?.data?.totalReview.toString()
+        descProduct = model.detail.observeAsState().value?.data?.description
+        ratingGedeDibawah = model.detail.observeAsState().value?.data?.productRating.toString()
+        satisfaction =
+            "${model.detail.observeAsState().value?.data?.totalSatisfaction} pembeli merasa puas"
+        totalRating =
+            "${model.detail.observeAsState().value?.data?.totalRating} rating ${model.detail.observeAsState().value?.data?.totalReview} ulasan"
+        productVariant = model.detail.observeAsState().value?.data?.productVariant
+        stock = model.detail.observeAsState().value?.data?.stock
+        store = model.detail.observeAsState().value?.data?.store
+        sale = model.detail.observeAsState().value?.data?.sale
+        code = model.detail.observeAsState().value?.code
 
-            Log.d("cekPriceDetailCompose", itemPrice.toString())
+        Log.d("cekPriceDetailCompose", itemPrice.toString())
 
-            listSearchResult = model.detail.observeAsState().value?.data?.image
-            Log.d("cekImage", listSearchResult.toString())
+        listSearchResult = model.detail.observeAsState().value?.data?.image
+        Log.d("cekImage", listSearchResult.toString())
 
-            if (price != null) {
-                fun formatPrice(price: Double?): String {
-                    val numberFormat = NumberFormat.getNumberInstance(
-                        Locale(
-                            "id", "ID"
-                        )
-                    ) // Use the appropriate locale for your formatting
-                    return numberFormat.format(price)
-                }
-                itemPrice = formatPrice(price.toDouble())
+        if (price != null) {
+            fun formatPrice(price: Double?): String {
+                val numberFormat = NumberFormat.getNumberInstance(
+                    Locale(
+                        "id",
+                        "ID"
+                    )
+                ) // Use the appropriate locale for your formatting
+                return numberFormat.format(price)
             }
+            itemPrice = formatPrice(price.toDouble())
+        }
 
-            Log.d("cekCodeDetail", code.toString())
+        Log.d("cekCodeDetail", code.toString())
 
         ProgressBarDemo(isLoading = true)
         var showDetail by remember { mutableStateOf(false) }
@@ -208,7 +192,7 @@ class ComposeDetailProduct : Fragment() {
         }
 
         if (code != 200 && showDetail) {
-            Log.d("test","null")
+            Log.d("test", "null")
             ErrorStateScreen()
         } else if (showDetail) {
             Log.d("test", "non null")
@@ -233,8 +217,6 @@ class ComposeDetailProduct : Fragment() {
                 sale,
             )
         }
-
-
     }
 
     @Composable
@@ -252,9 +234,9 @@ class ComposeDetailProduct : Fragment() {
         }
     }
 
-
     @OptIn(
-        ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
+        ExperimentalMaterial3Api::class,
+        ExperimentalLayoutApi::class,
         ExperimentalFoundationApi::class
     )
     @Composable
@@ -277,7 +259,6 @@ class ComposeDetailProduct : Fragment() {
         store: String? = "",
         sale: Int? = 0,
     ) {
-
         firebaseAnalytics = Firebase.analytics
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM) {
             param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
@@ -303,38 +284,42 @@ class ComposeDetailProduct : Fragment() {
             painterResource(id = R.drawable.baseline_favorite_24)
         }
 
-
 //        productId = args.productIdCompose
 //        Log.d("cekComposeId", productId)
 
         fun formatPrice(price: Double?): String {
             val numberFormat = NumberFormat.getNumberInstance(
                 Locale(
-                    "id", "ID"
+                    "id",
+                    "ID"
                 )
             ) // Use the appropriate locale for your formatting
             return numberFormat.format(price)
         }
 
-        Scaffold(topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Product Detail", modifier = Modifier.padding(start = 16.dp)
-                    )
-                },
-                navigationIcon = {
-                    Image(painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .clickable {
-                                // Handle click action here
-                                findNavController().navigateUp()
-                            })
-                },
-            )
-        },
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Product Detail",
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                    },
+                    navigationIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .clickable {
+                                    // Handle click action here
+                                    findNavController().navigateUp()
+                                }
+                        )
+                    },
+                )
+            },
 
             bottomBar = {
                 BottomAppBar {
@@ -344,7 +329,6 @@ class ComposeDetailProduct : Fragment() {
                                 // Handle button click here
                                 listCheckout = ArrayList()
                                 if (selectedVariantIndex.value == 0) {
-
                                     if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
                                         val productId = productId
                                         val productImage = listSearchResult[0]
@@ -364,9 +348,7 @@ class ComposeDetailProduct : Fragment() {
                                         )
                                         listCheckout.add(product)
                                     }
-
                                 } else {
-
                                     if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
                                         val productId = productId
                                         val productImage = listSearchResult[0]
@@ -386,7 +368,6 @@ class ComposeDetailProduct : Fragment() {
                                         )
                                         listCheckout.add(product)
                                     }
-
                                 }
                                 Log.d("ceklistChekout", listCheckout.toString())
                                 productCheckout = ListCheckout(listCheckout)
@@ -401,11 +382,13 @@ class ComposeDetailProduct : Fragment() {
                                     param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
                                     param(FirebaseAnalytics.Param.VALUE, price.toString())
                                     param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
-                                    param(FirebaseAnalytics.Param.ITEMS, arrayOf(productCheckout).toString())
+                                    param(
+                                        FirebaseAnalytics.Param.ITEMS,
+                                        arrayOf(productCheckout).toString()
+                                    )
                                 }
-
-
-                            }, modifier = Modifier
+                            },
+                            modifier = Modifier
                                 .weight(1f)
                                 .padding(end = 8.dp)
                         ) {
@@ -414,16 +397,13 @@ class ComposeDetailProduct : Fragment() {
                         Button(
                             onClick = {
                                 lifecycleScope.launch {
-
                                     val productCart = model.getCartforDetail(productId)
                                     Log.d("cekProductCart", productCart?.productId.toString())
 
                                     if (selectedVariantIndex.value == 0) {
-
                                         Log.d("cek1", "klik1")
 
                                         if (productCart.toString() == "null") {
-
                                             if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
                                                 model.addCartProduct(
                                                     productId,
@@ -436,31 +416,29 @@ class ComposeDetailProduct : Fragment() {
                                                     false
                                                 )
                                                 Toast.makeText(
-                                                    requireContext(), "Added to cart",
+                                                    requireContext(),
+                                                    "Added to cart",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                             }
-
                                         } else if (productCart?.productId == productId && productCart.quantity < productCart.stock) {
                                             model.quantity(productId, productCart.quantity.plus(1))
                                             Toast.makeText(
-                                                requireContext(), "Quantity is update",
+                                                requireContext(),
+                                                "Quantity is update",
                                                 Toast.LENGTH_SHORT
                                             ).show()
-
                                         } else {
                                             Toast.makeText(
-                                                requireContext(), "Stock is unavailable",
+                                                requireContext(),
+                                                "Stock is unavailable",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
-
                                     } else {
-
                                         Log.d("cek2", "klik2")
 
                                         if (productCart.toString() == "null") {
-
                                             if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
                                                 model.addCartProduct(
                                                     productId,
@@ -475,18 +453,21 @@ class ComposeDetailProduct : Fragment() {
                                             }
 
                                             Toast.makeText(
-                                                requireContext(), "Added to cart",
+                                                requireContext(),
+                                                "Added to cart",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         } else if (productCart?.productId == productId && productCart.quantity < productCart.stock) {
                                             model.quantity(productId, productCart.quantity.plus(1))
                                             Toast.makeText(
-                                                requireContext(), "Quantity is update",
+                                                requireContext(),
+                                                "Quantity is update",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         } else {
                                             Toast.makeText(
-                                                requireContext(), "Stock is unavailable",
+                                                requireContext(),
+                                                "Stock is unavailable",
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
@@ -495,11 +476,18 @@ class ComposeDetailProduct : Fragment() {
 
                                     firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_CART) {
                                         param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
-                                        param(FirebaseAnalytics.Param.VALUE, (2 * price!!).toString())
-                                        param(FirebaseAnalytics.Param.ITEMS, arrayOf(productCart).toString())
+                                        param(
+                                            FirebaseAnalytics.Param.VALUE,
+                                            (2 * price!!).toString()
+                                        )
+                                        param(
+                                            FirebaseAnalytics.Param.ITEMS,
+                                            arrayOf(productCart).toString()
+                                        )
                                     }
                                 }
-                            }, modifier = Modifier
+                            },
+                            modifier = Modifier
                                 .weight(1f)
                                 .padding(start = 8.dp)
                         ) {
@@ -518,12 +506,10 @@ class ComposeDetailProduct : Fragment() {
                     .verticalScroll(rememberScrollState())
                     .padding(padding)
             ) {
-
                 val pagerState = rememberPagerState()
 
                 listSearchResult?.size?.let {
                     Box {
-
                         HorizontalPager(
                             modifier = Modifier.fillMaxSize(),
                             pageCount = it,
@@ -564,9 +550,7 @@ class ComposeDetailProduct : Fragment() {
                                 )
                             }
                         }
-
                     }
-
                 }
 
                 Row(Modifier.padding(top = 12.dp)) {
@@ -580,7 +564,8 @@ class ComposeDetailProduct : Fragment() {
                     )
                     Log.d("cekPriceTitle", itemPriceState.value.toString())
 
-                    Image(painter = painterResource(id = R.drawable.baseline_share_24),
+                    Image(
+                        painter = painterResource(id = R.drawable.baseline_share_24),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(end = 16.dp)
@@ -589,24 +574,24 @@ class ComposeDetailProduct : Fragment() {
                                     action = Intent.ACTION_SEND
                                     putExtra(
                                         Intent.EXTRA_TEXT,
-                                        "Product : ${productName}\n" + "Price : $itemPrice\n" + "Link : http://ecommerce.tokopaerbe.com/product/compose/${productId}"
+                                        "Product : ${productName}\n" + "Price : $itemPrice\n" + "Link : http://ecommerce.tokopaerbe.com/product/compose/$productId"
                                     )
                                     type = "text/plain"
                                 }
                                 startActivity(Intent.createChooser(shareIntent, null))
-                            })
+                            }
+                    )
 
-                    Image(painter = imageResource,
+                    Image(
+                        painter = imageResource,
                         contentDescription = null,
                         modifier = Modifier
                             .padding(end = 16.dp)
                             .clickable {
-                                //Handle clickable here
+                                // Handle clickable here
                                 lifecycleScope.launch {
-
                                     val productWishlist = model.getWishlistforDetail(productId)
                                     if (productWishlist.toString() == "null") {
-
                                         if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null && store != null && rating != null && sale != null) {
                                             isImageChanged = !isImageChanged
                                             model.addWishList(
@@ -623,18 +608,19 @@ class ComposeDetailProduct : Fragment() {
                                             )
                                             Toast
                                                 .makeText(
-                                                    requireContext(), "Added to wishlist",
+                                                    requireContext(),
+                                                    "Added to wishlist",
                                                     Toast.LENGTH_SHORT
                                                 )
                                                 .show()
                                         }
-
                                     } else if (productWishlist?.productId == productId) {
                                         model.deleteWishList(productId)
                                         isImageChanged = !isImageChanged
                                         Toast
                                             .makeText(
-                                                requireContext(), "Remove from wishlist",
+                                                requireContext(),
+                                                "Remove from wishlist",
                                                 Toast.LENGTH_SHORT
                                             )
                                             .show()
@@ -642,11 +628,18 @@ class ComposeDetailProduct : Fragment() {
                                     firebaseAnalytics = Firebase.analytics
                                     firebaseAnalytics.logEvent(FirebaseAnalytics.Event.ADD_TO_WISHLIST) {
                                         param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
-                                        param(FirebaseAnalytics.Param.VALUE, (2 * price!!).toString())
-                                        param(FirebaseAnalytics.Param.ITEMS, arrayOf(productWishlist).toString())
+                                        param(
+                                            FirebaseAnalytics.Param.VALUE,
+                                            (2 * price!!).toString()
+                                        )
+                                        param(
+                                            FirebaseAnalytics.Param.ITEMS,
+                                            arrayOf(productWishlist).toString()
+                                        )
                                     }
                                 }
-                            })
+                            }
+                    )
                 }
 
                 Text(
@@ -728,7 +721,8 @@ class ComposeDetailProduct : Fragment() {
                                     fontFamily = FontFamily(Font(R.font.medium)),
                                     fontSize = 14.sp,
                                     modifier = Modifier.padding(
-                                        horizontal = 12.dp, vertical = 6.dp
+                                        horizontal = 12.dp,
+                                        vertical = 6.dp
                                     ),
                                 )
                             },
@@ -840,14 +834,16 @@ class ComposeDetailProduct : Fragment() {
                     )
                 },
                 navigationIcon = {
-                    Image(painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                    Image(
+                        painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .clickable {
                                 // Handle click action here
                                 findNavController().navigateUp()
-                            })
+                            }
+                    )
                 },
             )
         }) { paddingValues ->
@@ -881,7 +877,7 @@ class ComposeDetailProduct : Fragment() {
 
                 Button(
                     onClick = {
-                            model.getDetailProductData(token, productId)
+                        model.getDetailProductData(token, productId)
                     }
                 ) {
                     Text(text = stringResource(id = R.string.refreshButtonError))
@@ -890,11 +886,9 @@ class ComposeDetailProduct : Fragment() {
         }
     }
 
-
     @Preview
     @Composable
     fun DetailProductPreview() {
         DetailProductScreen()
     }
-
 }

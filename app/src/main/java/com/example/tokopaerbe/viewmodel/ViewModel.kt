@@ -1,12 +1,8 @@
 package com.example.tokopaerbe.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
-import com.example.tokopaerbe.home.store.Filter
 import com.example.tokopaerbe.retrofit.DataSource
 import com.example.tokopaerbe.retrofit.Item
 import com.example.tokopaerbe.retrofit.response.DetailProductResponse
@@ -26,9 +22,7 @@ import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import com.example.tokopaerbe.room.CartEntity
 import com.example.tokopaerbe.room.NotificationsEntity
 import com.example.tokopaerbe.room.WishlistEntity
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import javax.inject.Inject
@@ -45,7 +39,6 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     val fulfillment: LiveData<FulfillmentResponse> = data.fulfillment
     val rating: LiveData<RatingResponse> = data.rating
     val transaction: LiveData<TransactionResponse> = data.transaction
-
 
     private var _search: String = ""
     var searchFilter: String = ""
@@ -76,7 +69,6 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     fun clearTertinggiValue() {
         textTertinggi = ""
     }
-
 
     var rvStateStore: Boolean = true
         get() = field
@@ -262,7 +254,6 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         }
     }
 
-
     fun saveSessionLogin(sessionLogin: UserLogin) {
         viewModelScope.launch {
             data.saveSessionLogin(sessionLogin)
@@ -296,7 +287,6 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
             data.darkTheme(value)
         }
     }
-
 
     fun userLogin() {
         viewModelScope.launch {
@@ -372,5 +362,4 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
             data.getTransactionData(auth)
         }
     }
-
 }

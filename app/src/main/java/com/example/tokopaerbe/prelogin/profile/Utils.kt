@@ -8,9 +8,12 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
 import com.example.tokopaerbe.R
-import java.io.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 private const val FILENAME_FORMAT = "dd-MMM-yyyy"
 
@@ -31,7 +34,9 @@ fun createFile(application: Application): File {
 
     val outputDirectory = if (
         mediaDir != null && mediaDir.exists()
-    ) mediaDir else application.filesDir
+    ) {
+        mediaDir
+    } else application.filesDir
 
     return File(outputDirectory, "$timeStamp.jpg")
 }

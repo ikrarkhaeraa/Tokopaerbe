@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class CheckoutDataClass (
+data class CheckoutDataClass(
     var productId: String,
     var productImage: String,
     var productName: String,
@@ -15,6 +15,6 @@ data class CheckoutDataClass (
 ) : Parcelable
 
 @Parcelize
-data class ListCheckout (
+data class ListCheckout(
     val listCheckout: List<CheckoutDataClass>
 ) : Parcelable

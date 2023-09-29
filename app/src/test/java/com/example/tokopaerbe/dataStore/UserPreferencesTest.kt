@@ -2,31 +2,22 @@ package com.example.tokopaerbe.dataStore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.tokopaerbe.retrofit.UserPreferences
-import com.example.tokopaerbe.retrofit.database
 import com.example.tokopaerbe.retrofit.user.ErrorState
 import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.retrofit.user.UserRegister
-import io.mockk.MockKDsl.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
@@ -129,22 +120,4 @@ class UserPreferencesTest {
         assertEquals("", getAccessToken)
         assertEquals("", getRefreshToken)
     }
-
-//    @Test
-//    fun testLogout() = runBlocking {
-//        val accessToken = "accessToken"
-//        val refreshToken = "refreshToken"
-//        val expiresAt = 0L
-//        userPreferences.saveUserRegister(UserRegister(accessToken, refreshToken, expiresAt))
-//        userPreferences.login()
-//        userPreferences.logout()
-//        val userLogin = userPreferences.getUserLoginState().first()
-//        val getAccessToken = userPreferences.getAccessToken().first()
-//        val getRefreshToken = userPreferences.getRefreshToken().first()
-//        assertEquals(false, userLogin)
-//        assertEquals("", getAccessToken)
-//        assertEquals("", getRefreshToken)
-//    }
-
-
 }

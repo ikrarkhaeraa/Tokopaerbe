@@ -4,23 +4,23 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tokopaerbe.databinding.ItemMetodePembayaranBinding
 import com.example.tokopaerbe.databinding.ItemPlatformPembayaranBinding
-import com.example.tokopaerbe.home.store.SearchAdapter
-import com.example.tokopaerbe.retrofit.response.Payment
 import com.example.tokopaerbe.retrofit.response.PaymentMethod
 import com.squareup.picasso.Picasso
 
-class MetodePembayaranAdapter (
+class MetodePembayaranAdapter(
     private val itemClickListener: OnItemClickListener
 ) :
     ListAdapter<PaymentMethod, MetodePembayaranAdapter.ListViewHolder>(CartEntityDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
-        val binding = ItemPlatformPembayaranBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding = ItemPlatformPembayaranBinding.inflate(
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            false
+        )
         return ListViewHolder(binding)
     }
 
@@ -62,5 +62,4 @@ class MetodePembayaranAdapter (
     interface OnItemClickListener {
         fun onItemClick(image: String, name: String)
     }
-
 }

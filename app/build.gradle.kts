@@ -1,3 +1,4 @@
+import com.android.builder.model.SigningConfig
 
 plugins {
     id("com.android.application")
@@ -5,10 +6,11 @@ plugins {
     kotlin("kapt")
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
-    id ("androidx.navigation.safeargs.kotlin")
+    id("androidx.navigation.safeargs.kotlin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("org.gradle.jacoco")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 android {
@@ -29,12 +31,13 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName("release") {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -87,7 +90,7 @@ android {
                 sourceDirectories.setFrom(
                     files("$projectDir/src/main/java")
                 )
-                 executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
+                executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
 //                executionData.setFrom(file("$buildDir/outputs/unit_test_code_coverage/${variant.name}UnitTest/$testTaskName.exec"))
             }
 
@@ -170,7 +173,7 @@ dependencies {
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
     //Piscaso
-    implementation ("com.squareup.picasso:picasso:2.71828")
+    implementation("com.squareup.picasso:picasso:2.71828")
 
     //Pull Refresh
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
@@ -195,19 +198,22 @@ dependencies {
     implementation("io.coil-kt:coil-compose:1.4.0")
 
     //Lottie
-    implementation ("com.airbnb.android:lottie:4.2.2")
+    implementation("com.airbnb.android:lottie:4.2.2")
 
     //Testing
-    testImplementation ("junit:junit:4.13.2")
-    testImplementation ("androidx.test:core:1.5.0")
-    testImplementation ("org.mockito:mockito-core:5.4.0")
-    testImplementation ("org.mockito.kotlin:mockito-kotlin:5.0.0")
-    testImplementation ("io.mockk:mockk:1.4.1")
-    testImplementation ("com.squareup.okhttp3:mockwebserver:4.11.0")
-    testImplementation ("org.robolectric:robolectric:4.10.3")
-    testImplementation ("androidx.arch.core:core-testing:2.2.0")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
-    testImplementation ("io.mockk:mockk:1.4.1")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation("org.mockito:mockito-core:5.4.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
+    testImplementation("io.mockk:mockk:1.4.1")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
+    testImplementation("org.robolectric:robolectric:4.10.3")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation("io.mockk:mockk:1.4.1")
+
+    //Detekt
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
 
 }
 

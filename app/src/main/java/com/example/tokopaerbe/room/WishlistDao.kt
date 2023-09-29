@@ -1,7 +1,6 @@
 package com.example.tokopaerbe.room
 
 import androidx.lifecycle.LiveData
-import androidx.room.Delete
 import androidx.room.Query
 
 @androidx.room.Dao
@@ -9,15 +8,15 @@ interface WishlistDao {
 
     @Query(
         "INSERT OR REPLACE INTO wishList (productId, " +
-                "productName," +
-                "productPrice, " +
-                "image, " +
-                "store, " +
-                "productRating, " +
-                "sale, " +
-                "stock, " +
-                "variantName, " +
-                "quantity) values (:id, :productName, :productPrice, :image, :store, :productRating, :sale, :stock, :variantName, :quantity)"
+            "productName," +
+            "productPrice, " +
+            "image, " +
+            "store, " +
+            "productRating, " +
+            "sale, " +
+            "stock, " +
+            "variantName, " +
+            "quantity) values (:id, :productName, :productPrice, :image, :store, :productRating, :sale, :stock, :variantName, :quantity)"
     )
     fun addWishList(
         id: String,
@@ -39,9 +38,8 @@ interface WishlistDao {
     fun getWishList(): LiveData<List<WishlistEntity>?>
 
     @Query("SELECT * FROM wishList WHERE productId = :id")
-    fun getIsFavorite(id: String) : LiveData<List<WishlistEntity>?>
+    fun getIsFavorite(id: String): LiveData<List<WishlistEntity>?>
 
     @Query("SELECT * FROM wishList WHERE productId = :id")
-    suspend fun getWishlistForDetail(id: String) : WishlistEntity?
-
+    suspend fun getWishlistForDetail(id: String): WishlistEntity?
 }

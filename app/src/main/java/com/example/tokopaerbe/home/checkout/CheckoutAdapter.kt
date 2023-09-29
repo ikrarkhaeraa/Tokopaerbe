@@ -17,7 +17,8 @@ class CheckoutAdapter(
 
     private var totalToggleValue = 1
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
-        val binding = ItemCheckoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding =
+            ItemCheckoutBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return ListViewHolder(binding)
     }
 
@@ -85,6 +86,4 @@ class CheckoutAdapter(
     interface OnItemClickListener {
         fun onItemClick(position: Int, item: CheckoutDataClass)
     }
-
-
 }

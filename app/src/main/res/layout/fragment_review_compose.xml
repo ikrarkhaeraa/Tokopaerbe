@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.store.ReviewFragmentCompose">
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/compose_view"
-        tools:composableName="com.example.tokopaerbe.home.store.ReviewFragmentCompose"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:composableName="com.example.tokopaerbe.home.store.ReviewFragmentCompose" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,5 @@
 package com.example.tokopaerbe.retrofit
 
-import okhttp3.MultipartBody
-import retrofit2.http.Part
-import retrofit2.http.Query
-
 data class RegisterRequestBody(
     val email: String,
     val password: String,
@@ -25,7 +21,7 @@ data class FulfillmentRequestBody(
     val items: List<Item>
 )
 
-data class Item (
+data class Item(
     val productId: String,
     val variantName: String,
     val quantity: Int

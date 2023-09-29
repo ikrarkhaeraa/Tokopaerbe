@@ -21,7 +21,6 @@ class ReviewAdapter(
         return ListViewHolder(view)
     }
 
-
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val (userName, photo, ratingBar, review) = listReview[position]
         holder.userName.text = userName
@@ -38,6 +37,4 @@ class ReviewAdapter(
         var ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
         var review: TextView = itemView.findViewById(R.id.review)
     }
-
-
 }

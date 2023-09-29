@@ -9,7 +9,7 @@
             android:thicknessRatio="2"
             android:useLevel="false">
 
-            <solid android:color="@color/outlineVariant"/>
+            <solid android:color="@color/outlineVariant" />
 
         </shape>
 

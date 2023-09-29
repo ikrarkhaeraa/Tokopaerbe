@@ -1,8 +1,5 @@
 package com.example.tokopaerbe.prelogin.register
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.Spannable
@@ -11,13 +8,12 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -77,7 +73,8 @@ class RegisterFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -106,7 +103,6 @@ class RegisterFragment : Fragment() {
             },
         )
 
-
         val text = getString(R.string.persetujuanDaftar)
         val spannableStringBuilder = SpannableStringBuilder(text)
 
@@ -123,11 +119,31 @@ class RegisterFragment : Fragment() {
         val colorSpanTerms = ForegroundColorSpan(resources.getColor(R.color.primaryColor))
         val colorSpanPrivacy = ForegroundColorSpan(resources.getColor(R.color.primaryColor))
 
-        spannableStringBuilder.setSpan(colorSpanTerms, startTerms, endTerms, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy, endPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableStringBuilder.setSpan(
+            colorSpanTerms,
+            startTerms,
+            endTerms,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableStringBuilder.setSpan(
+            colorSpanPrivacy,
+            startPrivacy,
+            endPrivacy,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
-        spannableStringBuilder.setSpan(colorSpanTerms, startTerms2, endTerms2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy2, endPrivacy2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableStringBuilder.setSpan(
+            colorSpanTerms,
+            startTerms2,
+            endTerms2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableStringBuilder.setSpan(
+            colorSpanPrivacy,
+            startPrivacy2,
+            endPrivacy2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         binding.persetujuan.text = spannableStringBuilder
 
@@ -178,7 +194,6 @@ class RegisterFragment : Fragment() {
             binding.textFieldEmail.error = null
             isEmailValid = true
         }
-
     }
 
     private fun validatePassword() {
@@ -203,7 +218,6 @@ class RegisterFragment : Fragment() {
 
     private fun chooseButton() {
         binding.apply {
-
             buttonMasuk.setOnClickListener {
                 findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
                 firebaseAnalytics.logEvent("button_click") {
@@ -212,7 +226,6 @@ class RegisterFragment : Fragment() {
             }
 
             buttonDaftar.setOnClickListener {
-
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
                     param(FirebaseAnalytics.Param.METHOD, email)
                 }
@@ -240,7 +253,6 @@ class RegisterFragment : Fragment() {
                             delay(delayMillis)
                             goToProfile()
                         }
-
                     } else {
                         Toast.makeText(
                             requireContext(),
@@ -248,19 +260,14 @@ class RegisterFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
                 }
-
             }
-
         }
     }
-
 
     private fun saveUserRegister(sessionRegister: UserRegister) {
         model.saveSessionRegister(sessionRegister)
     }
-
 
     private fun goToProfile() {
         showLoading(false)
@@ -274,5 +281,4 @@ class RegisterFragment : Fragment() {
             binding.progressBar.visibility = View.GONE
         }
     }
-
 }

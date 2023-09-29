@@ -4,20 +4,17 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.navigateUp
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentPilihPembayaranBinding
 import com.example.tokopaerbe.databinding.FragmentStatusBinding
-import com.example.tokopaerbe.home.transaction.ItemTransaction
 import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
@@ -27,7 +24,6 @@ import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-
 
 class StatusFragment : Fragment() {
 
@@ -42,7 +38,6 @@ class StatusFragment : Fragment() {
     private val args: StatusFragmentArgs? by navArgs()
     private var itemTransaction: TransactionDataClass? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,38 +87,36 @@ class StatusFragment : Fragment() {
                     param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
                     param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemTransaction).toString())
                 }
-
             }
         } else {
             Log.d("cekItemTransaction", itemTransaction.toString())
-                binding.idTransaksiValue.text = itemTransaction?.invoiceId
-                binding.StatusValue.text = "Berhasil"
-                binding.tanggalValue.text = itemTransaction?.tanggalValue
-                binding.waktuValue.text = itemTransaction?.waktuValue
-                binding.metodePembayaranValue.text = itemTransaction?.metodePembayaranValue
-                binding.totalPembayaranValue.text = itemTransaction?.totalPembayaranValue.toString()
+            binding.idTransaksiValue.text = itemTransaction?.invoiceId
+            binding.StatusValue.text = "Berhasil"
+            binding.tanggalValue.text = itemTransaction?.tanggalValue
+            binding.waktuValue.text = itemTransaction?.waktuValue
+            binding.metodePembayaranValue.text = itemTransaction?.metodePembayaranValue
+            binding.totalPembayaranValue.text = itemTransaction?.totalPembayaranValue.toString()
 
-                binding.buttonSelesai.setOnClickListener { view ->
-                    lifecycleScope.launch {
-                        val token = model.getUserToken().first()
-                        val auth = "Bearer $token"
+            binding.buttonSelesai.setOnClickListener { view ->
+                lifecycleScope.launch {
+                    val token = model.getUserToken().first()
+                    val auth = "Bearer $token"
 
-                        model.postDataRating(auth, itemTransaction!!.invoiceId, ratingBar, review)
-                        Log.d("cekStatusData", ratingBar.toString())
-                        Log.d("cekStatusData", review)
+                    model.postDataRating(auth, itemTransaction!!.invoiceId, ratingBar, review)
+                    Log.d("cekStatusData", ratingBar.toString())
+                    Log.d("cekStatusData", review)
 
-                        model.rating.observe(viewLifecycleOwner) { ratingResponse ->
-                            if (ratingResponse.code == "200") {
-                                findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
-                            }
+                    model.rating.observe(viewLifecycleOwner) { ratingResponse ->
+                        if (ratingResponse.code == "200") {
+                            findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
                         }
                     }
-
-                    firebaseAnalytics.logEvent("button_click") {
-                        param(FirebaseAnalytics.Param.METHOD, "Finish Transaction Button")
-                    }
-
                 }
+
+                firebaseAnalytics.logEvent("button_click") {
+                    param(FirebaseAnalytics.Param.METHOD, "Finish Transaction Button")
+                }
+            }
         }
 
         Log.d("cekArgumen", itemTransaction.toString())
@@ -134,26 +127,20 @@ class StatusFragment : Fragment() {
                     Log.d("cekKlik", "cek1")
                     findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
                 } else {
-                    var stack = 0
-                    for (i in 1..100000) {
+                    for (i in 1..500) {
                         findNavController().navigateUp()
-                        if (!isAdded) {
-                            break
-                        }
-                        stack++
                     }
-                    Log.d("cekStack", stack.toString())
                     Log.d("cekKlik", "cek2")
                 }
             }
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentStatusBinding.inflate(inflater, container, false)
@@ -174,5 +161,4 @@ class StatusFragment : Fragment() {
             // Not used in this case
         }
     }
-
 }

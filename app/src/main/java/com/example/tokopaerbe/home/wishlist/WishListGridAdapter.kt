@@ -11,21 +11,26 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.databinding.ItemGridWishlistBinding
-import com.example.tokopaerbe.databinding.ItemWishlistBinding
 import com.example.tokopaerbe.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-class WishListGridAdapter(private val model: ViewModel, private val coroutineScope: CoroutineScope, private val context: Context) :
+class WishListGridAdapter(
+    private val model: ViewModel,
+    private val coroutineScope: CoroutineScope,
+    private val context: Context
+) :
     ListAdapter<WishlistEntity, WishListGridAdapter.ListViewHolder>(WishListEntityDiffCallback()) {
 
-
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
-        val binding = ItemGridWishlistBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding = ItemGridWishlistBinding.inflate(
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            false
+        )
         return ListViewHolder(binding)
     }
 
@@ -47,7 +52,6 @@ class WishListGridAdapter(private val model: ViewModel, private val coroutineSco
 //            )
 
             coroutineScope.launch {
-
                 val productCart = model.getCartforDetail(wishlistEntity.productId)
                 Log.d("cekProductCart", productCart?.productId.toString())
 
@@ -81,17 +85,13 @@ class WishListGridAdapter(private val model: ViewModel, private val coroutineSco
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
             }
-
         }
 
         val deleteIcon = holder.binding.deleteIcon
         deleteIcon.setOnClickListener {
             model.deleteWishList(wishlistEntity.productId)
         }
-
-
     }
 
     class ListViewHolder(var binding: ItemGridWishlistBinding) :
@@ -109,6 +109,7 @@ class WishListGridAdapter(private val model: ViewModel, private val coroutineSco
                 ratingTerjual.text = "${data.productRating} | Terjual ${data.sale}"
             }
         }
+
         private fun formatPrice(price: Double): String {
             val numberFormat = NumberFormat.getNumberInstance(
                 Locale(
@@ -130,5 +131,4 @@ class WishListGridAdapter(private val model: ViewModel, private val coroutineSco
             return oldItem == newItem
         }
     }
-
 }

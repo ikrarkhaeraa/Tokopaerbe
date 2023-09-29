@@ -55,11 +55,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/selesai"
             android:layout_marginTop="13dp"
             android:layout_marginEnd="8dp"
-            android:textColor="@color/primaryColor"
             android:background="@color/bgSelesai"
+            android:text="@string/selesai"
+            android:textColor="@color/primaryColor"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
 
@@ -78,8 +78,8 @@
             android:id="@+id/item_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@id/materialDivider2"
             tools:src="@tools:sample/avatars" />
@@ -104,8 +104,8 @@
             android:id="@+id/totalBarang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/totalBarang"
             android:layout_marginStart="8dp"
+            android:text="@string/totalBarang"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
             card_view:layout_constraintTop_toBottomOf="@+id/productName" />
 
@@ -113,25 +113,25 @@
             android:id="@+id/totalBelanja"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/totalBelanja"
-            android:layout_marginTop="8dp"
-            android:textSize="10sp"
-            android:fontFamily="@font/poppins"
             android:layout_marginStart="8dp"
-            card_view:layout_constraintTop_toBottomOf="@id/item_image"
-            card_view:layout_constraintStart_toStartOf="parent"/>
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/poppins"
+            android:text="@string/totalBelanja"
+            android:textSize="10sp"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@id/item_image" />
 
         <TextView
             android:id="@+id/totalHarga"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/harga"
-            android:layout_marginTop="2dp"
             android:layout_marginStart="8dp"
-            android:textSize="12sp"
+            android:layout_marginTop="2dp"
             android:fontFamily="@font/semibold"
-            card_view:layout_constraintTop_toBottomOf="@id/totalBelanja"
-            card_view:layout_constraintStart_toStartOf="parent"/>
+            android:text="@string/harga"
+            android:textSize="12sp"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@id/totalBelanja" />
 
         <Button
             android:id="@+id/buttonUlas"

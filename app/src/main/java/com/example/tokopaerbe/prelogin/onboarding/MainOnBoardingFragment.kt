@@ -1,25 +1,19 @@
 package com.example.tokopaerbe.prelogin.onboarding
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.SectionsPagerAdapter
-import com.example.tokopaerbe.databinding.FragmentLoginBinding
 import com.example.tokopaerbe.databinding.FragmentMainOnBoardingBinding
-import com.example.tokopaerbe.prelogin.login.LoginFragment
-import com.example.tokopaerbe.prelogin.register.RegisterFragment
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -35,9 +29,9 @@ class MainOnBoardingFragment : Fragment() {
     private var currentFragmentPosition = 0
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -66,7 +60,6 @@ class MainOnBoardingFragment : Fragment() {
     }
 
     private fun chooseButton() {
-
         binding.buttonGabungSekarang.setOnClickListener {
             model.userInstall()
             findNavController().navigate(R.id.action_onboardingFragment_to_registerFragment)
@@ -103,5 +96,4 @@ class MainOnBoardingFragment : Fragment() {
             binding.buttonSelanjutnya.visibility = GONE
         }
     }
-
 }

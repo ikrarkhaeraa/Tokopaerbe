@@ -15,7 +15,7 @@
         android:id="@+id/navigation_store"
         android:name="com.example.tokopaerbe.home.store.StoreFragment"
         android:label="@string/store"
-        tools:layout="@layout/fragment_store"/>
+        tools:layout="@layout/fragment_store" />
 
     <fragment
         android:id="@+id/navigation_wishlist"

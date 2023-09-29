@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".prelogin.profile.ProfileFragment">
 
     <TextView
         android:id="@+id/titleProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
         android:fontFamily="@font/poppins"
         android:text="@string/Profile"
-        android:layout_marginTop="18dp"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
-        app:layout_constraintTop_toBottomOf="@id/titleProfile"/>
+        app:layout_constraintTop_toBottomOf="@id/titleProfile" />
 
     <ImageView
         android:id="@+id/circle"
@@ -53,8 +53,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/circle"
-        android:hint="@string/Name">
+        android:hint="@string/Name"
+        app:layout_constraintTop_toBottomOf="@id/circle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameedittext"
@@ -66,22 +66,22 @@
         android:id="@+id/buttonSelesai"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
+        android:fontFamily="@font/medium"
         android:text="@string/Selesai"
         android:textSize="14sp"
-        android:fontFamily="@font/medium"
-        android:layout_marginHorizontal="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textFieldEmail" />
 
     <TextView
         android:id="@+id/persetujuan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/persetujuan"
-        android:layout_marginTop="24dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/persetujuan"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

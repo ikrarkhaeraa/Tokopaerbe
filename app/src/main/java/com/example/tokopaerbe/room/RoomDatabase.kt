@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [CartEntity::class, WishlistEntity::class, NotificationsEntity::class],
+@Database(
+    entities = [CartEntity::class, WishlistEntity::class, NotificationsEntity::class],
     version = 2,
-    exportSchema = false,)
+    exportSchema = false,
+)
 abstract class ProductDatabase : RoomDatabase() {
     abstract fun productDao(): CartDao
     abstract fun wishlistDao(): WishlistDao
@@ -20,7 +22,8 @@ abstract class ProductDatabase : RoomDatabase() {
             instance ?: synchronized(this) {
                 instance ?: Room.databaseBuilder(
                     context.applicationContext,
-                    ProductDatabase::class.java, "productAdded.db"
+                    ProductDatabase::class.java,
+                    "productAdded.db"
                 ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
             }
     }

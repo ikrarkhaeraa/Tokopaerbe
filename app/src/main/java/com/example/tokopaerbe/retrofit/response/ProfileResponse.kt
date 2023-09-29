@@ -22,4 +22,4 @@ data class DataProfile(
     @field:SerializedName("userImage")
     val userImage: String,
 
-    )
+)

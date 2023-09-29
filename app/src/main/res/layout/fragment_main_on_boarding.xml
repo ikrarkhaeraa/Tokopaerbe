@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".prelogin.onboarding.MainOnBoardingFragment">
 
     <androidx.viewpager2.widget.ViewPager2
@@ -30,10 +30,10 @@
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/medium"
-        android:text="@string/lewati"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="44dp"
+        android:fontFamily="@font/medium"
+        android:text="@string/lewati"
         android:textAllCaps="false"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/viewpager"
@@ -57,12 +57,12 @@
         android:id="@+id/button_gabungSekarang"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="100dp"
+        android:fontFamily="@font/medium"
+        android:text="@string/gabungSekarang"
         app:layout_constraintBottom_toBottomOf="@+id/viewpager"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="16dp"
-        android:text="@string/gabungSekarang"
-        android:fontFamily="@font/medium"
-        android:layout_marginBottom="100dp"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

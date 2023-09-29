@@ -8,11 +8,11 @@
         android:id="@+id/metodePembayaran"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/metodeBayar"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:textSize="16sp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/semibold"
+        android:text="@string/metodeBayar"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,9 +1,10 @@
 package com.example.tokopaerbe.home.transaction
 
 import android.os.Parcelable
-import com.example.tokopaerbe.home.checkout.CheckoutDataClass
+import android.support.annotation.Keep
 import kotlinx.android.parcel.Parcelize
 
+@Keep
 @Parcelize
 data class TransactionDataClass(
     val invoiceId: String,
@@ -14,7 +15,8 @@ data class TransactionDataClass(
     val totalPembayaranValue: Int
 ) : Parcelable
 
+@Keep
 @Parcelize
-data class ItemTransaction (
+data class ItemTransaction(
     val itemTransaction: List<TransactionDataClass>
 ) : Parcelable

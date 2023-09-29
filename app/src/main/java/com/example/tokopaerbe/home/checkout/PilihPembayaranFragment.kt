@@ -2,21 +2,17 @@ package com.example.tokopaerbe.home.checkout
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentCheckoutBinding
 import com.example.tokopaerbe.databinding.FragmentPilihPembayaranBinding
-import com.example.tokopaerbe.home.store.SearchAdapter
 import com.example.tokopaerbe.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
@@ -28,10 +24,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import org.json.JSONException
-import org.json.JSONObject
 
 class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickListener {
 
@@ -45,7 +37,8 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
     private lateinit var jsonModel: PaymentResponse
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPilihPembayaranBinding.inflate(inflater, container, false)
@@ -67,7 +60,6 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         val adapter = PilihPembayaranAdapter(this)
         binding.recyclerView.adapter = adapter
-
 
 //        model.payment.observe(viewLifecycleOwner) {
 //            Log.d("cekPayment", it.toString())
@@ -103,7 +95,6 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
                 } else {
                     // probably your remote param not exists
                 }
-
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -115,7 +106,6 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
 
         remoteConfig.addOnConfigUpdateListener(object : ConfigUpdateListener {
             override fun onUpdate(configUpdate: ConfigUpdate) {
-
                 Log.d("cekUpdateKey", "Updated keys: " + configUpdate.updatedKeys)
                 if (configUpdate.updatedKeys.contains("Payment")) {
                     remoteConfig.activate().addOnCompleteListener {
@@ -132,7 +122,6 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
                 Log.w("cekUpdateKey", "Config update error with code: " + error.code, error)
             }
         })
-
     }
 
     override fun onItemClick(image: String, name: String) {
@@ -150,5 +139,4 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
 
         findNavController().navigateUp()
     }
-
 }

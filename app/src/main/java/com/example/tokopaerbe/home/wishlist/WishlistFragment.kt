@@ -2,11 +2,11 @@ package com.example.tokopaerbe.home.wishlist
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,10 +29,9 @@ class WishlistFragment : Fragment() {
 
     private val myCoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -61,7 +60,7 @@ class WishlistFragment : Fragment() {
                 showCartItemsUI()
                 binding.totalbarang.text = "${wishList.size} Barang"
 
-                if(model.rvStateWishList) {
+                if (model.rvStateWishList) {
                     setLinearLayoutManager(wishList)
                 } else {
                     setGridLayoutManager(wishList)
@@ -75,12 +74,9 @@ class WishlistFragment : Fragment() {
                     model.rvStateWishList = !model.rvStateWishList
                     toggleLayoutManager(wishList)
                 }
-
             }
         }
-
     }
-
 
     private fun hideEmptyCartUI() {
         binding.divider.visibility = View.GONE
@@ -127,5 +123,4 @@ class WishlistFragment : Fragment() {
         adapter.submitList(wishList)
         binding.recyclerView.visibility = View.VISIBLE
     }
-
 }

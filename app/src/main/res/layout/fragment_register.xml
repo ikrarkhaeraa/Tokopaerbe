@@ -2,18 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/register_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/register_fragment"
     tools:context=".prelogin.register.RegisterFragment">
 
     <TextView
         android:id="@+id/titleDaftar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
         android:fontFamily="@font/poppins"
         android:text="@string/Daftar"
-        android:layout_marginTop="18dp"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
-        app:layout_constraintTop_toBottomOf="@id/titleDaftar"/>
+        app:layout_constraintTop_toBottomOf="@id/titleDaftar" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textFieldEmail"
@@ -32,16 +32,16 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
+        android:hint="@string/Email"
         app:helperText="@string/contohEmail"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        android:hint="@string/Email">
+        app:layout_constraintTop_toBottomOf="@id/divider">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailedittext"
+            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -50,15 +50,15 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
+        android:hint="@string/Password"
         app:helperText="@string/contohPassword"
-        app:layout_constraintTop_toBottomOf="@id/textFieldEmail"
-        android:hint="@string/Password">
+        app:layout_constraintTop_toBottomOf="@id/textFieldEmail">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordedittext"
-            android:inputType="textPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -67,9 +67,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/medium"
         android:text="@string/Daftar"
-        android:layout_marginTop="24dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,8 +79,8 @@
         android:id="@+id/divider2"
         android:layout_width="99dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonDaftar" />
 
@@ -111,11 +111,11 @@
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Masuk"
         android:layout_marginHorizontal="16dp"
-        android:textSize="14sp"
-        android:fontFamily="@font/medium"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/medium"
+        android:text="@string/Masuk"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -124,9 +124,9 @@
         android:id="@+id/persetujuan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/persetujuan"
-        android:layout_marginTop="24dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/persetujuan"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

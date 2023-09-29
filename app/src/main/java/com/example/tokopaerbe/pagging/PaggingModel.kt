@@ -13,14 +13,14 @@ import com.example.tokopaerbe.retrofit.response.Product
 class PaggingModel(private val productRepository: PaggingRepository) : ViewModel() {
 
     fun sendFilter(
-        search:String?,
-        sort:String?,
-        brand:String?,
-        lowest:Int?,
-        highest:Int?
+        search: String?,
+        sort: String?,
+        brand: String?,
+        lowest: Int?,
+        highest: Int?
     ): LiveData<PagingData<Product>> =
-        productRepository.getProductPaging(search, sort, brand, lowest, highest).cachedIn(viewModelScope)
-
+        productRepository.getProductPaging(search, sort, brand, lowest, highest)
+            .cachedIn(viewModelScope)
 }
 
 class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory {

@@ -4,7 +4,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
 class ApiConfig {
     companion object {
         private lateinit var apiService: ApiService

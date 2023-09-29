@@ -1,46 +1,27 @@
 package com.example.tokopaerbe.home.store
 
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.ContextThemeWrapper
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentModalBottomSheetBinding
-import com.example.tokopaerbe.databinding.FragmentTransactionBinding
-import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 class ModalBottomSheetFragment : BottomSheetDialogFragment() {
 
@@ -62,7 +43,8 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val theme = ContextThemeWrapper(requireContext(), baseTheme)
@@ -82,7 +64,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
         selectedText2 = model.brand
         textTerendah = model.textTerendah
         textTertinggi = model.textTertinggi
-
 
         if (selectedText1.isNotEmpty() || selectedText2.isNotEmpty() || textTerendah.isNotEmpty() || textTertinggi.isNotEmpty()) {
             binding.reset.visibility = VISIBLE
@@ -117,7 +98,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
-
         if (textTerendah.isNotEmpty()) {
             binding.editTextTerendah.setText(textTerendah)
         }
@@ -125,7 +105,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
         if (textTertinggi.isNotEmpty()) {
             binding.editTextTertinggi.setText(textTertinggi)
         }
-
 
         binding.chipgroup1.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId != View.NO_ID) {
@@ -136,10 +115,7 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
                 selectedText1 = ""
                 model.sort = selectedText1
             }
-
-
         }
-
 
         binding.chipgroup2.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId != View.NO_ID) {
@@ -152,21 +128,17 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
-
         binding.editTextTerendah.doOnTextChanged { text, _, _, _ ->
             textTerendah = text.toString()
             model.textTerendah = textTerendah
         }
-
 
         binding.editTextTertinggi.doOnTextChanged { text, _, _, _ ->
             textTertinggi = text.toString()
             model.textTertinggi = textTertinggi
         }
 
-
         binding.tampilkanproduk.setOnClickListener {
-
             val filter = bundleOf().apply {
                 putString("selectedText1", selectedText1)
                 putString("selectedText2", selectedText2)
@@ -183,7 +155,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
                 param(FirebaseAnalytics.Param.ITEMS, arrayOf(filter))
             }
 
-
             dismiss()
         }
 
@@ -193,8 +164,5 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             binding.editTextTerendah.text?.clear()
             binding.editTextTertinggi.text?.clear()
         }
-
     }
-
-
 }

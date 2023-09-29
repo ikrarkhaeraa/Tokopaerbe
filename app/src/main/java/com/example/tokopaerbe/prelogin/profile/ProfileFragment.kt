@@ -13,7 +13,6 @@ import android.text.SpannableStringBuilder
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -24,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -45,10 +45,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-
 
 class ProfileFragment : Fragment() {
 
@@ -69,15 +67,18 @@ class ProfileFragment : Fragment() {
         private const val REQUEST_CODE_PERMISSIONS = 10
     }
 
-
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (!allPermissionsGranted()) {
                 Toast.makeText(
-                    requireContext(), "Tidak mendapatkan permission.", Toast.LENGTH_SHORT
+                    requireContext(),
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -87,9 +88,10 @@ class ProfileFragment : Fragment() {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
@@ -118,11 +120,31 @@ class ProfileFragment : Fragment() {
         val colorSpanTerms = ForegroundColorSpan(resources.getColor(R.color.primaryColor))
         val colorSpanPrivacy = ForegroundColorSpan(resources.getColor(R.color.primaryColor))
 
-        spannableStringBuilder.setSpan(colorSpanTerms, startTerms, endTerms, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy, endPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableStringBuilder.setSpan(
+            colorSpanTerms,
+            startTerms,
+            endTerms,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableStringBuilder.setSpan(
+            colorSpanPrivacy,
+            startPrivacy,
+            endPrivacy,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
-        spannableStringBuilder.setSpan(colorSpanTerms, startTerms2, endTerms2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy2, endPrivacy2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableStringBuilder.setSpan(
+            colorSpanTerms,
+            startTerms2,
+            endTerms2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableStringBuilder.setSpan(
+            colorSpanPrivacy,
+            startPrivacy2,
+            endPrivacy2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         binding.persetujuan.text = spannableStringBuilder
 
@@ -130,10 +152,11 @@ class ProfileFragment : Fragment() {
         binding.buttonSelesai.isEnabled = false
 
         binding.circle.setOnClickListener {
-
             if (!allPermissionsGranted()) {
                 ActivityCompat.requestPermissions(
-                    requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+                    requireActivity(),
+                    REQUIRED_PERMISSIONS,
+                    REQUEST_CODE_PERMISSIONS
                 )
             }
 
@@ -155,11 +178,9 @@ class ProfileFragment : Fragment() {
         sendData()
     }
 
-
     private fun saveUserProfile(sessionProfile: UserProfile) {
         model.saveSessionProfile(sessionProfile)
     }
-
 
     private fun sendData() {
         binding.buttonSelesai.setOnClickListener {
@@ -176,7 +197,11 @@ class ProfileFragment : Fragment() {
 
                 val fileRequestBody = getMyFile!!.asRequestBody("image/*".toMediaTypeOrNull())
                 val imagePart =
-                    MultipartBody.Part.createFormData("userImage", getMyFile!!.name, fileRequestBody)
+                    MultipartBody.Part.createFormData(
+                        "userImage",
+                        getMyFile!!.name,
+                        fileRequestBody
+                    )
 
                 if (it.isNotEmpty()) {
                     model.postDataProfile(auth, userName, imagePart)
@@ -184,7 +209,6 @@ class ProfileFragment : Fragment() {
                     lifecycleScope.launch {
                         val it = model.profile.first()
                         if (it.code == 200) {
-
                             val userProfile =
                                 UserProfile(
                                     it.data.userName,
@@ -198,9 +222,7 @@ class ProfileFragment : Fragment() {
                                 goToHome()
                             }
                         }
-
                     }
-
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -208,13 +230,11 @@ class ProfileFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
             }
 
             firebaseAnalytics.logEvent("button_click") {
                 param(FirebaseAnalytics.Param.METHOD, "Profile Finish Button")
             }
-
         }
     }
 
@@ -239,7 +259,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-
     private fun startGallery() {
         val intent = Intent()
         intent.action = Intent.ACTION_GET_CONTENT
@@ -262,7 +281,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-
     private val launcherIntentGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -277,7 +295,8 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateSubmitButtonState() {
-        val isBothFieldsNotEmpty = binding.nameedittext.text?.isNotEmpty() == true && getMyFile != null
+        val isBothFieldsNotEmpty =
+            binding.nameedittext.text?.isNotEmpty() == true && getMyFile != null
         binding.buttonSelesai.isEnabled = isBothFieldsNotEmpty
     }
 
@@ -302,5 +321,4 @@ class ProfileFragment : Fragment() {
             binding.progressBar.visibility = View.GONE
         }
     }
-
 }

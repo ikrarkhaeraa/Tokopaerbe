@@ -7,26 +7,20 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.ItemCartBinding
-import com.example.tokopaerbe.databinding.ItemCheckoutBinding
 import com.example.tokopaerbe.databinding.ItemMetodePembayaranBinding
 import com.example.tokopaerbe.retrofit.response.Payment
-import com.example.tokopaerbe.retrofit.response.PaymentResponse
-import com.example.tokopaerbe.room.CartEntity
-import com.example.tokopaerbe.viewmodel.ViewModel
-import com.squareup.picasso.Picasso
-import java.text.NumberFormat
-import java.util.Locale
 
-class PilihPembayaranAdapter (
+class PilihPembayaranAdapter(
     private val itemClickListener: MetodePembayaranAdapter.OnItemClickListener
 ) :
     ListAdapter<Payment, PilihPembayaranAdapter.ListViewHolder>(CartEntityDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
-        val binding = ItemMetodePembayaranBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding = ItemMetodePembayaranBinding.inflate(
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            false
+        )
         return ListViewHolder(binding)
     }
 
@@ -63,5 +57,4 @@ class PilihPembayaranAdapter (
             return oldItem == newItem
         }
     }
-
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.checkout.StatusFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -16,20 +16,20 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/cartToolbar"
-            app:titleCentered="true"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?android:attr/windowBackground"
             app:layout_scrollFlags="scroll|enterAlways"
             app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:title="@string/status" />
+            app:title="@string/status"
+            app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout2"/>
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout2" />
 
 
     <ScrollView
@@ -47,15 +47,14 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:elevation="3dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:elevation="3dp"
                 android:src="@drawable/status_checklist_icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="32dp"
-                app:layout_constraintTop_toTopOf="@+id/constraintScrollView"
-                />
+                app:layout_constraintTop_toTopOf="@+id/constraintScrollView" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
@@ -120,9 +119,9 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/reviewedittext"
-                            android:gravity="top"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="match_parent"
+                            android:gravity="top" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -146,9 +145,9 @@
                 android:id="@+id/idTransaksi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/idTransaksi"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/idTransaksi"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detailTransaksi" />
 
@@ -157,8 +156,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/idTransaksiValue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.96"
@@ -169,9 +168,9 @@
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/status"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/status"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/idTransaksi" />
 
@@ -180,8 +179,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/statusValue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.96"
@@ -192,9 +191,9 @@
                 android:id="@+id/tanggal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tanggal"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/tanggal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/status" />
 
@@ -203,8 +202,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/tanggalValue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.96"
@@ -215,9 +214,9 @@
                 android:id="@+id/waktu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/waktu"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/waktu"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tanggal" />
 
@@ -226,8 +225,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/waktuValue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.96"
@@ -238,9 +237,9 @@
                 android:id="@+id/metodePembayaran"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/metodePembayaran"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/metodePembayaran"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/waktu" />
 
@@ -249,8 +248,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/metodePembayaranValue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.96"
@@ -261,21 +260,21 @@
                 android:id="@+id/totalPembayaran"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/totalPembayaran"
-                android:layout_marginTop="8dp"
                 android:layout_marginStart="16dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/metodePembayaran"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                android:text="@string/totalPembayaran"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/metodePembayaran" />
 
             <TextView
                 android:id="@+id/totalPembayaranValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/totalPembayaranValue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.96"
@@ -285,8 +284,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
-
-
 
 
     <com.google.android.material.divider.MaterialDivider

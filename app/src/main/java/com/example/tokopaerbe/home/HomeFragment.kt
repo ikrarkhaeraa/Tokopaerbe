@@ -2,28 +2,22 @@ package com.example.tokopaerbe.home
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.tokopaerbe.MainActivity
-import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentHomeBinding
-import com.example.tokopaerbe.databinding.FragmentLoginBinding
-import com.example.tokopaerbe.prelogin.login.LoginFragment
-import com.example.tokopaerbe.prelogin.register.RegisterFragment
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -36,7 +30,8 @@ class HomeFragment : Fragment() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -50,7 +45,8 @@ class HomeFragment : Fragment() {
 
         firebaseAnalytics = Firebase.analytics
 
-        binding.switch1.isChecked = AppCompatDelegate.getApplicationLocales().get(0)?.language == "in"
+        binding.switch1.isChecked =
+            AppCompatDelegate.getApplicationLocales().get(0)?.language == "in"
 
         binding.testCrash.setOnClickListener {
             throw RuntimeException("Test Crash") // Force a crash
@@ -63,7 +59,6 @@ class HomeFragment : Fragment() {
 
     private fun logout() {
         binding.logout.setOnClickListener {
-
             Log.d("cekLogout", "LogoutSuccess")
             (requireActivity() as MainActivity).logout()
 
@@ -73,7 +68,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun language(){
+    private fun language() {
         binding.switch1.apply {
             setOnClickListener {
                 val language = if (isChecked) "in" else "en"
@@ -85,19 +80,19 @@ class HomeFragment : Fragment() {
 
     private fun theme() {
         lifecycleScope.launch {
-            model.getIsDarkState().collect {theme ->
+            model.getIsDarkState().collect { theme ->
                 binding.switch2.apply {
                     isChecked = theme
                     setOnClickListener {
                         launch {
                             model.darkTheme(isChecked)
                         }
-                        if (isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        if (isChecked) {
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        } else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     }
                 }
             }
         }
     }
-
 }

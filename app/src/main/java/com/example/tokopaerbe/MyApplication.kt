@@ -32,7 +32,8 @@ class MyApplication : Application() {
 
         FirebaseApp.initializeApp(this)
 
-        val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        val loggingInterceptor =
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
         val chuckerInterceptor = ChuckerInterceptor.Builder(this)
             .build()
@@ -45,5 +46,4 @@ class MyApplication : Application() {
 
         ApiConfig.initialize(client)
     }
-
 }

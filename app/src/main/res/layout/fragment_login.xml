@@ -2,18 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/login_fragment"
     tools:context=".prelogin.login.LoginFragment">
 
     <TextView
         android:id="@+id/titleMasuk"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
         android:fontFamily="@font/poppins"
         android:text="@string/Masuk"
-        android:layout_marginTop="18dp"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
-        app:layout_constraintTop_toBottomOf="@id/titleMasuk"/>
+        app:layout_constraintTop_toBottomOf="@id/titleMasuk" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textFieldEmail"
@@ -32,27 +32,28 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
+        android:hint="@string/Email"
         app:helperText="@string/contohEmail"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        android:hint="@string/Email">
+        app:layout_constraintTop_toBottomOf="@id/divider">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailedittext"
+            android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <TextView-->
-<!--        android:id="@+id/contohEmail"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:fontFamily="@font/poppins"-->
-<!--        android:text="@string/contohEmail"-->
-<!--        android:textSize="12sp"-->
-<!--        android:layout_marginStart="32dp"-->
-<!--        android:layout_marginTop="2dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/textFieldEmail" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/contohEmail"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:fontFamily="@font/poppins"-->
+    <!--        android:text="@string/contohEmail"-->
+    <!--        android:textSize="12sp"-->
+    <!--        android:layout_marginStart="32dp"-->
+    <!--        android:layout_marginTop="2dp"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/textFieldEmail" />-->
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -61,28 +62,28 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
+        android:hint="@string/Password"
         app:helperText="@string/contohPassword"
-        app:layout_constraintTop_toBottomOf="@id/textFieldEmail"
-        android:hint="@string/Password">
+        app:layout_constraintTop_toBottomOf="@id/textFieldEmail">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordedittext"
-            android:inputType="textPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <TextView-->
-<!--        android:id="@+id/contohPassword"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="32dp"-->
-<!--        android:layout_marginTop="2dp"-->
-<!--        android:fontFamily="@font/poppins"-->
-<!--        android:text="@string/contohPassword"-->
-<!--        android:textSize="12sp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/textFieldPassword" />-->
+    <!--    <TextView-->
+    <!--        android:id="@+id/contohPassword"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="32dp"-->
+    <!--        android:layout_marginTop="2dp"-->
+    <!--        android:fontFamily="@font/poppins"-->
+    <!--        android:text="@string/contohPassword"-->
+    <!--        android:textSize="12sp"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/textFieldPassword" />-->
 
 
     <Button
@@ -90,9 +91,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/medium"
         android:text="@string/Masuk"
-        android:layout_marginTop="24dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -102,8 +103,8 @@
         android:id="@+id/divider2"
         android:layout_width="99dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonMasuk" />
 
@@ -134,11 +135,11 @@
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Daftar"
         android:layout_marginHorizontal="16dp"
-        android:textSize="14sp"
-        android:fontFamily="@font/medium"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/medium"
+        android:text="@string/Daftar"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -147,9 +148,9 @@
         android:id="@+id/persetujuan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/persetujuan"
-        android:layout_marginTop="24dp"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/persetujuan"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

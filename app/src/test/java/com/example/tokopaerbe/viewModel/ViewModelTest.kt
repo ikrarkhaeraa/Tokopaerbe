@@ -5,26 +5,13 @@ import androidx.lifecycle.Observer
 import com.example.tokopaerbe.retrofit.user.UserLogin
 import com.example.tokopaerbe.retrofit.user.UserProfile
 import com.example.tokopaerbe.retrofit.user.UserRegister
-import com.example.tokopaerbe.room.LiveDataTestUtil
 import com.example.tokopaerbe.viewmodel.ViewModel
-import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -178,7 +165,6 @@ class ViewModelTest {
         }
     }
 
-
     @Test
     fun testGetReviewData() = runTest {
         // Prepare test data
@@ -272,6 +258,4 @@ class ViewModelTest {
             assertEquals(200, transactionResponse.code)
         }
     }
-
-
 }

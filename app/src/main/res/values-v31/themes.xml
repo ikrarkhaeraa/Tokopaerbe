@@ -7,6 +7,7 @@
         <item name="android:windowSplashScreenBackground">@color/white</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/splashscreen2</item>
         <item name="android:windowSplashScreenAnimationDuration">5000</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">?attr/colorSurfaceContainerLowest</item>
@@ -18,7 +19,7 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
-    <style name="ChipInput" parent="Widget.Material3.Chip.Filter"/>
+    <style name="ChipInput" parent="Widget.Material3.Chip.Filter" />
 
     <style name="styleInputChip" parent="Widget.Material3.Chip.Input">
         <item name="chipIconTint">#1D192B</item>

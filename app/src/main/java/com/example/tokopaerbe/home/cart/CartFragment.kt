@@ -27,7 +27,6 @@ import com.google.firebase.ktx.Firebase
 import java.text.NumberFormat
 import java.util.Locale
 
-
 class CartFragment : Fragment() {
 
     private var _binding: FragmentCartBinding? = null
@@ -40,7 +39,6 @@ class CartFragment : Fragment() {
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
     private lateinit var adapter: CartAdapter
     private lateinit var firebaseAnalytics: FirebaseAnalytics
-
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,7 +102,8 @@ class CartFragment : Fragment() {
                             productVariant,
                             productStock,
                             productPrice,
-                            productQuantity)
+                            productQuantity
+                        )
                         listCheckout.add(product)
                     }
                     Log.d("ceklistChekout", listCheckout.toString())
@@ -127,23 +126,20 @@ class CartFragment : Fragment() {
                         param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
                         param(FirebaseAnalytics.Param.ITEMS, arrayOf(cartList).toString())
                     }
-
                 }
-
             }
         }
-
 
         binding.checkBox.setOnClickListener {
             model.checkAll(binding.checkBox.isChecked)
         }
 
         updateTotalPriceUI()
-
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -198,7 +194,6 @@ class CartFragment : Fragment() {
         return numberFormat.format(price)
     }
 
-
     @SuppressLint("SetTextI18n")
     private fun updateTotalPriceUI() {
         val formattedTotalPrice = formatPrice(totalPrice)
@@ -212,5 +207,4 @@ class CartFragment : Fragment() {
 
         updateTotalPriceUI()
     }
-
 }

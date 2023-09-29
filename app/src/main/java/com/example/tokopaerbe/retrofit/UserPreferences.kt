@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class UserPreferences @Inject constructor (private val database: DataStore<Preferences>) {
+class UserPreferences @Inject constructor(private val database: DataStore<Preferences>) {
 
     companion object {
         @Volatile
@@ -63,7 +63,6 @@ class UserPreferences @Inject constructor (private val database: DataStore<Prefe
             preferences[USERIMAGE_KEY] = sessionProfile.userImage
         }
     }
-
 
     suspend fun saveUserLogin(sessionLogin: UserLogin) {
         database.edit { preferences ->
@@ -114,7 +113,7 @@ class UserPreferences @Inject constructor (private val database: DataStore<Prefe
     }
 
     fun getUserName(): Flow<String> {
-        return database.data.map {preferences ->
+        return database.data.map { preferences ->
             preferences[USERNAME_KEY] ?: ""
         }
     }

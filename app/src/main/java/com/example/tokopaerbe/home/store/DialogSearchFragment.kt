@@ -6,28 +6,20 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentDialogSearchBinding
-import com.example.tokopaerbe.home.store.ProductAdapter
 import com.example.tokopaerbe.home.store.SearchAdapter
-import com.example.tokopaerbe.home.store.StoreFragment
-import com.example.tokopaerbe.pagging.PaggingModel
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
-import com.google.android.material.chip.Chip
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -48,13 +40,13 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
     private var clickedTitle: String? = null
     private var searchText: String = ""
 
-
     companion object {
         const val TAG = "ModalBottomSheet"
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDialogSearchBinding.inflate(inflater, container, false)
@@ -94,8 +86,12 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
             }
 
             binding.searchedittext.requestFocus()
-            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.showSoftInput(binding.searchedittext, InputMethodManager.SHOW_IMPLICIT)
+            val inputMethodManager =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.showSoftInput(
+                binding.searchedittext,
+                InputMethodManager.SHOW_IMPLICIT
+            )
 
             val coroutineScope = CoroutineScope(Dispatchers.Main)
             val queryTextFlow = MutableStateFlow("")
@@ -134,8 +130,12 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
                     setFragmentResult("searchText", bundleOf("bundleKey" to searchText))
 
                     // Dismiss the keyboard
-                    val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.hideSoftInputFromWindow(binding.searchedittext.windowToken, 0)
+                    val inputMethodManager =
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(
+                        binding.searchedittext.windowToken,
+                        0
+                    )
 
                     // Dismiss the dialog
                     dismiss()
@@ -144,14 +144,10 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
                 }
                 false
             }
-
         }
-
-
     }
 
-
-    private fun showData(){
+    private fun showData() {
         model.search.observe(viewLifecycleOwner) {
             if (isAdded && it.code == 200) {
                 showLoading(false)
@@ -176,6 +172,4 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
         // Clear the focus from the searchedittext
         binding.searchedittext.clearFocus()
     }
-
-
 }

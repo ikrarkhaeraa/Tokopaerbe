@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
@@ -52,7 +51,8 @@ class LoginFragment : Fragment() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
@@ -90,11 +90,31 @@ class LoginFragment : Fragment() {
         val colorSpanTerms = ForegroundColorSpan(resources.getColor(R.color.primaryColor))
         val colorSpanPrivacy = ForegroundColorSpan(resources.getColor(R.color.primaryColor))
 
-        spannableStringBuilder.setSpan(colorSpanTerms, startTerms, endTerms, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy, endPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableStringBuilder.setSpan(
+            colorSpanTerms,
+            startTerms,
+            endTerms,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableStringBuilder.setSpan(
+            colorSpanPrivacy,
+            startPrivacy,
+            endPrivacy,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
-        spannableStringBuilder.setSpan(colorSpanTerms, startTerms2, endTerms2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableStringBuilder.setSpan(colorSpanPrivacy, startPrivacy2, endPrivacy2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableStringBuilder.setSpan(
+            colorSpanTerms,
+            startTerms2,
+            endTerms2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableStringBuilder.setSpan(
+            colorSpanPrivacy,
+            startPrivacy2,
+            endPrivacy2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         binding.persetujuan.text = spannableStringBuilder
 
@@ -169,9 +189,7 @@ class LoginFragment : Fragment() {
 
     private fun chooseButton() {
         binding.apply {
-
             buttonMasuk.setOnClickListener {
-
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
                     param(FirebaseAnalytics.Param.METHOD, email)
                 }
@@ -200,7 +218,6 @@ class LoginFragment : Fragment() {
                             delay(delayMillis)
                             login()
                         }
-
                     } else {
                         Toast.makeText(
                             requireContext(),
@@ -208,9 +225,7 @@ class LoginFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-
                 }
-
             }
 
             buttonDaftar.setOnClickListener {
@@ -227,7 +242,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun login() {
-
         lifecycleScope.launch {
             val userName = model.getUserName().first()
 
@@ -235,13 +249,11 @@ class LoginFragment : Fragment() {
             showLoading(false)
             if (userName.isEmpty()) {
                 findNavController().navigate(R.id.action_loginFragment_to_profileFragment)
-
             } else {
                 findNavController().navigate(R.id.prelogin_to_main)
             }
 //            findNavController().navigate(R.id.prelogin_to_main)
         }
-
     }
 
     private fun showLoading(isLoading: Boolean) {
@@ -251,5 +263,4 @@ class LoginFragment : Fragment() {
             binding.progressBar.visibility = View.GONE
         }
     }
-
 }

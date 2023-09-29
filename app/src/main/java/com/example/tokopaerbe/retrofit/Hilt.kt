@@ -1,16 +1,9 @@
 package com.example.tokopaerbe.retrofit
 
-import Authenticator
-import android.app.Application
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.datastore.preferences.preferencesDataStoreFile
-import androidx.room.Database
 import androidx.room.Room
-import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.example.tokopaerbe.MyApplication
 import com.example.tokopaerbe.room.CartDao
 import com.example.tokopaerbe.room.NotificationDao
 import com.example.tokopaerbe.room.ProductDatabase
@@ -21,11 +14,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -78,28 +68,29 @@ object Hilt {
 
     @Singleton
     @Provides
-    fun providecartDao(database: ProductDatabase): CartDao{
+    fun providecartDao(database: ProductDatabase): CartDao {
         return database.productDao()
     }
 
     @Singleton
     @Provides
-    fun providewishDao(database: ProductDatabase): WishlistDao{
+    fun providewishDao(database: ProductDatabase): WishlistDao {
         return database.wishlistDao()
     }
 
     @Singleton
     @Provides
-    fun providenotifDao(database: ProductDatabase): NotificationDao{
+    fun providenotifDao(database: ProductDatabase): NotificationDao {
         return database.notificationDao()
     }
 
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext context: Context): ProductDatabase {
-       return Room.databaseBuilder(
+        return Room.databaseBuilder(
             context.applicationContext,
-           ProductDatabase::class.java, "productAdded.db"
+            ProductDatabase::class.java,
+            "productAdded.db"
         ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
     }
 }

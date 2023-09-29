@@ -1,5 +1,5 @@
 package com.example.tokopaerbe.retrofit.user
 
-data class ErrorState (
+data class ErrorState(
     val code: Int,
 )

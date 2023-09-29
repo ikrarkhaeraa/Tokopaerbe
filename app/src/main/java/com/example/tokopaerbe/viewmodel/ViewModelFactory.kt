@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.tokopaerbe.retrofit.DataSource
 import com.example.tokopaerbe.retrofit.Injection
 
-class ViewModelFactory(private val dataSource: DataSource) : ViewModelProvider.NewInstanceFactory() {
+class ViewModelFactory(private val dataSource: DataSource) :
+    ViewModelProvider.NewInstanceFactory() {
 
     companion object {
         @Volatile
@@ -24,6 +25,7 @@ class ViewModelFactory(private val dataSource: DataSource) : ViewModelProvider.N
             modelClass.isAssignableFrom(com.example.tokopaerbe.viewmodel.ViewModel::class.java) -> {
                 ViewModel(dataSource) as T
             }
+
             else -> throw IllegalArgumentException("Unknown Model class: " + modelClass.name)
         }
     }

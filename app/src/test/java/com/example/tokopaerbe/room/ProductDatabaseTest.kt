@@ -39,10 +39,7 @@ class ProductDatabaseTest : TestCase() {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-
-
-
-    //TEST CART DAO
+    // TEST CART DAO
     @Test
     fun testGetProductFromCartDao() = runBlocking {
         // Use withContext to switch to a background coroutine context
@@ -119,7 +116,6 @@ class ProductDatabaseTest : TestCase() {
             val cartList = LiveDataTestUtil.getValue(cartLiveData)
 
             assertTrue(cartList.isNullOrEmpty())
-
         }
     }
 
@@ -210,7 +206,16 @@ class ProductDatabaseTest : TestCase() {
             val image = "sample_image.jpg"
             val isChecked = false
 
-            cartDao.addProduct(productId, productName, variantName, stock, productPrice, quantity, image, isChecked)
+            cartDao.addProduct(
+                productId,
+                productName,
+                variantName,
+                stock,
+                productPrice,
+                quantity,
+                image,
+                isChecked
+            )
 
             val cartLiveData = cartDao.getProduct()
 
@@ -357,11 +362,7 @@ class ProductDatabaseTest : TestCase() {
         }
     }
 
-
-
-
-
-    //TEST WISHLIST DAO
+    // TEST WISHLIST DAO
     @Test
     fun testGetWishlistFromWishlistDao() = runBlocking {
         // Use withContext to switch to a background coroutine context
@@ -407,7 +408,7 @@ class ProductDatabaseTest : TestCase() {
             assertEquals(store, wishlistEntity?.store)
             assertEquals(rating, wishlistEntity?.productRating)
             assertEquals(sale, wishlistEntity?.sale)
-            assertEquals(stock,wishlistEntity?.stock)
+            assertEquals(stock, wishlistEntity?.stock)
             assertEquals(variantName, wishlistEntity?.variantName)
             assertEquals(quantity, wishlistEntity?.quantity)
         }
@@ -450,7 +451,7 @@ class ProductDatabaseTest : TestCase() {
             assertEquals(store, wishList?.store)
             assertEquals(rating, wishList?.productRating)
             assertEquals(sale, wishList?.sale)
-            assertEquals(stock,wishList?.stock)
+            assertEquals(stock, wishList?.stock)
             assertEquals(variantName, wishList?.variantName)
             assertEquals(quantity, wishList?.quantity)
         }
@@ -501,7 +502,7 @@ class ProductDatabaseTest : TestCase() {
             assertEquals(store, wishlistEntity?.store)
             assertEquals(rating, wishlistEntity?.productRating)
             assertEquals(sale, wishlistEntity?.sale)
-            assertEquals(stock,wishlistEntity?.stock)
+            assertEquals(stock, wishlistEntity?.stock)
             assertEquals(variantName, wishlistEntity?.variantName)
             assertEquals(quantity, wishlistEntity?.quantity)
         }
@@ -545,16 +546,11 @@ class ProductDatabaseTest : TestCase() {
         }
     }
 
-
-
-
-
-    //TEST NOTIFICATION DAO
+    // TEST NOTIFICATION DAO
     @Test
     fun testGetNotificationsFromNotifDao() = runBlocking {
         // Use withContext to switch to a background coroutine context
         withContext(Dispatchers.IO) {
-
             val notifType = "Notif Type"
             val notifTitle = "Notif Title"
             val notifBody = "Notif Body"
@@ -582,7 +578,7 @@ class ProductDatabaseTest : TestCase() {
                 assertTrue(notif.isNotEmpty())
             }
 
-            val notifEntity  = notif?.get(0)
+            val notifEntity = notif?.get(0)
             assertEquals(notifType, notifEntity?.notifType)
             assertEquals(notifTitle, notifEntity?.notifTitle)
             assertEquals(notifBody, notifEntity?.notifBody)
@@ -597,7 +593,6 @@ class ProductDatabaseTest : TestCase() {
     fun testGetUnreadNotificationsFromNotifDao() = runBlocking {
         // Use withContext to switch to a background coroutine context
         withContext(Dispatchers.IO) {
-
             val notifType = "Notif Type"
             val notifTitle = "Notif Title"
             val notifBody = "Notif Body"
@@ -625,7 +620,7 @@ class ProductDatabaseTest : TestCase() {
                 assertTrue(notif.isNotEmpty())
             }
 
-            val notifEntity  = notif?.get(0)
+            val notifEntity = notif?.get(0)
             assertEquals(notifType, notifEntity?.notifType)
             assertEquals(notifTitle, notifEntity?.notifTitle)
             assertEquals(notifBody, notifEntity?.notifBody)
@@ -640,7 +635,6 @@ class ProductDatabaseTest : TestCase() {
     fun testNotifIsCheckedFromNotifDao() = runBlocking {
         // Use withContext to switch to a background coroutine context
         withContext(Dispatchers.IO) {
-
             val notifId = 0
             val notifType = "Notif Type"
             val notifTitle = "Notif Title"
@@ -676,5 +670,4 @@ class ProductDatabaseTest : TestCase() {
             assertEquals(isChecked, notifEntity?.isChecked)
         }
     }
-
 }

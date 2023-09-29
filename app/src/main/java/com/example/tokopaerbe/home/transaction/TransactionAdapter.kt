@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.databinding.ItemRvTransactionBinding
-import com.example.tokopaerbe.home.checkout.MetodePembayaranAdapter
 import com.example.tokopaerbe.retrofit.response.Transaction
 import java.text.NumberFormat
 import java.util.Locale
@@ -21,7 +20,11 @@ class TransactionAdapter(
     ListAdapter<Transaction, TransactionAdapter.ListViewHolder>(TransactionResponseDiffCallback()) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
-        val binding = ItemRvTransactionBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        val binding = ItemRvTransactionBinding.inflate(
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            false
+        )
         return ListViewHolder(binding)
     }
 
@@ -32,7 +35,6 @@ class TransactionAdapter(
         holder.binding.buttonUlas.setOnClickListener {
             itemClickListener.onItemClick(transaction.invoiceId)
         }
-
     }
 
     class ListViewHolder(var binding: ItemRvTransactionBinding) :
@@ -59,6 +61,7 @@ class TransactionAdapter(
                 }
             }
         }
+
         private fun formatPrice(price: Double): String {
             val numberFormat = NumberFormat.getNumberInstance(
                 Locale(
@@ -84,5 +87,4 @@ class TransactionAdapter(
     interface OnItemClickListener {
         fun onItemClick(invoiceId: String)
     }
-
 }

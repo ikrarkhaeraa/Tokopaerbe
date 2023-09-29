@@ -1,19 +1,13 @@
 package com.example.tokopaerbe.retrofit
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.bumptech.glide.load.engine.Resource
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.tokopaerbe.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.retrofit.response.ReviewResponse
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
-import okhttp3.RequestBody
-import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -25,7 +19,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.any
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,14 +33,12 @@ class RetrofitTest {
     val testInstantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
     private lateinit var apiService: ApiService
 
-
     @Mock
     private lateinit var mockWebServer: MockWebServer
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-
 
         val client = OkHttpClient.Builder().build()
         mockWebServer = MockWebServer()
@@ -247,12 +238,10 @@ class RetrofitTest {
                         assertEquals(productRating, response.body()?.data?.productRating)
                         assertEquals(productVariant, response.body()?.data?.productVariant)
                     } else {
-
                     }
                 }
 
                 override fun onFailure(call: Call<DetailProductResponse>, t: Throwable) {
-
                 }
             }
         )
@@ -291,14 +280,11 @@ class RetrofitTest {
                         )
                         val productReview = listOf(review1, review2)
                         assertEquals(productReview, response.body()?.data)
-
                     } else {
-
                     }
                 }
 
                 override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
-
                 }
             }
         )
@@ -369,7 +355,8 @@ class RetrofitTest {
         val total = 48998000
         val rating = 4
         val review = "LGTM"
-        val image = "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/6/0a49c399-cf6b-47f5-91c9-8cbd0b86462d.jpg"
+        val image =
+            "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/6/0a49c399-cf6b-47f5-91c9-8cbd0b86462d.jpg"
         val name = "ASUS ROG Strix G17 G713RM-R736H6G-O - Eclipse Gray"
         val items = 1
         assertEquals(invoiceId, actualResponse.body()?.data?.get(0)?.invoiceId)
@@ -384,5 +371,4 @@ class RetrofitTest {
         assertEquals(name, actualResponse.body()?.data?.get(0)?.name)
         assertEquals(items, actualResponse.body()?.data?.get(0)?.items?.size)
     }
-
 }

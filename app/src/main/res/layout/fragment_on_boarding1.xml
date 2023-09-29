@@ -11,14 +11,13 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/onboard1"
-        android:layout_marginBottom="215dp"
         android:layout_marginTop="127dp"
+        android:layout_marginBottom="215dp"
+        android:src="@drawable/onboard1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
