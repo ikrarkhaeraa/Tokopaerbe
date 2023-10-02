@@ -84,7 +84,7 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
         GlobalScope.launch(Dispatchers.Main) {
             delay(1000)
 
-            if (isAdded) {
+            if (isVisible) {
                 model.transaction.observe(viewLifecycleOwner) {
                     if (it == null) {
                         Log.d("transaction", it.toString())
@@ -139,13 +139,14 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
 
     override fun onItemClick(invoiceId: String) {
         item = ItemTransaction(itemTransaction)
+        val size = itemTransaction.size
 
         Log.d("cekItemTransaction", item.itemTransaction.size.toString())
 
         item.itemTransaction.map {
             for (i in item.itemTransaction.indices) {
                 if (invoiceId == item.itemTransaction[i].invoiceId) {
-                    (requireActivity() as MainActivity).goToStatus(item.itemTransaction[i])
+                    (requireActivity() as MainActivity).goToStatus(item.itemTransaction[i], size)
                 }
             }
         }

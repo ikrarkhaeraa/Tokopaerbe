@@ -42,11 +42,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,6 +78,7 @@ import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
 import com.example.tokopaerbe.home.checkout.ListCheckout
 import com.example.tokopaerbe.retrofit.response.ProductVariant
+import com.example.tokopaerbe.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -95,7 +99,6 @@ class ComposeDetailProduct : Fragment() {
     private var token: String = ""
     private var listSearchResult: List<String>? = listOf()
     private var productVariant: List<ProductVariant>? = listOf()
-    private var isIconBorder = true
 
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
@@ -159,7 +162,6 @@ class ComposeDetailProduct : Fragment() {
         store = model.detail.observeAsState().value?.data?.store
         sale = model.detail.observeAsState().value?.data?.sale
         code = model.detail.observeAsState().value?.code
-
         Log.d("cekPriceDetailCompose", itemPrice.toString())
 
         listSearchResult = model.detail.observeAsState().value?.data?.image
@@ -177,6 +179,7 @@ class ComposeDetailProduct : Fragment() {
             }
             itemPrice = formatPrice(price.toDouble())
         }
+        model.priceDetail = itemPrice.toString()
 
         Log.d("cekCodeDetail", code.toString())
 
@@ -239,6 +242,7 @@ class ComposeDetailProduct : Fragment() {
         ExperimentalLayoutApi::class,
         ExperimentalFoundationApi::class
     )
+    @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
     fun DetailProductScreen(
         price: Int? = 0,
@@ -266,26 +270,34 @@ class ComposeDetailProduct : Fragment() {
             param(FirebaseAnalytics.Param.ITEMS, productName.toString())
         }
 
-        var priceState = remember { mutableStateOf(price) }
-        var itemPriceState = remember { mutableStateOf(itemPrice) }
-        var selectedVariantState = remember { mutableStateOf(selectedVariant) }
-        val selectedVariantIndex = remember { mutableStateOf<Int?>(null) }
+        var priceState by rememberSaveable { mutableStateOf(price) }
+        var itemPriceState by rememberSaveable { mutableStateOf(itemPrice) }
+        var selectedVariantState by rememberSaveable { mutableStateOf(selectedVariant) }
+        var selectedVariantIndex by rememberSaveable { mutableIntStateOf(0) }
 
-        priceState.value = price
-        itemPriceState.value = itemPrice
-        selectedVariantState.value = selectedVariant
-        selectedVariantIndex.value = index
+        priceState = price
+        itemPriceState = itemPrice
+        selectedVariantState = selectedVariant
+//        selectedVariantIndex = model.selectedChip
 
-        var isImageChanged by remember { mutableStateOf(true) }
+        var favorite: WishlistEntity? = null
+        var isImageChanged by rememberSaveable {mutableStateOf(false)}
 
-        var imageResource: Painter = if (isImageChanged) {
+        lifecycleScope.launch {
+            favorite = model.getWishlistforDetail(productId)
+            if (productId == favorite?.productId) {
+                isImageChanged = true
+            }
+            Log.d("cekFavorite", favorite?.productId.toString())
+            Log.d("cekImageResource", isImageChanged.toString())
+        }
+
+        var imageResource: Painter = if (!isImageChanged) {
             painterResource(id = R.drawable.baseline_favorite_border_24)
         } else {
             painterResource(id = R.drawable.baseline_favorite_24)
         }
 
-//        productId = args.productIdCompose
-//        Log.d("cekComposeId", productId)
 
         fun formatPrice(price: Double?): String {
             val numberFormat = NumberFormat.getNumberInstance(
@@ -328,7 +340,7 @@ class ComposeDetailProduct : Fragment() {
                             onClick = {
                                 // Handle button click here
                                 listCheckout = ArrayList()
-                                if (selectedVariantIndex.value == 0) {
+                                if (selectedVariantIndex == 0) {
                                     if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
                                         val productId = productId
                                         val productImage = listSearchResult[0]
@@ -355,7 +367,7 @@ class ComposeDetailProduct : Fragment() {
                                         val productNameData = productName
                                         val productVariantData = productVariant[1].variantName
                                         val productStock = stock
-                                        val productPrice = price
+                                        val productPrice = priceState!!
                                         val productQuantity = 1
                                         val product = CheckoutDataClass(
                                             productId,
@@ -400,7 +412,7 @@ class ComposeDetailProduct : Fragment() {
                                     val productCart = model.getCartforDetail(productId)
                                     Log.d("cekProductCart", productCart?.productId.toString())
 
-                                    if (selectedVariantIndex.value == 0) {
+                                    if (selectedVariantIndex == 0) {
                                         Log.d("cek1", "klik1")
 
                                         if (productCart.toString() == "null") {
@@ -410,7 +422,7 @@ class ComposeDetailProduct : Fragment() {
                                                     productName,
                                                     productVariant[0].variantName,
                                                     stock,
-                                                    price,
+                                                    priceState!!,
                                                     1,
                                                     listSearchResult[0],
                                                     false
@@ -445,7 +457,7 @@ class ComposeDetailProduct : Fragment() {
                                                     productName,
                                                     productVariant[1].variantName,
                                                     stock,
-                                                    price,
+                                                    priceState!!,
                                                     1,
                                                     listSearchResult[0],
                                                     false
@@ -555,14 +567,14 @@ class ComposeDetailProduct : Fragment() {
 
                 Row(Modifier.padding(top = 12.dp)) {
                     Text(
-                        text = "Rp${itemPriceState.value}",
+                        text = "Rp${model.priceDetail}",
                         fontFamily = FontFamily(Font(R.font.semibold)),
                         fontSize = 20.sp,
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .weight(1f),
                     )
-                    Log.d("cekPriceTitle", itemPriceState.value.toString())
+                    Log.d("cekPriceTitle", itemPriceState.toString())
 
                     Image(
                         painter = painterResource(id = R.drawable.baseline_share_24),
@@ -593,17 +605,17 @@ class ComposeDetailProduct : Fragment() {
                                     val productWishlist = model.getWishlistforDetail(productId)
                                     if (productWishlist.toString() == "null") {
                                         if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null && store != null && rating != null && sale != null) {
-                                            isImageChanged = !isImageChanged
+                                            isImageChanged = true
                                             model.addWishList(
                                                 productId,
                                                 productName,
-                                                price,
+                                                priceState!!,
                                                 listSearchResult[0],
                                                 store,
                                                 rating.toFloat(),
                                                 sale,
                                                 stock,
-                                                productVariant[0].variantName,
+                                                productVariant[selectedVariantIndex!!].variantName,
                                                 1
                                             )
                                             Toast
@@ -616,7 +628,7 @@ class ComposeDetailProduct : Fragment() {
                                         }
                                     } else if (productWishlist?.productId == productId) {
                                         model.deleteWishList(productId)
-                                        isImageChanged = !isImageChanged
+                                        isImageChanged = false
                                         Toast
                                             .makeText(
                                                 requireContext(),
@@ -630,7 +642,7 @@ class ComposeDetailProduct : Fragment() {
                                         param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
                                         param(
                                             FirebaseAnalytics.Param.VALUE,
-                                            (2 * price!!).toString()
+                                            (2 * priceState!!).toString()
                                         )
                                         param(
                                             FirebaseAnalytics.Param.ITEMS,
@@ -697,22 +709,26 @@ class ComposeDetailProduct : Fragment() {
                 FlowRow(modifier = Modifier.padding(top = 4.dp, start = 8.dp)) {
                     productVariant?.forEachIndexed { index, variant ->
                         InputChip(
-                            selected = selectedVariantIndex.value == index, // Set selected based on the index
+                            selected = selectedVariantIndex == index,
                             onClick = {
-                                selectedVariantIndex.value = index
-                                Log.d("cekIndex", selectedVariantIndex.value.toString())
-                                if (selectedVariantIndex.value == 1) {
+                                selectedVariantIndex = index
+                                Log.d("cekIndex", selectedVariantIndex.toString())
+                                if (selectedVariantIndex == 1) {
                                     val priceVariant = productVariant[1].variantPrice
                                     if (price != null) {
-                                        priceState.value = price + priceVariant
-                                        itemPriceState.value =
-                                            formatPrice(priceState.value!!.toDouble())
-                                        Log.d("cekPriceVariant", priceState.value.toString())
+                                        priceState = price + priceVariant
+                                        itemPriceState =
+                                            formatPrice(priceState!!.toDouble())
+                                        Log.d("cekPriceVariant", priceState.toString())
+                                        model.priceDetail = itemPriceState.toString()
+                                        model.selectedChip = 1
                                     }
                                 } else {
-                                    priceState.value = price
-                                    Log.d("cekPriceVariant", priceState.value.toString())
-                                    itemPriceState.value = formatPrice(price?.toDouble())
+                                    priceState = price
+                                    Log.d("cekPriceVariant", priceState.toString())
+                                    itemPriceState = formatPrice(price?.toDouble())
+                                    model.priceDetail = itemPriceState.toString()
+                                    model.selectedChip = 0
                                 }
                             },
                             label = {

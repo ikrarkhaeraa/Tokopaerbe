@@ -169,6 +169,10 @@ class UserPreferences @Inject constructor(private val database: DataStore<Prefer
     suspend fun logout() {
         database.edit { preferences ->
 //            preferences.clear()
+            preferences.remove(USERNAME_KEY)
+            preferences.remove(USERIMAGE_KEY)
+            preferences.remove(CODE_KEY)
+            preferences.remove(DARKTHEME_KEY)
             preferences.remove(STATE_KEY)
             preferences.remove(ACCESSTOKEN_KEY)
             preferences.remove(REFRESHTOKEN_KEY)

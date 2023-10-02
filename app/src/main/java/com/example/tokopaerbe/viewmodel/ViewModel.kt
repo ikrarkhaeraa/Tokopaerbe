@@ -39,6 +39,8 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     val fulfillment: LiveData<FulfillmentResponse> = data.fulfillment
     val rating: LiveData<RatingResponse> = data.rating
     val transaction: LiveData<TransactionResponse> = data.transaction
+    var priceDetail: String = ""
+    var selectedChip: Int = 0
 
     private var _search: String = ""
     var searchFilter: String = ""
@@ -71,6 +73,12 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     }
 
     var rvStateStore: Boolean = true
+        get() = field
+        set(value) {
+            field = value
+        }
+
+    var iconFavState: Boolean = true
         get() = field
         set(value) {
             field = value
@@ -192,6 +200,18 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         return data.deleteProductCart(id)
     }
 
+    fun deleteAllCart() {
+        return data.deleteAllCart()
+    }
+
+    fun deleteAllNotif() {
+        return data.deleteAllNotif()
+    }
+
+    fun deleteAllWishlist() {
+        return data.deleteAllWishlist()
+    }
+
     fun deleteAllCheckedProduct(cartEntity: List<CartEntity>) {
         viewModelScope.launch {
             data.deleteAllCheckedProduct(cartEntity)
@@ -300,7 +320,7 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         }
     }
 
-    fun postDataProfile(auth: String, userName: MultipartBody.Part, userImage: MultipartBody.Part) {
+    fun postDataProfile(auth: String, userName: MultipartBody.Part, userImage: MultipartBody.Part?) {
         viewModelScope.launch {
             data.uploadProfileData(auth, userName, userImage)
         }
@@ -351,7 +371,7 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         }
     }
 
-    fun postDataRating(auth: String, invoiceId: String, rating: Int, review: String) {
+    fun postDataRating(auth: String, invoiceId: String, rating: Int?, review: String?) {
         viewModelScope.launch {
             data.uploadRatingData(auth, invoiceId, rating, review)
         }

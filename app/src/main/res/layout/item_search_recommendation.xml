@@ -18,28 +18,37 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
+<!--        <ImageView-->
+<!--            android:id="@+id/item_search"-->
+<!--            android:layout_width="18dp"-->
+<!--            android:layout_height="18dp"-->
+<!--            android:layout_marginHorizontal="8dp"-->
+<!--            android:layout_marginVertical="8dp"-->
+<!--            card_view:layout_constraintBottom_toBottomOf="parent"-->
+<!--            card_view:layout_constraintStart_toStartOf="parent"-->
+<!--            card_view:layout_constraintTop_toTopOf="parent"-->
+<!--            card_view:layout_constraintVertical_bias="0.186"-->
+<!--            tools:src="@drawable/icon_search_24" />-->
+
         <ImageView
             android:id="@+id/item_search"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginVertical="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_search_24"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent"
-            card_view:layout_constraintVertical_bias="0.186"
-            tools:src="@drawable/icon_search_24" />
+            card_view:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/item_search"
             android:fontFamily="@font/poppins"
             android:textSize="12sp"
             android:textStyle="bold"
+            card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintStart_toEndOf="@+id/item_search"
             card_view:layout_constraintTop_toTopOf="parent"
             tools:text="@string/Title" />

@@ -41,7 +41,7 @@ interface ApiService {
     fun uploadDataProfile(
         @Header("Authorization") auth: String,
         @Part text: MultipartBody.Part,
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part?
     ): Call<ProfileResponse>
 
     @POST("refresh")

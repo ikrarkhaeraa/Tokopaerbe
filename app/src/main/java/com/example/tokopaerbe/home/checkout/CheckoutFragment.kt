@@ -140,7 +140,7 @@ class CheckoutFragment : Fragment(), CheckoutAdapter.OnItemClickListener {
                             if (it.code == 200) {
                                 findNavController().navigate(
                                     R.id.action_checkoutFragment_to_statusFragment,
-                                    StatusFragmentArgs(item).toBundle(),
+                                    StatusFragmentArgs(item, 0).toBundle(),
                                     navOptions = null
                                 )
                             }

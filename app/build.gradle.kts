@@ -63,6 +63,10 @@ android {
         }
     }
 
+    lint {
+        disable += "Instantiatable"
+    }
+
     val jacocoTestReport = tasks.create("jacocoTestReport")
 
 

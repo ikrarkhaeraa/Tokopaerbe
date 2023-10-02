@@ -135,7 +135,7 @@ class DataSource @Inject constructor(
     fun uploadProfileData(
         auth: String,
         userName: MultipartBody.Part,
-        userImage: MultipartBody.Part
+        userImage: MultipartBody.Part?
     ) {
         val client = ApiConfig.getApiService().uploadDataProfile(auth, userName, userImage)
         client.enqueue(object : Callback<ProfileResponse> {
@@ -263,7 +263,7 @@ class DataSource @Inject constructor(
         })
     }
 
-    fun uploadRatingData(auth: String, invoiceId: String, rating: Int, review: String) {
+    fun uploadRatingData(auth: String, invoiceId: String, rating: Int?, review: String?) {
         val requestBody = RatingRequestBody(invoiceId, rating, review)
         val client = ApiConfig.getApiService().uploadDataRating(auth, requestBody)
         client.enqueue(object : Callback<RatingResponse> {
@@ -393,6 +393,18 @@ class DataSource @Inject constructor(
 
     fun deleteProductCart(id: String) {
         return cartDao.deleteProduct(id)
+    }
+
+    fun deleteAllCart() {
+        return cartDao.deleteAllCart()
+    }
+
+    fun deleteAllNotif() {
+        return notifDao.deleteAllNotif()
+    }
+
+    fun deleteAllWishlist() {
+        return wishDao.deleteAllWishlist()
     }
 
     suspend fun deleteAllCheckedProduct(cartEntity: List<CartEntity>) {

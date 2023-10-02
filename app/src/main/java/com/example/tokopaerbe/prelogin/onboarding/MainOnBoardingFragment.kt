@@ -1,11 +1,18 @@
 package com.example.tokopaerbe.prelogin.onboarding
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -13,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.SectionsPagerAdapter
 import com.example.tokopaerbe.databinding.FragmentMainOnBoardingBinding
+import com.example.tokopaerbe.prelogin.profile.ProfileFragment
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -28,6 +36,13 @@ class MainOnBoardingFragment : Fragment() {
 
     private var currentFragmentPosition = 0
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private val notificationPermissionCode: Int = 200
+
+    companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+        private const val REQUEST_CODE_PERMISSIONS = 200
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,8 +54,40 @@ class MainOnBoardingFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
 
         firebaseAnalytics = Firebase.analytics
 

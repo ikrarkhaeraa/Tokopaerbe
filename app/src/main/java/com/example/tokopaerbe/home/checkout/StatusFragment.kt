@@ -32,11 +32,12 @@ class StatusFragment : Fragment() {
 
     private lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
-    private var ratingBar: Int = 0
-    private var review: String = ""
+    private var ratingBar: Int? = null
+    private var review: String? = null
 
     private val args: StatusFragmentArgs? by navArgs()
     private var itemTransaction: TransactionDataClass? = null
+    private var size: Int = 0
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,6 +45,7 @@ class StatusFragment : Fragment() {
 
         firebaseAnalytics = Firebase.analytics
         itemTransaction = args?.item
+        size = args?.size!!
 
         binding.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
             ratingBar = rating.toInt()
@@ -67,7 +69,7 @@ class StatusFragment : Fragment() {
 
                         model.postDataRating(auth, it.data.invoiceId, ratingBar, review)
                         Log.d("cekStatusData", ratingBar.toString())
-                        Log.d("cekStatusData", review)
+                        Log.d("cekStatusData", review.toString())
 
                         model.rating.observe(viewLifecycleOwner) { ratingResponse ->
                             if (ratingResponse.code == "200") {
@@ -104,7 +106,7 @@ class StatusFragment : Fragment() {
 
                     model.postDataRating(auth, itemTransaction!!.invoiceId, ratingBar, review)
                     Log.d("cekStatusData", ratingBar.toString())
-                    Log.d("cekStatusData", review)
+                    Log.d("cekStatusData", review.toString())
 
                     model.rating.observe(viewLifecycleOwner) { ratingResponse ->
                         if (ratingResponse.code == "200") {
@@ -127,7 +129,7 @@ class StatusFragment : Fragment() {
                     Log.d("cekKlik", "cek1")
                     findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
                 } else {
-                    for (i in 1..500) {
+                    for (i in 1..size) {
                         findNavController().navigateUp()
                     }
                     Log.d("cekKlik", "cek2")

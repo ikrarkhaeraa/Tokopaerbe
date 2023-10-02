@@ -40,6 +40,9 @@ interface CartDao {
     @Query("DELETE FROM productList WHERE productId = :id")
     fun deleteProduct(id: String)
 
+    @Query("DELETE FROM productList")
+    fun deleteAllCart()
+
     @Delete
     suspend fun deleteAllCheckedProduct(cartEntity: List<CartEntity>)
 

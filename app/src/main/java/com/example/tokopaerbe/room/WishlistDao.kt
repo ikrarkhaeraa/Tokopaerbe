@@ -34,6 +34,9 @@ interface WishlistDao {
     @Query("DELETE FROM wishList WHERE productId = :id")
     fun deleteWishList(id: String)
 
+    @Query("DELETE FROM wishList")
+    fun deleteAllWishlist()
+
     @Query("SELECT * FROM wishList")
     fun getWishList(): LiveData<List<WishlistEntity>?>
 

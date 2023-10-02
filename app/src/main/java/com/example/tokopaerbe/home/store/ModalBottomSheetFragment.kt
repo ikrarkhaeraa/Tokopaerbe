@@ -110,10 +110,9 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             if (checkedId != View.NO_ID) {
                 val selectedChip = group.findViewById<Chip>(checkedId)
                 selectedText1 = selectedChip?.text.toString()
-                model.sort = selectedText1
+
             } else {
                 selectedText1 = ""
-                model.sort = selectedText1
             }
         }
 
@@ -121,24 +120,26 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             if (checkedId != View.NO_ID) {
                 val selectedChip = group.findViewById<Chip>(checkedId)
                 selectedText2 = selectedChip?.text.toString()
-                model.brand = selectedText2
+
             } else {
                 selectedText2 = ""
-                model.brand = selectedText2
             }
         }
 
         binding.editTextTerendah.doOnTextChanged { text, _, _, _ ->
             textTerendah = text.toString()
-            model.textTerendah = textTerendah
         }
 
         binding.editTextTertinggi.doOnTextChanged { text, _, _, _ ->
             textTertinggi = text.toString()
-            model.textTertinggi = textTertinggi
         }
 
         binding.tampilkanproduk.setOnClickListener {
+            model.sort = selectedText1
+            model.brand = selectedText2
+            model.textTerendah = textTerendah
+            model.textTertinggi = textTertinggi
+
             val filter = bundleOf().apply {
                 putString("selectedText1", selectedText1)
                 putString("selectedText2", selectedText2)

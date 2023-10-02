@@ -33,4 +33,7 @@ interface NotificationDao {
 
     @Query("SELECT * FROM notificationList")
     fun getNotifications(): LiveData<List<NotificationsEntity>?>
+
+    @Query("DELETE FROM notificationList")
+    fun deleteAllNotif()
 }

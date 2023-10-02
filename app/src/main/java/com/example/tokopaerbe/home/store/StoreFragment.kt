@@ -17,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
@@ -24,6 +25,7 @@ import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentStoreBinding
 import com.example.tokopaerbe.pagging.LoadingStateAdapter
 import com.example.tokopaerbe.pagging.PaggingModel
+import com.example.tokopaerbe.retrofit.response.Product
 import com.example.tokopaerbe.retrofit.user.UserFilter
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
@@ -37,6 +39,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class StoreFragment : Fragment() {
@@ -68,6 +71,7 @@ class StoreFragment : Fragment() {
     private val delayMillis = 1000L
     private val filterParams = MutableStateFlow(UserFilter(null, null, null, null, null))
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var listProduct: PagingData<Product>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -221,8 +225,45 @@ class StoreFragment : Fragment() {
 
         GlobalScope.launch(Dispatchers.Main) {
             delay(delayMillis)
-            if (isAdded) {
-                settingAdapter()
+            if (isVisible) {
+                settingFilter()
+                val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
+
+                filterLiveData.observe(viewLifecycleOwner) { filter ->
+                    paggingModel.sendFilter(
+                        filter.search,
+                        filter.sort,
+                        filter.brand,
+                        filter.lowest,
+                        filter.highest
+                    ).observe(viewLifecycleOwner) { result ->
+
+                        model.getCode().observe(viewLifecycleOwner) {
+                            Log.d("cekCode", it.toString())
+                            when (it) {
+                                200, 0 -> {
+                                    listProduct = result
+                                    settingAdapter()
+                                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
+                                        param(FirebaseAnalytics.Param.ITEMS, result.toString())
+                                    }
+                                }
+
+                                404 -> {
+                                    emptyData()
+                                }
+
+                                500 -> {
+                                    errorState()
+                                }
+
+                                else -> {
+                                    errorState()
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -237,7 +278,6 @@ class StoreFragment : Fragment() {
         }
 
         setFragmentResultListener("searchText") { _, bundle ->
-//            binding.searchTextField.setText("")
             searchText = bundle.getString("bundleKey").toString()
             Log.d("searchText", searchText!!)
             binding.searchTextField.setText(searchText)
@@ -250,136 +290,152 @@ class StoreFragment : Fragment() {
 
         binding.changeRV.setOnClickListener {
             model.rvStateStore = !model.rvStateStore
-            toggleLayoutManager()
+//            toggleLayoutManager()
+            settingAdapter()
         }
     }
 
-    private fun toggleLayoutManager() {
-        if (!model.rvStateStore) {
-            setGridLayoutManager()
-            binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
-        } else {
-            setLinearLayoutManager()
-            binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
-        }
-    }
+//    private fun toggleLayoutManager() {
+//        if (!model.rvStateStore) {
+//            setGridLayoutManager()
+//            binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
+//        } else {
+//            setLinearLayoutManager()
+//            binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
+//        }
+//    }
 
-    private fun setGridLayoutManager() {
-        binding.shimmerGrid.visibility = GONE
-        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.recyclerView.adapter = gridProductAdapter
+//    private fun setGridLayoutManager() {
+//        binding.shimmerGrid.visibility = GONE
+//        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+//        binding.recyclerView.adapter = gridProductAdapter
+//
+//        settingFilter()
+//
+//        binding.recyclerView.adapter = gridProductAdapter.withLoadStateFooter(
+//            footer = LoadingStateAdapter { gridProductAdapter.retry() }
+//        )
+//
+//        (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =
+//            object : GridLayoutManager.SpanSizeLookup() {
+//                override fun getSpanSize(position: Int): Int {
+//                    return if (position == gridProductAdapter.itemCount) {
+//                        2
+//                    } else {
+//                        1
+//                    }
+//                }
+//            }
+//
+//        val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
+//
+//        filterLiveData.observe(viewLifecycleOwner) { filter ->
+//            paggingModel.sendFilter(
+//                filter.search,
+//                filter.sort,
+//                filter.brand,
+//                filter.lowest,
+//                filter.highest
+//            ).observe(viewLifecycleOwner) { result ->
+//
+//                model.getCode().observe(viewLifecycleOwner) {
+//                    Log.d("cekCode", it.toString())
+//                    when (it) {
+//                        200 -> {
+//                            gridProductAdapter.submitData(lifecycle, result)
+//                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
+//                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
+//                            }
+//                        }
+//
+//                        404 -> {
+//                            emptyData()
+//                        }
+//
+//                        500 -> {
+//                            errorState()
+//                        }
+//
+//                        else -> {
+//                            errorState()
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-        settingFilter()
-
-        binding.recyclerView.adapter = gridProductAdapter.withLoadStateFooter(
-            footer = LoadingStateAdapter { gridProductAdapter.retry() }
-        )
-
-        (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =
-            object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return if (position == gridProductAdapter.itemCount) {
-                        2
-                    } else {
-                        1
-                    }
-                }
-            }
-
-        val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
-
-        filterLiveData.observe(viewLifecycleOwner) { filter ->
-            paggingModel.sendFilter(
-                filter.search,
-                filter.sort,
-                filter.brand,
-                filter.lowest,
-                filter.highest
-            ).observe(viewLifecycleOwner) { result ->
-
-                model.getCode().observe(viewLifecycleOwner) {
-                    Log.d("cekCode", it.toString())
-                    when (it) {
-                        200 -> {
-                            gridProductAdapter.submitData(lifecycle, result)
-                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
-                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
-                            }
-                        }
-
-                        404 -> {
-                            emptyData()
-                        }
-
-                        500 -> {
-                            errorState()
-                        }
-
-                        else -> {
-                            errorState()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setLinearLayoutManager() {
-        binding.shimmer.visibility = GONE
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = linearProductAdapter
-
-        settingFilter()
-
-        binding.recyclerView.adapter = linearProductAdapter.withLoadStateFooter(
-            footer = LoadingStateAdapter { linearProductAdapter.retry() }
-        )
-
-        val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
-
-        filterLiveData.observe(viewLifecycleOwner) { filter ->
-            paggingModel.sendFilter(
-                filter.search,
-                filter.sort,
-                filter.brand,
-                filter.lowest,
-                filter.highest
-            ).observe(viewLifecycleOwner) { result ->
-
-                model.getCode().observe(viewLifecycleOwner) {
-                    Log.d("cekCode", it.toString())
-
-                    when (it) {
-                        200, 0 -> {
-                            linearProductAdapter.submitData(lifecycle, result)
-                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
-                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
-                            }
-                        }
-
-                        404 -> {
-                            emptyData()
-                        }
-
-                        500 -> {
-                            errorState()
-                        }
-
-                        else -> {
-                            errorState()
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private fun setLinearLayoutManager() {
+//        binding.shimmer.visibility = GONE
+//        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        binding.recyclerView.adapter = linearProductAdapter
+//
+//        settingFilter()
+//
+//        binding.recyclerView.adapter = linearProductAdapter.withLoadStateFooter(
+//            footer = LoadingStateAdapter { linearProductAdapter.retry() }
+//        )
+//
+//        val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
+//
+//        filterLiveData.observe(viewLifecycleOwner) { filter ->
+//            paggingModel.sendFilter(
+//                filter.search,
+//                filter.sort,
+//                filter.brand,
+//                filter.lowest,
+//                filter.highest
+//            ).observe(viewLifecycleOwner) { result ->
+//
+//                model.getCode().observe(viewLifecycleOwner) {
+//                    Log.d("cekCode", it.toString())
+//
+//                    when (it) {
+//                        200, 0 -> {
+//                            linearProductAdapter.submitData(lifecycle, result)
+//                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
+//                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
+//                            }
+//                        }
+//
+//                        404 -> {
+//                            emptyData()
+//                        }
+//
+//                        500 -> {
+//                            errorState()
+//                        }
+//
+//                        else -> {
+//                            errorState()
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private fun settingAdapter() {
         if (!model.rvStateStore) {
-            setGridLayoutManager()
+//            setGridLayoutManager()
+            binding.shimmerGrid.visibility = GONE
+            binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.recyclerView.adapter = gridProductAdapter
+            binding.recyclerView.adapter = gridProductAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter { gridProductAdapter.retry() }
+            )
+            gridProductAdapter.submitData(lifecycle,listProduct)
             binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
+
         } else {
-            setLinearLayoutManager()
+//            setLinearLayoutManager()
+            binding.shimmer.visibility = GONE
+            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerView.adapter = linearProductAdapter
+            binding.recyclerView.adapter = linearProductAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter { linearProductAdapter.retry() }
+            )
+            linearProductAdapter.submitData(lifecycle,listProduct)
             binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
         }
     }
@@ -512,4 +568,6 @@ class StoreFragment : Fragment() {
             }
         }
     }
+
+
 }

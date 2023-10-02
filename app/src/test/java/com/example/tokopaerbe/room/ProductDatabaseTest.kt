@@ -39,6 +39,8 @@ class ProductDatabaseTest : TestCase() {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+
+
     // TEST CART DAO
     @Test
     fun testGetProductFromCartDao() = runBlocking {
@@ -241,6 +243,53 @@ class ProductDatabaseTest : TestCase() {
     }
 
     @Test
+    fun testInsertDeleteAllProductAndGetCartDao() = runBlocking {
+        // Use withContext to switch to a background coroutine context
+        withContext(Dispatchers.IO) {
+            val productId = "product123"
+            val productName = "Sample Product"
+            val variantName = "Sample Variant"
+            val stock = 10
+            val productPrice = 100
+            val quantity = 2
+            val image = "sample_image.jpg"
+            val isChecked = false
+
+            cartDao.addProduct(
+                productId,
+                productName,
+                variantName,
+                stock,
+                productPrice,
+                quantity,
+                image,
+                isChecked
+            )
+
+            val cartLiveData = cartDao.getProduct()
+
+            val cartList = LiveDataTestUtil.getValue(cartLiveData)
+
+            assertNotNull(cartList)
+            if (cartList != null) {
+                assertTrue(cartList.isNotEmpty())
+            }
+
+            val cartEntity = cartList?.get(0)
+
+            cartDao.deleteAllCart()
+
+            assertEquals(productId, cartEntity?.productId)
+
+            val cartLiveData2 = cartDao.getProduct()
+
+            val cartList2 = LiveDataTestUtil.getValue(cartLiveData2)
+
+            assertTrue(cartList2.isNullOrEmpty())
+        }
+    }
+
+    @Test
     fun testInsertAndCheckAllCartDao() = runBlocking {
         // Use withContext to switch to a background coroutine context
         withContext(Dispatchers.IO) {
@@ -361,6 +410,10 @@ class ProductDatabaseTest : TestCase() {
             assertEquals(quantity, cartEntity?.quantity)
         }
     }
+
+
+
+
 
     // TEST WISHLIST DAO
     @Test
@@ -546,6 +599,49 @@ class ProductDatabaseTest : TestCase() {
         }
     }
 
+    @Test
+    fun testDeleteAllWishListFromWishlistDao() = runBlocking {
+        // Use withContext to switch to a background coroutine context
+        withContext(Dispatchers.IO) {
+            val productId = "product123"
+            val productName = "Sample Product"
+            val productPrice = 100
+            val image = "sample_image.jpg"
+            val store = "Product Store"
+            val rating = 5f
+            val sale = 10
+            val stock = 10
+            val variantName = "Sample Variant"
+            val quantity = 2
+
+            wishDao.addWishList(
+                productId,
+                productName,
+                productPrice,
+                image,
+                store,
+                rating,
+                sale,
+                stock,
+                variantName,
+                quantity
+            )
+
+            wishDao.deleteAllWishlist()
+
+            val wishLiveData = wishDao.getWishList()
+
+            val wishList = LiveDataTestUtil.getValue(wishLiveData)
+
+            assertTrue(wishList.isNullOrEmpty())
+        }
+    }
+
+
+
+
+
+
     // TEST NOTIFICATION DAO
     @Test
     fun testGetNotificationsFromNotifDao() = runBlocking {
@@ -670,4 +766,47 @@ class ProductDatabaseTest : TestCase() {
             assertEquals(isChecked, notifEntity?.isChecked)
         }
     }
+
+    @Test
+    fun testDeleteAllNotif() = runBlocking {
+        // Use withContext to switch to a background coroutine context
+        withContext(Dispatchers.IO) {
+            val notifId = 0
+            val notifType = "Notif Type"
+            val notifTitle = "Notif Title"
+            val notifBody = "Notif Body"
+            val notifDate = "NotifDate"
+            val notifTime = "Notif Time"
+            val notifImage = "Notif Image"
+            val isChecked = false
+
+            notifDao.addNotifications(
+                notifType,
+                notifTitle,
+                notifBody,
+                notifDate,
+                notifTime,
+                notifImage,
+                isChecked
+            )
+
+            notifDao.notifIsChecked(notifId, isChecked)
+
+            val notifLiveData = notifDao.getNotifications()
+
+            val notifications = LiveDataTestUtil.getValue(notifLiveData)
+
+            assertNotNull(notifications)
+            if (notifications != null) {
+                assertTrue(notifications.isNotEmpty())
+            }
+
+            notifDao.deleteAllNotif()
+
+            val notifEntity = notifications?.get(0)
+            assertEquals(notifTitle, notifEntity?.notifTitle)
+            assertEquals(isChecked, notifEntity?.isChecked)
+        }
+    }
+
 }

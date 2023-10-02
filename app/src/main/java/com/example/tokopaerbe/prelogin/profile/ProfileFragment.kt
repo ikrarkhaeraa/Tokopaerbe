@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
@@ -59,6 +60,7 @@ class ProfileFragment : Fragment() {
     private val model: ViewModel by viewModels { factory }
     private val delayMillis = 3000L
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var fileRequestBody: RequestBody
 
     companion object {
         const val CAMERA_X_RESULT = 700
@@ -195,16 +197,21 @@ class ProfileFragment : Fragment() {
                 val username = binding.nameedittext.text.toString()
                 val userName = MultipartBody.Part.createFormData("userName", username)
 
-                val fileRequestBody = getMyFile!!.asRequestBody("image/*".toMediaTypeOrNull())
-                val imagePart =
-                    MultipartBody.Part.createFormData(
-                        "userImage",
-                        getMyFile!!.name,
-                        fileRequestBody
-                    )
+//                val fileRequestBody = getMyFile!!.asRequestBody("image/*".toMediaTypeOrNull())
 
                 if (it.isNotEmpty()) {
-                    model.postDataProfile(auth, userName, imagePart)
+
+                    if (getMyFile != null) {
+                        val imagePart =
+                            MultipartBody.Part.createFormData(
+                                "userImage",
+                                getMyFile!!.name,
+                                fileRequestBody
+                            )
+                        model.postDataProfile(auth, userName, imagePart)
+                    } else {
+                        model.postDataProfile(auth, userName, null)
+                    }
 
                     lifecycleScope.launch {
                         val it = model.profile.first()
@@ -278,6 +285,7 @@ class ProfileFragment : Fragment() {
             val result = BitmapFactory.decodeFile(getMyFile?.path)
             Glide.with(requireContext()).load(result).circleCrop().into(binding.circle)
             binding.icon.visibility = GONE
+            fileRequestBody = getMyFile!!.asRequestBody("image/*".toMediaTypeOrNull())
         }
     }
 
@@ -291,12 +299,12 @@ class ProfileFragment : Fragment() {
             val result = BitmapFactory.decodeFile(getMyFile?.path)
             Glide.with(requireContext()).load(result).circleCrop().into(binding.circle)
             binding.icon.visibility = GONE
+            fileRequestBody = getMyFile!!.asRequestBody("image/*".toMediaTypeOrNull())
         }
     }
 
     private fun updateSubmitButtonState() {
-        val isBothFieldsNotEmpty =
-            binding.nameedittext.text?.isNotEmpty() == true && getMyFile != null
+        val isBothFieldsNotEmpty = binding.nameedittext.text?.isNotEmpty() == true
         binding.buttonSelesai.isEnabled = isBothFieldsNotEmpty
     }
 

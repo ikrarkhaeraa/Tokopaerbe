@@ -102,10 +102,10 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun goToStatus(item: TransactionDataClass) {
+    fun goToStatus(item: TransactionDataClass, size: Int) {
         navController.navigate(
             R.id.transaction_to_status,
-            StatusFragmentArgs(item).toBundle(),
+            StatusFragmentArgs(item, size).toBundle(),
             navOptions = null
         )
     }

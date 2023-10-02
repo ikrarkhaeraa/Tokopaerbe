@@ -29,6 +29,6 @@ data class Item(
 
 data class RatingRequestBody(
     val invoiceId: String,
-    val rating: Int,
-    val review: String
+    val rating: Int?,
+    val review: String?
 )
