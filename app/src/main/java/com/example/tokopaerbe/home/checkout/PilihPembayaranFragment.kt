@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.databinding.FragmentPilihPembayaranBinding
-import com.example.tokopaerbe.retrofit.response.PaymentResponse
+import com.example.tokopaerbe.core.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.ktx.Firebase

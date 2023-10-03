@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -77,8 +78,8 @@ import com.example.tokopaerbe.R
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
 import com.example.tokopaerbe.home.checkout.ListCheckout
-import com.example.tokopaerbe.retrofit.response.ProductVariant
-import com.example.tokopaerbe.room.WishlistEntity
+import com.example.tokopaerbe.core.retrofit.response.ProductVariant
+import com.example.tokopaerbe.core.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -270,13 +271,13 @@ class ComposeDetailProduct : Fragment() {
             param(FirebaseAnalytics.Param.ITEMS, productName.toString())
         }
 
-        var priceState by rememberSaveable { mutableStateOf(price) }
-        var itemPriceState by rememberSaveable { mutableStateOf(itemPrice) }
         var selectedVariantState by rememberSaveable { mutableStateOf(selectedVariant) }
         var selectedVariantIndex by rememberSaveable { mutableIntStateOf(0) }
+        var priceState by rememberSaveable { mutableStateOf(price) }
+        var itemPriceState by rememberSaveable { mutableStateOf(itemPrice) }
 
-        priceState = price
-        itemPriceState = itemPrice
+//        priceState = price
+//        itemPriceState = itemPrice
         selectedVariantState = selectedVariant
 //        selectedVariantIndex = model.selectedChip
 
@@ -347,7 +348,7 @@ class ComposeDetailProduct : Fragment() {
                                         val productNameData = productName
                                         val productVariantData = productVariant[0].variantName
                                         val productStock = stock
-                                        val productPrice = price
+                                        val productPrice = priceState!!
                                         val productQuantity = 1
                                         val product = CheckoutDataClass(
                                             productId,
@@ -567,7 +568,7 @@ class ComposeDetailProduct : Fragment() {
 
                 Row(Modifier.padding(top = 12.dp)) {
                     Text(
-                        text = "Rp${model.priceDetail}",
+                        text = "Rp$itemPriceState",
                         fontFamily = FontFamily(Font(R.font.semibold)),
                         fontSize = 20.sp,
                         modifier = Modifier
@@ -668,26 +669,26 @@ class ComposeDetailProduct : Fragment() {
                         fontSize = 14.sp,
                         modifier = Modifier.padding(start = 16.dp),
                     )
-                    Box(Modifier.padding(start = 8.dp)) {
+                    Box(Modifier.padding(start = 8.dp).wrapContentSize()) {
                         Image(
                             painter = painterResource(id = R.drawable.box),
                             contentDescription = null,
-                            modifier = Modifier.size(width = 80.dp, height = 25.dp)
+                            modifier = Modifier.matchParentSize()
                         )
                         Row {
                             Image(
                                 painter = painterResource(id = R.drawable.star_15),
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .padding(top = 3.dp, start = 4.dp)
+                                    .padding(top = 4.dp, start = 4.dp)
                             )
                             Text(
                                 text = rating.toString(),
-                                modifier = Modifier.padding(start = 4.dp),
+                                modifier = Modifier.padding(start = 4.dp, bottom = 2.dp),
                             )
                             Text(
                                 text = "($review)",
-                                modifier = Modifier.padding(start = 6.dp),
+                                modifier = Modifier.padding(start = 6.dp, bottom = 4.dp, end = 8.dp),
                             )
                         }
                     }
@@ -717,8 +718,7 @@ class ComposeDetailProduct : Fragment() {
                                     val priceVariant = productVariant[1].variantPrice
                                     if (price != null) {
                                         priceState = price + priceVariant
-                                        itemPriceState =
-                                            formatPrice(priceState!!.toDouble())
+                                        itemPriceState = formatPrice(priceState!!.toDouble())
                                         Log.d("cekPriceVariant", priceState.toString())
                                         model.priceDetail = itemPriceState.toString()
                                         model.selectedChip = 1
@@ -808,7 +808,7 @@ class ComposeDetailProduct : Fragment() {
                         text = ratingGedeDibawah.toString(),
                         fontFamily = FontFamily(Font(R.font.semibold)),
                         fontSize = 20.sp,
-                        modifier = Modifier.padding(top = 6.dp, start = 4.dp)
+                        modifier = Modifier.padding(start = 4.dp)
                     )
                     Text(
                         text = stringResource(id = R.string.ratingKecildibawah),

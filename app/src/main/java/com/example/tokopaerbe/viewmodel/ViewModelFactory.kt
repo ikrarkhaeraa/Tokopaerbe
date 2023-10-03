@@ -3,8 +3,8 @@ package com.example.tokopaerbe.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.tokopaerbe.retrofit.DataSource
-import com.example.tokopaerbe.retrofit.Injection
+import com.example.tokopaerbe.core.retrofit.DataSource
+import com.example.tokopaerbe.core.retrofit.Injection
 
 class ViewModelFactory(private val dataSource: DataSource) :
     ViewModelProvider.NewInstanceFactory() {

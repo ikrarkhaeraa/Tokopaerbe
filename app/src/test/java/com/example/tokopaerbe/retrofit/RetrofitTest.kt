@@ -2,8 +2,13 @@ package com.example.tokopaerbe.retrofit
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.tokopaerbe.retrofit.response.DetailProductResponse
-import com.example.tokopaerbe.retrofit.response.ReviewResponse
+import com.example.tokopaerbe.core.retrofit.ApiService
+import com.example.tokopaerbe.core.retrofit.LoginRequestBody
+import com.example.tokopaerbe.core.retrofit.RatingRequestBody
+import com.example.tokopaerbe.core.retrofit.RefreshRequestBody
+import com.example.tokopaerbe.core.retrofit.RegisterRequestBody
+import com.example.tokopaerbe.core.retrofit.response.DetailProductResponse
+import com.example.tokopaerbe.core.retrofit.response.ReviewResponse
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import okhttp3.MultipartBody

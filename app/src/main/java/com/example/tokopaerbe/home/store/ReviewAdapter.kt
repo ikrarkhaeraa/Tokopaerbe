@@ -8,7 +8,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.retrofit.response.Review
+import com.example.tokopaerbe.core.retrofit.response.Review
 import com.squareup.picasso.Picasso
 
 class ReviewAdapter(

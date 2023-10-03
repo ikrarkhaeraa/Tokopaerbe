@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.tokopaerbe.core.room.CartDao
+import com.example.tokopaerbe.core.room.NotificationDao
+import com.example.tokopaerbe.core.room.ProductDatabase
+import com.example.tokopaerbe.core.room.WishlistDao
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -647,6 +651,7 @@ class ProductDatabaseTest : TestCase() {
     fun testGetNotificationsFromNotifDao() = runBlocking {
         // Use withContext to switch to a background coroutine context
         withContext(Dispatchers.IO) {
+            val notifId = 0
             val notifType = "Notif Type"
             val notifTitle = "Notif Title"
             val notifBody = "Notif Body"
@@ -656,6 +661,7 @@ class ProductDatabaseTest : TestCase() {
             val isChecked = false
 
             notifDao.addNotifications(
+                notifId,
                 notifType,
                 notifTitle,
                 notifBody,
@@ -689,6 +695,7 @@ class ProductDatabaseTest : TestCase() {
     fun testGetUnreadNotificationsFromNotifDao() = runBlocking {
         // Use withContext to switch to a background coroutine context
         withContext(Dispatchers.IO) {
+            val notifId = 0
             val notifType = "Notif Type"
             val notifTitle = "Notif Title"
             val notifBody = "Notif Body"
@@ -698,6 +705,7 @@ class ProductDatabaseTest : TestCase() {
             val isChecked = false
 
             notifDao.addNotifications(
+                notifId,
                 notifType,
                 notifTitle,
                 notifBody,
@@ -741,6 +749,7 @@ class ProductDatabaseTest : TestCase() {
             val isChecked = false
 
             notifDao.addNotifications(
+                notifId,
                 notifType,
                 notifTitle,
                 notifBody,
@@ -781,6 +790,7 @@ class ProductDatabaseTest : TestCase() {
             val isChecked = false
 
             notifDao.addNotifications(
+                notifId,
                 notifType,
                 notifTitle,
                 notifBody,

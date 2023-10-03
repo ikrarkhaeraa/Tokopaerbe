@@ -30,6 +30,10 @@
         app:destination="@id/cartFragment" />
 
     <action
+        android:id="@+id/action_main_to_screenFragment"
+        app:destination="@id/screenFragment" />
+
+    <action
         android:id="@+id/action_main_to_notificationsFragment"
         app:destination="@id/notificationsFragment" />
 
@@ -200,6 +204,12 @@
         android:name="com.example.tokopaerbe.home.notification.NotificationsFragment"
         android:label="fragment_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+
+    <fragment
+        android:id="@+id/screenFragment"
+        android:name="com.example.tokopaerbe.screen.ScreenFragment"
+        android:label="ScreenFragment" />
 
 
 </navigation>

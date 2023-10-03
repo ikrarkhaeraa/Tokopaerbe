@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentWishlistBinding
-import com.example.tokopaerbe.room.WishlistEntity
+import com.example.tokopaerbe.core.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope

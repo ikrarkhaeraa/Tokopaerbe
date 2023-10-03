@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.databinding.ItemProductGridBinding
-import com.example.tokopaerbe.retrofit.response.Product
+import com.example.tokopaerbe.core.retrofit.response.Product
 import java.text.NumberFormat
 import java.util.Locale
 

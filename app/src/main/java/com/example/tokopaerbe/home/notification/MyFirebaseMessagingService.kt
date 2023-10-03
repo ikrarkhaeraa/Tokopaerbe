@@ -31,8 +31,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         sendNotification(remoteMessage.data)
 
         Log.d("cekNotif", remoteMessage.data["body"].toString())
+        val notifId = System.currentTimeMillis().toInt()
 
         model.addNotifications(
+            notifId,
             remoteMessage.data["type"].toString(),
             remoteMessage.data["title"].toString(),
             remoteMessage.data["body"].toString(),

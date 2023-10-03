@@ -107,6 +107,10 @@ android {
 
 dependencies {
 
+    //Module
+//    implementation(project(":screen"))
+    implementation(project(":core"))
+
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -218,6 +222,10 @@ dependencies {
 
     //Detekt
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.0")
+
+    //AAR
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+    implementation(files("libs/screen-debug.aar"))
 
 }
 

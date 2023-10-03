@@ -2,16 +2,16 @@ package com.example.tokopaerbe.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.example.tokopaerbe.retrofit.ApiService
-import com.example.tokopaerbe.retrofit.DataSource
-import com.example.tokopaerbe.retrofit.FulfillmentRequestBody
-import com.example.tokopaerbe.retrofit.LoginRequestBody
-import com.example.tokopaerbe.retrofit.RatingRequestBody
-import com.example.tokopaerbe.retrofit.RegisterRequestBody
-import com.example.tokopaerbe.retrofit.UserPreferences
-import com.example.tokopaerbe.room.CartDao
-import com.example.tokopaerbe.room.NotificationDao
-import com.example.tokopaerbe.room.WishlistDao
+import com.example.tokopaerbe.core.retrofit.ApiService
+import com.example.tokopaerbe.core.retrofit.DataSource
+import com.example.tokopaerbe.core.retrofit.FulfillmentRequestBody
+import com.example.tokopaerbe.core.retrofit.LoginRequestBody
+import com.example.tokopaerbe.core.retrofit.RatingRequestBody
+import com.example.tokopaerbe.core.retrofit.RegisterRequestBody
+import com.example.tokopaerbe.core.retrofit.UserPreferences
+import com.example.tokopaerbe.core.room.CartDao
+import com.example.tokopaerbe.core.room.NotificationDao
+import com.example.tokopaerbe.core.room.WishlistDao
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -311,6 +311,7 @@ class DataSourceTest {
 
     @Test
     fun testAddNotificationsAndGet() = runTest {
+        val notifId = 0
         val notifType = "notifType"
         val notifTitle = "notifTitle"
         val notifBody = "notifBody"
@@ -319,6 +320,7 @@ class DataSourceTest {
         val notifImage = "notifImage"
         val isChecked = false
         dataSource.addNotifications(
+            notifId,
             notifType,
             notifTitle,
             notifBody,
@@ -341,6 +343,7 @@ class DataSourceTest {
 
     @Test
     fun testGetUnreadNotifications() = runTest {
+        val notifId = 0
         val notifType = "notifType"
         val notifTitle = "notifTitle"
         val notifBody = "notifBody"
@@ -349,6 +352,7 @@ class DataSourceTest {
         val notifImage = "notifImage"
         val isChecked = false
         dataSource.addNotifications(
+            notifId,
             notifType,
             notifTitle,
             notifBody,
@@ -366,6 +370,7 @@ class DataSourceTest {
 
     @Test
     fun testReadNotifications() = runTest {
+        val notifId = 0
         val notifType = "notifType"
         val notifTitle = "notifTitle"
         val notifBody = "notifBody"
@@ -374,6 +379,7 @@ class DataSourceTest {
         val notifImage = "notifImage"
         val isChecked = false
         dataSource.addNotifications(
+            notifId,
             notifType,
             notifTitle,
             notifBody,

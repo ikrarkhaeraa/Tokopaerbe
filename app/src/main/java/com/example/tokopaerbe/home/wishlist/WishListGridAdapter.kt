@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.databinding.ItemGridWishlistBinding
-import com.example.tokopaerbe.room.WishlistEntity
+import com.example.tokopaerbe.core.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

@@ -24,9 +24,9 @@ import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentStoreBinding
 import com.example.tokopaerbe.pagging.LoadingStateAdapter
-import com.example.tokopaerbe.pagging.PaggingModel
-import com.example.tokopaerbe.retrofit.response.Product
-import com.example.tokopaerbe.retrofit.user.UserFilter
+import com.example.tokopaerbe.core.pagging.PaggingModel
+import com.example.tokopaerbe.core.retrofit.response.Product
+import com.example.tokopaerbe.core.retrofit.user.UserFilter
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.chip.Chip
@@ -51,7 +51,7 @@ class StoreFragment : Fragment() {
     private val model: ViewModel by activityViewModels()
 
     private val paggingModel: PaggingModel by viewModels {
-        com.example.tokopaerbe.pagging.ViewModelFactory(requireContext())
+        com.example.tokopaerbe.core.pagging.ViewModelFactory(requireContext())
     }
 
     private val gridProductAdapter = GridProductAdapter { product ->
@@ -424,6 +424,16 @@ class StoreFragment : Fragment() {
             binding.recyclerView.adapter = gridProductAdapter.withLoadStateFooter(
                 footer = LoadingStateAdapter { gridProductAdapter.retry() }
             )
+            (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =
+            object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (position == gridProductAdapter.itemCount) {
+                        2
+                    } else {
+                        1
+                    }
+                }
+            }
             gridProductAdapter.submitData(lifecycle,listProduct)
             binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
 

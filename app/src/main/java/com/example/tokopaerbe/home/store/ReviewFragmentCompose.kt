@@ -44,7 +44,7 @@ import androidx.navigation.fragment.navArgs
 import coil.compose.rememberImagePainter
 import com.example.mycompose.ui.theme.MyComposeTheme
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.retrofit.response.Review
+import com.example.tokopaerbe.core.retrofit.response.Review
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.flow.first

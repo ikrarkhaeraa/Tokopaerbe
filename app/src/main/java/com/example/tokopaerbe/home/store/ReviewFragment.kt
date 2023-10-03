@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.databinding.FragmentReviewBinding
-import com.example.tokopaerbe.retrofit.response.Review
+import com.example.tokopaerbe.core.retrofit.response.Review
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.Dispatchers

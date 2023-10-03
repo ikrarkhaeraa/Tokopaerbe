@@ -1,21 +1,17 @@
 package com.example.tokopaerbe.home.notification
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.databinding.FragmentNotificationsBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class NotificationsFragment : Fragment() {
 
@@ -42,13 +38,22 @@ class NotificationsFragment : Fragment() {
 
         val navigationIcon: View = toolbar
 
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = NotificationAdapter(
+            onNotificationsClick = { notifEntity ->
+                if (!notifEntity.isChecked) {
+                    model.notifIsChecked(notifEntity.notifId, true)
+                } else {
+                    //do nothing
+                }
+            }
+        )
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.itemAnimator?.changeDuration = 0
+
         navigationIcon.setOnClickListener {
             findNavController().navigateUp()
         }
-
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = NotificationAdapter(model)
-        binding.recyclerView.adapter = adapter
 
         model.getNotification().observe(viewLifecycleOwner) {
             if (it?.isNotEmpty() == true) {

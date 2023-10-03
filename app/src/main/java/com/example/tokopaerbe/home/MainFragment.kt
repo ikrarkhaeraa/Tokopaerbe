@@ -87,7 +87,7 @@ class MainFragment : Fragment() {
                 }
 
                 R.id.menu_item_3 -> {
-                    // ke menu
+                    findNavController().navigate(R.id.action_main_to_screenFragment)
                 }
             }
             true

@@ -17,7 +17,7 @@ import com.example.tokopaerbe.databinding.FragmentCartBinding
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
 import com.example.tokopaerbe.home.checkout.ListCheckout
-import com.example.tokopaerbe.room.CartEntity
+import com.example.tokopaerbe.core.room.CartEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -47,8 +47,16 @@ class CartFragment : Fragment() {
         firebaseAnalytics = Firebase.analytics
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter = CartAdapter(model)
+        adapter = CartAdapter(
+            isCheckedToTrue = { cartEntity -> model.isChecked(cartEntity.productId, true) },
+            isCheckedToFalse = { cartEntity -> model.isChecked(cartEntity.productId, false) },
+            deleteItem = { cartEntity -> model.deleteCartProduct(cartEntity.productId) },
+            plusToggle = { cartEntity, totalToggleValue -> model.quantity(cartEntity.productId, totalToggleValue) },
+            minusToggle = { cartEntity,totalToggleValue  -> model.quantity(cartEntity.productId, totalToggleValue) }
+        )
+
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.itemAnimator?.changeDuration = 0
 
         val toolbar: androidx.appcompat.widget.Toolbar = binding.cartToolbar
 
@@ -63,7 +71,8 @@ class CartFragment : Fragment() {
             if (cartList.isNullOrEmpty()) {
                 hideEmptyCartUI()
             } else {
-                showCartItemsUI(cartList)
+                adapter.submitList(cartList)
+                showCartItemsUI()
                 calculateTotalPrice(cartList)
 
                 val selectedItem = cartList.filter { it.isChecked }
@@ -165,7 +174,7 @@ class CartFragment : Fragment() {
         binding.recyclerView.visibility = GONE
     }
 
-    private fun showCartItemsUI(cartList: List<CartEntity>) {
+    private fun showCartItemsUI() {
         binding.imageView5.visibility = GONE
         binding.textView5.visibility = GONE
         binding.descempty.visibility = GONE
@@ -180,7 +189,6 @@ class CartFragment : Fragment() {
         binding.price.visibility = VISIBLE
         binding.buttonBeli.visibility = VISIBLE
 
-        adapter.submitList(cartList)
         binding.recyclerView.visibility = VISIBLE
     }
 

@@ -42,7 +42,7 @@ class CheckoutFragment : Fragment(), CheckoutAdapter.OnItemClickListener {
     private val args: CheckoutFragmentArgs by navArgs()
     private var productCheckout: ListCheckout = ListCheckout(emptyList())
     private var totalPrice = 0.0
-    private lateinit var listProductFulfillment: ArrayList<com.example.tokopaerbe.retrofit.Item>
+    private lateinit var listProductFulfillment: ArrayList<com.example.tokopaerbe.core.retrofit.Item>
     private val item: TransactionDataClass? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -115,7 +115,7 @@ class CheckoutFragment : Fragment(), CheckoutAdapter.OnItemClickListener {
 
             listProductFulfillment = ArrayList()
             productCheckout.listCheckout.map {
-                val product = com.example.tokopaerbe.retrofit.Item(
+                val product = com.example.tokopaerbe.core.retrofit.Item(
                     it.productId,
                     it.productVariant,
                     it.productQuantity

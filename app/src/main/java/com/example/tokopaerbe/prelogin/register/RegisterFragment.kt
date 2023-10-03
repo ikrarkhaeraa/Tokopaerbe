@@ -19,7 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentRegisterBinding
-import com.example.tokopaerbe.retrofit.user.UserRegister
+import com.example.tokopaerbe.core.retrofit.user.UserRegister
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.gms.tasks.OnCompleteListener

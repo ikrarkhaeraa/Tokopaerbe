@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.core.retrofit.response.Product
 import com.example.tokopaerbe.databinding.ItemCartBinding
-import com.example.tokopaerbe.room.CartEntity
+import com.example.tokopaerbe.core.room.CartEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -18,7 +19,13 @@ import com.google.firebase.ktx.Firebase
 import java.text.NumberFormat
 import java.util.Locale
 
-class CartAdapter(private val model: ViewModel) :
+class CartAdapter(
+//    private val model: ViewModel,
+    private val isCheckedToTrue: (CartEntity) -> Unit,
+    private val isCheckedToFalse: (CartEntity) -> Unit,
+    private val deleteItem: (CartEntity) -> Unit,
+    private val plusToggle: (CartEntity, Int) -> Unit,
+    private val minusToggle: (CartEntity, Int) -> Unit,) :
     ListAdapter<CartEntity, CartAdapter.ListViewHolder>(CartEntityDiffCallback()) {
 
     private var totalToggleValue = 1
@@ -44,17 +51,20 @@ class CartAdapter(private val model: ViewModel) :
         val checkBox = holder.binding.checkBox2
         checkBox.isChecked = cartEntity.isChecked
 
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                model.isChecked(cartEntity.productId, true)
+        checkBox.setOnClickListener {
+            if (checkBox.isChecked) {
+//                model.isChecked(cartEntity.productId, true)
+                isCheckedToTrue(cartEntity)
             } else {
-                model.isChecked(cartEntity.productId, false)
+//                model.isChecked(cartEntity.productId, false)
+                isCheckedToFalse(cartEntity)
             }
         }
 
         val deleteIcon = holder.binding.deleteIcon
         deleteIcon.setOnClickListener {
-            model.deleteCartProduct(cartEntity.productId)
+//            model.deleteCartProduct(cartEntity.productId)
+            deleteItem(cartEntity)
 
             firebaseAnalytics = Firebase.analytics
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.REMOVE_FROM_CART) {
@@ -70,7 +80,8 @@ class CartAdapter(private val model: ViewModel) :
             toggleTotal.text = newTotal.toString()
 
             totalToggleValue = newTotal
-            model.quantity(cartEntity.productId, totalToggleValue)
+//            model.quantity(cartEntity.productId, totalToggleValue)
+            plusToggle(cartEntity, totalToggleValue)
         }
 
         toggleMinus.setOnClickListener {
@@ -79,7 +90,8 @@ class CartAdapter(private val model: ViewModel) :
             toggleTotal.text = newTotal.toString()
 
             totalToggleValue = newTotal
-            model.quantity(cartEntity.productId, totalToggleValue)
+//            model.quantity(cartEntity.productId, totalToggleValue)
+            minusToggle(cartEntity, totalToggleValue)
         }
     }
 

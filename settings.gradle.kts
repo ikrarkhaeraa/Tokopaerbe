@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Tokopaerbe"
 include(":app")
- 
+include(":screen")
+include(":core")

@@ -10,4 +10,5 @@
     <color name="grey">#DDDDDD</color>
     <color name="error">#B3261E</color>
     <color name="bgSelesai">#EADDFF</color>
+    <color name="windowBackground">?android:attr/windowBackground</color>
 </resources>

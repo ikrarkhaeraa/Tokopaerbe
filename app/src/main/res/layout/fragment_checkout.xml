@@ -26,6 +26,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout2"/>
+
 
     <ScrollView
         android:layout_width="match_parent"

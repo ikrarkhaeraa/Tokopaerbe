@@ -5,11 +5,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.test.core.app.ApplicationProvider
-import com.example.tokopaerbe.retrofit.UserPreferences
-import com.example.tokopaerbe.retrofit.user.ErrorState
-import com.example.tokopaerbe.retrofit.user.UserLogin
-import com.example.tokopaerbe.retrofit.user.UserProfile
-import com.example.tokopaerbe.retrofit.user.UserRegister
+import com.example.tokopaerbe.core.retrofit.UserPreferences
+import com.example.tokopaerbe.core.retrofit.user.ErrorState
+import com.example.tokopaerbe.core.retrofit.user.UserLogin
+import com.example.tokopaerbe.core.retrofit.user.UserProfile
+import com.example.tokopaerbe.core.retrofit.user.UserRegister
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

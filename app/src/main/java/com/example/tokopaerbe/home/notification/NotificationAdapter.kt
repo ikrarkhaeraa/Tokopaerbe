@@ -9,20 +9,20 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.core.room.NotificationsEntity
 import com.example.tokopaerbe.databinding.ItemNotificationsBinding
-import com.example.tokopaerbe.room.NotificationsEntity
-import com.example.tokopaerbe.viewmodel.ViewModel
+import com.google.android.material.color.MaterialColors
 
-class NotificationAdapter(private val model: ViewModel) :
-    ListAdapter<NotificationsEntity, NotificationAdapter.ListViewHolder>(
-        NotificationsEntityDiffCallback()
-    ) {
+class NotificationAdapter(
+//    val model: ViewModel
+    private val onNotificationsClick: (NotificationsEntity) -> Unit
+) : ListAdapter<NotificationsEntity, NotificationAdapter.ListViewHolder>(
+    NotificationsEntityDiffCallback()
+) {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
         val binding = ItemNotificationsBinding.inflate(
-            LayoutInflater.from(viewGroup.context),
-            viewGroup,
-            false
+            LayoutInflater.from(viewGroup.context), viewGroup, false
         )
         return ListViewHolder(binding)
     }
@@ -32,7 +32,8 @@ class NotificationAdapter(private val model: ViewModel) :
         holder.bind(notifEntity)
 
         holder.itemView.setOnClickListener {
-            model.notifIsChecked(notifEntity.notifId, true)
+//            model.notifIsChecked(notifEntity.notifId, true)
+            onNotificationsClick(notifEntity)
         }
     }
 
@@ -41,9 +42,7 @@ class NotificationAdapter(private val model: ViewModel) :
         @SuppressLint("SetTextI18n", "ResourceAsColor")
         fun bind(data: NotificationsEntity) {
             binding.apply {
-                Glide.with(itemView.context)
-                    .load(data.notifImage)
-                    .into(itemImage)
+                Glide.with(itemView.context).load(data.notifImage).into(itemImage)
                 itemTitle.text = data.notifType
                 transactionSuccess.text = data.notifTitle
                 body.text = data.notifBody
@@ -52,9 +51,13 @@ class NotificationAdapter(private val model: ViewModel) :
                 if (!data.isChecked) {
                     cardView.setCardBackgroundColor(
                         ContextCompat.getColor(
-                            itemView.context,
-                            R.color.bgSelesai
+                            itemView.context, R.color.bgSelesai
                         )
+                    )
+                } else {
+                    cardView.setCardBackgroundColor(
+                        MaterialColors.getColor(
+                            itemView, android.R.attr.windowBackground)
                     )
                 }
             }
@@ -63,16 +66,14 @@ class NotificationAdapter(private val model: ViewModel) :
 
     private class NotificationsEntityDiffCallback : DiffUtil.ItemCallback<NotificationsEntity>() {
         override fun areItemsTheSame(
-            oldItem: NotificationsEntity,
-            newItem: NotificationsEntity
+            oldItem: NotificationsEntity, newItem: NotificationsEntity
         ): Boolean {
             return oldItem.notifId == newItem.notifId
         }
 
         @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(
-            oldItem: NotificationsEntity,
-            newItem: NotificationsEntity
+            oldItem: NotificationsEntity, newItem: NotificationsEntity
         ): Boolean {
             return oldItem == newItem
         }

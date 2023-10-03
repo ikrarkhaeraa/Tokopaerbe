@@ -3,25 +3,25 @@ package com.example.tokopaerbe.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tokopaerbe.retrofit.DataSource
-import com.example.tokopaerbe.retrofit.Item
-import com.example.tokopaerbe.retrofit.response.DetailProductResponse
-import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
-import com.example.tokopaerbe.retrofit.response.LoginResponse
-import com.example.tokopaerbe.retrofit.response.PaymentResponse
-import com.example.tokopaerbe.retrofit.response.ProfileResponse
-import com.example.tokopaerbe.retrofit.response.RatingResponse
-import com.example.tokopaerbe.retrofit.response.RegisterResponse
-import com.example.tokopaerbe.retrofit.response.ReviewResponse
-import com.example.tokopaerbe.retrofit.response.SearchResponse
-import com.example.tokopaerbe.retrofit.response.TransactionResponse
-import com.example.tokopaerbe.retrofit.user.UserLogin
-import com.example.tokopaerbe.retrofit.user.UserProfile
-import com.example.tokopaerbe.retrofit.user.UserRegister
-import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
-import com.example.tokopaerbe.room.CartEntity
-import com.example.tokopaerbe.room.NotificationsEntity
-import com.example.tokopaerbe.room.WishlistEntity
+import com.example.tokopaerbe.core.retrofit.DataSource
+import com.example.tokopaerbe.core.retrofit.Item
+import com.example.tokopaerbe.core.retrofit.response.DetailProductResponse
+import com.example.tokopaerbe.core.retrofit.response.FulfillmentResponse
+import com.example.tokopaerbe.core.retrofit.response.LoginResponse
+import com.example.tokopaerbe.core.retrofit.response.PaymentResponse
+import com.example.tokopaerbe.core.retrofit.response.ProfileResponse
+import com.example.tokopaerbe.core.retrofit.response.RatingResponse
+import com.example.tokopaerbe.core.retrofit.response.RegisterResponse
+import com.example.tokopaerbe.core.retrofit.response.ReviewResponse
+import com.example.tokopaerbe.core.retrofit.response.SearchResponse
+import com.example.tokopaerbe.core.retrofit.response.TransactionResponse
+import com.example.tokopaerbe.core.retrofit.user.UserLogin
+import com.example.tokopaerbe.core.retrofit.user.UserProfile
+import com.example.tokopaerbe.core.retrofit.user.UserRegister
+import com.example.tokopaerbe.core.retrofit.user.ValueBottomSheet
+import com.example.tokopaerbe.core.room.CartEntity
+import com.example.tokopaerbe.core.room.NotificationsEntity
+import com.example.tokopaerbe.core.room.WishlistEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
@@ -171,6 +171,7 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     }
 
     fun addNotifications(
+        notifId: Int,
         notifType: String,
         notifTitle: String,
         notifBody: String,
@@ -181,6 +182,7 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     ) {
         viewModelScope.launch {
             data.addNotifications(
+                notifId,
                 notifType,
                 notifTitle,
                 notifBody,
