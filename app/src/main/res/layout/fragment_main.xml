@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:menu="@menu/top_app_bar_menu"
+            android:background="?attr/colorSurfaceContainerLowest"
             app:navigationIcon="@drawable/baseline_account_circle_24"
             app:title="@string/johnDoe" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -32,6 +33,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
+        android:background="?attr/colorSurfaceContainerLowest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

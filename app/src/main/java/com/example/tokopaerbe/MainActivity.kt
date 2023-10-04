@@ -1,11 +1,17 @@
 package com.example.tokopaerbe
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
@@ -34,6 +40,36 @@ class MainActivity : AppCompatActivity() {
         navHostFragment.navController
     }
 
+    companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+        private const val REQUEST_CODE_PERMISSIONS = 200
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(
+                    this,
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -41,6 +77,14 @@ class MainActivity : AppCompatActivity() {
         factory = ViewModelFactory.getInstance(this)
         setContentView(binding.root)
         supportActionBar?.hide()
+
+        if (!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(
+                this,
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
 
         Firebase.messaging.subscribeToTopic("promo")
             .addOnCompleteListener { task ->
@@ -51,6 +95,12 @@ class MainActivity : AppCompatActivity() {
                 Log.d("cekSubs", msg)
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
+
+        model.getRefreshResponseCode().observe(this) {
+            if (it == 401){
+                logout()
+            }
+        }
 
 //        checkUserStatus()
         cekTheme()
@@ -89,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
     fun logout() {
         model.userLogout()
-        model.userInstall()
+//        model.userInstall()
         navController.navigate(R.id.main_to_prelogin)
     }
 

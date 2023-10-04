@@ -2,9 +2,9 @@ package com.example.tokopaerbe.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.example.tokopaerbe.retrofit.user.UserLogin
-import com.example.tokopaerbe.retrofit.user.UserProfile
-import com.example.tokopaerbe.retrofit.user.UserRegister
+import com.example.tokopaerbe.core.retrofit.user.UserLogin
+import com.example.tokopaerbe.core.retrofit.user.UserProfile
+import com.example.tokopaerbe.core.retrofit.user.UserRegister
 import com.example.tokopaerbe.viewmodel.ViewModel
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.first

@@ -62,11 +62,11 @@ class StoreFragment : Fragment() {
         (requireActivity() as MainActivity).goToProduct(product.productId)
     }
 
-    private var searchText: String? = null
-    private var selectedText1: String? = null
-    private var selectedText2: String? = null
-    private var textTerendah: String? = null
-    private var textTertinggi: String? = null
+//    private var searchText: String? = null
+//    private var selectedText1: String? = null
+//    private var selectedText2: String? = null
+//    private var textTerendah: String? = null
+//    private var textTertinggi: String? = null
 
     private val delayMillis = 1000L
     private val filterParams = MutableStateFlow(UserFilter(null, null, null, null, null))
@@ -118,8 +118,6 @@ class StoreFragment : Fragment() {
             binding.shimmerGrid.visibility = GONE
         }
 
-        binding.searchTextField.setText("")
-
         binding.gambarerror.visibility = GONE
         binding.errorTitle.visibility = GONE
         binding.errorDesc.visibility = GONE
@@ -140,11 +138,11 @@ class StoreFragment : Fragment() {
                 binding.shimmerChangerv.visibility = VISIBLE
 
                 paggingModel.sendFilter(
-                    searchText,
-                    selectedText1,
-                    selectedText2,
-                    textTerendah?.toInt(),
-                    textTertinggi?.toInt()
+                    model.storeSearchText,
+                    model.storeSelectedText1,
+                    model.storeSelectedText2,
+                    model.storeTextTerendah?.toInt(),
+                    model.storeTextTertinggi?.toInt()
                 ).observe(viewLifecycleOwner) { result ->
                     model.getCode().observe(viewLifecycleOwner) { code ->
                         if (code == 200) {
@@ -185,11 +183,11 @@ class StoreFragment : Fragment() {
                 binding.shimmerChangerv.visibility = VISIBLE
 
                 paggingModel.sendFilter(
-                    searchText,
-                    selectedText1,
-                    selectedText2,
-                    textTerendah?.toInt(),
-                    textTertinggi?.toInt()
+                    model.storeSearchText,
+                    model.storeSelectedText1,
+                    model.storeSelectedText2,
+                    model.storeTextTerendah?.toInt(),
+                    model.storeTextTertinggi?.toInt()
                 ).observe(viewLifecycleOwner) { result ->
                     model.getCode().observe(viewLifecycleOwner) { code ->
                         if (code == 200) {
@@ -227,16 +225,29 @@ class StoreFragment : Fragment() {
             delay(delayMillis)
             if (isVisible) {
                 settingFilter()
+                Log.d("cek123", model.storeSelectedText1.toString())
                 val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
 
                 filterLiveData.observe(viewLifecycleOwner) { filter ->
                     paggingModel.sendFilter(
-                        filter.search,
-                        filter.sort,
-                        filter.brand,
-                        filter.lowest,
-                        filter.highest
+                        model.storeSearchText,
+                        model.storeSelectedText1,
+                        model.storeSelectedText2,
+                        model.storeTextTerendah?.toInt(),
+                        model.storeTextTerendah?.toInt()
                     ).observe(viewLifecycleOwner) { result ->
+
+                        binding.chipgroup.removeAllViews()
+                        val listFilter = listOf(model.storeSelectedText1, model.storeSelectedText2, model.storeTextTerendah, model.storeTextTertinggi)
+                        for (i in listFilter.indices) {
+                            val chip = Chip(requireActivity())
+                            chip.text = listFilter[i]
+                            chip.isClickable = true
+                            if (chip.text.isNotEmpty()) {
+                                binding.chipgroup.addView(chip)
+                                Log.d("cekAddChip", "add")
+                            }
+                        }
 
                         model.getCode().observe(viewLifecycleOwner) {
                             Log.d("cekCode", it.toString())
@@ -278,19 +289,18 @@ class StoreFragment : Fragment() {
         }
 
         setFragmentResultListener("searchText") { _, bundle ->
-            searchText = bundle.getString("bundleKey").toString()
-            Log.d("searchText", searchText!!)
-            binding.searchTextField.setText(searchText)
+            model.storeSearchText = bundle.getString("bundleKey").toString()
+            Log.d("searchText", model.storeSearchText!!)
+            binding.searchTextField.setText(model.storeSearchText)
             updateFilterAndRequestData()
 
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS) {
-                param(FirebaseAnalytics.Param.SEARCH_TERM, searchText!!)
+                param(FirebaseAnalytics.Param.SEARCH_TERM, model.searchFilter!!)
             }
         }
 
         binding.changeRV.setOnClickListener {
             model.rvStateStore = !model.rvStateStore
-//            toggleLayoutManager()
             settingAdapter()
         }
     }
@@ -460,60 +470,40 @@ class StoreFragment : Fragment() {
             val terendah = bundle.getString("textTerendah")
             val tertinggi = bundle.getString("textTertinggi")
 
-            selectedText1 = sort
-            selectedText2 = brand
-            textTerendah = terendah
-            textTertinggi = tertinggi
+            model.storeSelectedText1 = sort
+            model.storeSelectedText2 = brand
+            model.storeTextTerendah = terendah
+            model.storeTextTertinggi = tertinggi
 
-            Log.d("cekFragmentResult", selectedText1.toString())
-            Log.d("cekFragmentResult", selectedText2.toString())
-            Log.d("cekFragmentResult", textTerendah.toString())
-            Log.d("cekFragmentResult", textTertinggi.toString())
-
-            val listFilter = listOf(selectedText1, selectedText2, textTerendah, textTertinggi)
-
-            for (i in listFilter.indices) {
-                val chip = Chip(requireActivity())
-                chip.text = listFilter[i]
-                chip.isClickable = true
-                if (chip.text.isNotEmpty()) {
-                    binding.chipgroup.addView(chip)
-                    Log.d("cekAddChip", "add")
-                }
-            }
             updateFilterAndRequestData()
         }
     }
 
     private fun updateFilterAndRequestData() {
-        if (selectedText1?.isEmpty() == true) {
-            selectedText1 = null
+
+        if (model.storeSelectedText1?.isEmpty() == true) {
+            model.storeSelectedText1 = null
         }
 
-        if (selectedText2?.isEmpty() == true) {
-            selectedText2 = null
+        if (model.storeSelectedText2?.isEmpty() == true) {
+            model.storeSelectedText2 = null
         }
 
-        if (textTerendah?.isEmpty() == true) {
-            textTerendah = null
+        if (model.storeTextTerendah?.isEmpty() == true) {
+            model.storeTextTerendah = null
         }
 
-        if (textTertinggi?.isEmpty() == true) {
-            textTertinggi = null
+        if (model.storeTextTertinggi?.isEmpty() == true) {
+            model.storeTextTertinggi = null
         }
 
         val newFilter = UserFilter(
-            searchText,
-            selectedText1,
-            selectedText2,
-            textTerendah?.toInt(),
-            textTertinggi?.toInt()
+            model.storeSearchText,
+            model.storeSelectedText1,
+            model.storeSelectedText2,
+            model.storeTextTerendah?.toInt(),
+            model.storeTextTertinggi?.toInt()
         )
-        Log.d("cekUpdateFilter", searchText.toString())
-        Log.d("cekUpdateFilter", selectedText1.toString())
-        Log.d("cekUpdateFilter", selectedText2.toString())
-        Log.d("cekUpdateFilter", textTerendah.toString())
-        Log.d("cekUpdateFilter", textTertinggi.toString())
         filterParams.value = newFilter
     }
 
@@ -547,11 +537,11 @@ class StoreFragment : Fragment() {
     private fun resetOrRefresh() {
         binding.chipgroup.removeAllViews()
         binding.searchTextField.setText("")
-        searchText = null
-        selectedText1 = null
-        selectedText2 = null
-        textTerendah = null
-        textTertinggi = null
+        model.storeSearchText = null
+        model.storeSelectedText1 = null
+        model.storeSelectedText2 = null
+        model.storeTextTerendah = null
+        model.storeTextTertinggi = null
         model.sort = ""
         model.brand = ""
         model.textTerendah = ""
@@ -578,6 +568,5 @@ class StoreFragment : Fragment() {
             }
         }
     }
-
 
 }

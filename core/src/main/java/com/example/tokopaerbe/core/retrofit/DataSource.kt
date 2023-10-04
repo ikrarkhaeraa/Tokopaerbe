@@ -351,6 +351,10 @@ class DataSource @Inject constructor(
         return pref.getUserLoginState()
     }
 
+    fun getRefreshResponseCode(): LiveData<Int> {
+        return pref.getRefreshResponseCode().asLiveData()
+    }
+
     fun getIsDarkState(): Flow<Boolean> {
         return pref.getIsDarkState()
     }

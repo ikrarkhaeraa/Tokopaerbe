@@ -5,7 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splashscreen1</item>
-        <item name="windowSplashScreenAnimationDuration">5000</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
         <item name="android:windowSoftInputMode">adjustPan</item>
         <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar">true</item>

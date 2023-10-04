@@ -147,7 +147,7 @@
     <string name="metodePembayaran">Payment Method</string>
     <string name="totalPembayaran">Total Payment</string>
     <string name="idTransaksiValue">abcd-efgh-ijkl-mnop</string>
-    <string name="statusValue">Berhasil</string>
+    <string name="statusValue">Success</string>
     <string name="tanggalValue">3 Jun 2023</string>
     <string name="waktuValue">22:00</string>
     <string name="metodePembayaranValue">BCA Virtual Account</string>

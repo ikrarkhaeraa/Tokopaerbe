@@ -5,6 +5,7 @@ import com.example.tokopaerbe.core.retrofit.ApiService
 import com.example.tokopaerbe.core.retrofit.RefreshRequestBody
 import com.example.tokopaerbe.core.retrofit.UserPreferences
 import com.example.tokopaerbe.core.retrofit.response.RefreshResponse
+import com.example.tokopaerbe.core.retrofit.user.AccessToken
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -24,11 +25,15 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
     override fun authenticate(route: Route?, response: Response): Request? {
         synchronized(this) {
             return runBlocking {
-                val refreshToken = refreshAuthToken()
-                Log.d("cekNewToken", refreshToken.toString())
-                if (refreshToken != null) {
+                val accessToken = refreshAuthToken()?.get("accessToken")
+                val refreshToken = refreshAuthToken()?.get("refreshToken")
+                Log.d("cekNewAccessToken", accessToken.toString())
+                Log.d("cekNewRefreshToken", accessToken.toString())
+                if (accessToken != null && refreshToken !=null) {
+                    preferences.saveAccessTokenFromRefresh(accessToken)
+                    preferences.saveRefreshTokenFromRefresh(refreshToken)
                     response.request.newBuilder()
-                        .header("Authorization", "Bearer $refreshToken")
+                        .header("Authorization", "Bearer $accessToken")
                         .build()
                 } else {
                     null
@@ -37,7 +42,32 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
         }
     }
 
-    private suspend fun refreshAuthToken(): String? {
+//    private suspend fun refreshAuthToken(): String? {
+//        val apiKey = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
+//        val refreshToken = preferences.getRefreshToken().first().toString()
+//
+//        Log.d("cekToken", refreshToken)
+//
+//        return try {
+//            val refreshResponse = getNewToken(apiKey, refreshToken).execute()
+//
+//            if (refreshResponse.isSuccessful) {
+//                refreshResponse.body()?.data?.accessToken
+//            } else if (refreshResponse.code() == 401) {
+//                preferences.logout()
+//                "401"
+//            } else {
+//                "error"
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            Log.d("cekE", e.toString())
+//            null
+//        }
+//
+//    }
+
+    private suspend fun refreshAuthToken(): MutableMap<String, String>? {
         val apiKey = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
         val refreshToken = preferences.getRefreshToken().first().toString()
 
@@ -47,13 +77,28 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
             val refreshResponse = getNewToken(apiKey, refreshToken).execute()
 
             if (refreshResponse.isSuccessful) {
-                refreshResponse.body()?.data?.accessToken
+                val accessToken = refreshResponse.body()?.data?.accessToken
+                val newRefreshToken = refreshResponse.body()?.data?.refreshToken
+                val resultMap = mutableMapOf<String, String>()
+
+                if (accessToken != null) {
+                    resultMap["accessToken"] = accessToken
+                }
+
+                if (newRefreshToken != null) {
+                    resultMap["refreshToken"] = newRefreshToken
+                }
+
+                if (resultMap.isEmpty()) {
+                    null
+                } else {
+                    resultMap
+                }
             } else if (refreshResponse.code() == 401) {
-                preferences.logout()
-                preferences.install()
-                "401"
+                preferences.saveRefreshResponseCode(refreshResponse.code())
+                null
             } else {
-                "error"
+                null
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -61,6 +106,8 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
             null
         }
     }
+
+
 
     private fun getNewToken(apiKey: String, token: String): Call<RefreshResponse> {
         val loggingInterceptor = HttpLoggingInterceptor()

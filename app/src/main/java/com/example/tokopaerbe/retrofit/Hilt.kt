@@ -8,6 +8,7 @@ import com.example.tokopaerbe.core.retrofit.ApiService
 import com.example.tokopaerbe.core.retrofit.DataSource
 import com.example.tokopaerbe.core.retrofit.UserPreferences
 import com.example.tokopaerbe.core.retrofit.database
+import com.example.tokopaerbe.core.retrofit.user.AccessToken
 import com.example.tokopaerbe.core.room.CartDao
 import com.example.tokopaerbe.core.room.NotificationDao
 import com.example.tokopaerbe.core.room.ProductDatabase
@@ -32,15 +33,15 @@ object Hilt {
         return context
     }
 
-    @Provides
-    fun provideApiService(): ApiService {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.0.198:5000/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        return retrofit.create(ApiService::class.java)
-    }
+//    @Provides
+//    fun provideApiService(): ApiService {
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl("http://192.168.0.198:5000/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//
+//        return retrofit.create(ApiService::class.java)
+//    }
 
     @Singleton
     @Provides

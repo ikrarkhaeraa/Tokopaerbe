@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.tokopaerbe.core.retrofit.user.AccessToken
 import com.example.tokopaerbe.core.retrofit.user.ErrorState
 import com.example.tokopaerbe.core.retrofit.user.UserLogin
 import com.example.tokopaerbe.core.retrofit.user.UserProfile
@@ -35,6 +36,7 @@ class UserPreferences @Inject constructor(private val database: DataStore<Prefer
         private val LOWEST_KEY = stringPreferencesKey("lowest")
         private val HIGHEST_KEY = stringPreferencesKey("highest")
         private val DARKTHEME_KEY = booleanPreferencesKey("darkTheme")
+        private val REFRESHCODE_KEY = intPreferencesKey("refreshCode")
 
 //        fun getInstance(database: DataStore<Preferences>): UserPreferences {
 //            return INSTANCE ?: synchronized(this) {
@@ -133,6 +135,30 @@ class UserPreferences @Inject constructor(private val database: DataStore<Prefer
     fun getUserLoginState(): Flow<Boolean> {
         return database.data.map { preferences ->
             preferences[STATE_KEY] ?: false
+        }
+    }
+
+    fun getRefreshResponseCode(): Flow<Int> {
+        return database.data.map {preferences ->
+            preferences[REFRESHCODE_KEY] ?: 0
+        }
+    }
+
+    suspend fun saveRefreshResponseCode(code: Int) {
+        database.edit {preferences ->
+            preferences[REFRESHCODE_KEY] = code
+        }
+    }
+
+    suspend fun saveAccessTokenFromRefresh(token: String) {
+        database.edit {preferences ->
+            preferences[ACCESSTOKEN_KEY] = token
+        }
+    }
+
+    suspend fun saveRefreshTokenFromRefresh(token: String) {
+        database.edit {preferences ->
+            preferences[REFRESHTOKEN_KEY] = token
         }
     }
 

@@ -7,11 +7,15 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.databinding.FragmentNotificationsBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class NotificationsFragment : Fragment() {
 
@@ -55,13 +59,23 @@ class NotificationsFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        model.getNotification().observe(viewLifecycleOwner) {
-            if (it?.isNotEmpty() == true) {
-                binding.imageView5.visibility = GONE
-                binding.textView5.visibility = GONE
-                binding.descempty.visibility = GONE
+        lifecycleScope.launch {
+            while (true) {
+                if (isActive) {
+                    model.getNotification().observe(viewLifecycleOwner) {
+                        if (it?.isNotEmpty() == true) {
+                            binding.imageView5.visibility = GONE
+                            binding.textView5.visibility = GONE
+                            binding.descempty.visibility = GONE
 
-                adapter.submitList(it.reversed())
+                            adapter.submitList(it.reversed())
+                        }
+                    }
+                }
+                if (!isActive) {
+                    break
+                }
+                delay(1000)
             }
         }
     }

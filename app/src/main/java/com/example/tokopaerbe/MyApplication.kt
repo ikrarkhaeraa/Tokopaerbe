@@ -17,8 +17,8 @@ import javax.inject.Inject
 @HiltAndroidApp
 class MyApplication : Application() {
 
-    @Inject
-    lateinit var apiService: ApiService
+//    @Inject
+//    lateinit var apiService: ApiService
 
     @Inject
     lateinit var preferences: UserPreferences

@@ -1,5 +1,6 @@
 package com.example.tokopaerbe.home.checkout
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -24,6 +25,8 @@ import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.Locale
 
 class StatusFragment : Fragment() {
 
@@ -40,6 +43,7 @@ class StatusFragment : Fragment() {
     private var size: Int = 0
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,11 +60,12 @@ class StatusFragment : Fragment() {
         if (model.fulfillment.value?.code == 200 && itemTransaction.toString() == "null") {
             model.fulfillment.observe(viewLifecycleOwner) {
                 binding.idTransaksiValue.text = it.data.invoiceId
-                binding.StatusValue.text = "Berhasil"
+                binding.StatusValue.text = getString(R.string.statusValue)
                 binding.tanggalValue.text = it.data.date
                 binding.waktuValue.text = it.data.time
                 binding.metodePembayaranValue.text = it.data.payment
-                binding.totalPembayaranValue.text = it.data.total.toString()
+                val totalPrice = formatPrice(it.data.total.toDouble())
+                binding.totalPembayaranValue.text = "Rp$totalPrice"
 
                 binding.buttonSelesai.setOnClickListener { view ->
                     lifecycleScope.launch {
@@ -93,11 +98,12 @@ class StatusFragment : Fragment() {
         } else {
             Log.d("cekItemTransaction", itemTransaction.toString())
             binding.idTransaksiValue.text = itemTransaction?.invoiceId
-            binding.StatusValue.text = "Berhasil"
+            binding.StatusValue.text = getString(R.string.statusValue)
             binding.tanggalValue.text = itemTransaction?.tanggalValue
             binding.waktuValue.text = itemTransaction?.waktuValue
             binding.metodePembayaranValue.text = itemTransaction?.metodePembayaranValue
-            binding.totalPembayaranValue.text = itemTransaction?.totalPembayaranValue.toString()
+            val totalPrice = formatPrice(itemTransaction?.totalPembayaranValue!!.toDouble())
+            binding.totalPembayaranValue.text = "Rp$totalPrice"
 
             binding.buttonSelesai.setOnClickListener { view ->
                 lifecycleScope.launch {
@@ -162,5 +168,15 @@ class StatusFragment : Fragment() {
         override fun afterTextChanged(s: Editable?) {
             // Not used in this case
         }
+    }
+
+    private fun formatPrice(price: Double): String {
+        val numberFormat = NumberFormat.getNumberInstance(
+            Locale(
+                "id",
+                "ID"
+            )
+        )
+        return numberFormat.format(price)
     }
 }

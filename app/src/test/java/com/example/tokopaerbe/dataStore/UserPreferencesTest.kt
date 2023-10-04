@@ -95,6 +95,14 @@ class UserPreferencesTest {
     }
 
     @Test
+    fun testSaveAndGetRefreshResponseCode() = runBlocking {
+        val code = 200
+        userPreferences.saveRefreshResponseCode(code)
+        val getCode = userPreferences.getRefreshResponseCode().first()
+        assertEquals(code, getCode)
+    }
+
+    @Test
     fun testLoginState() = runBlocking {
         val loginState = true
         userPreferences.login()

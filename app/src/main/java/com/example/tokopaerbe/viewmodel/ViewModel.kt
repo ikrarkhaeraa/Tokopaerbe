@@ -41,6 +41,11 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
     val transaction: LiveData<TransactionResponse> = data.transaction
     var priceDetail: String = ""
     var selectedChip: Int = 0
+    var storeSearchText: String? = null
+    var storeSelectedText1: String? = null
+    var storeSelectedText2: String? = null
+    var storeTextTerendah: String? = null
+    var storeTextTertinggi: String? = null
 
     private var _search: String = ""
     var searchFilter: String = ""
@@ -238,6 +243,10 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
 
     fun getUserLoginState(): Flow<Boolean> {
         return data.getUserLoginState()
+    }
+
+    fun getRefreshResponseCode(): LiveData<Int> {
+        return data.getRefreshResponseCode()
     }
 
     fun getIsDarkState(): Flow<Boolean> {
