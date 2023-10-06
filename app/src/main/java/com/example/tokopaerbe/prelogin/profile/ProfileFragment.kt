@@ -29,8 +29,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentProfileBinding
 import com.example.tokopaerbe.core.retrofit.user.UserProfile
+import com.example.tokopaerbe.databinding.FragmentProfileBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -200,7 +200,6 @@ class ProfileFragment : Fragment() {
 //                val fileRequestBody = getMyFile!!.asRequestBody("image/*".toMediaTypeOrNull())
 
                 if (it.isNotEmpty()) {
-
                     if (getMyFile != null) {
                         val imagePart =
                             MultipartBody.Part.createFormData(

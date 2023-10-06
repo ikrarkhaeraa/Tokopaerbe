@@ -11,9 +11,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentWishlistBinding
 import com.example.tokopaerbe.core.room.WishlistEntity
+import com.example.tokopaerbe.databinding.FragmentWishlistBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -110,7 +111,14 @@ class WishlistFragment : Fragment() {
 
     private fun setLinearLayoutManager(wishList: List<WishlistEntity>) {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = WishlistAdapter(model, myCoroutineScope, this.requireContext())
+        val adapter = WishlistAdapter(
+            model,
+            myCoroutineScope,
+            this.requireContext(),
+            onProductClick = { product ->
+                (requireActivity() as MainActivity).goToProduct(product.productId)
+            }
+        )
         binding.recyclerView.adapter = adapter
         adapter.submitList(wishList)
         binding.recyclerView.visibility = View.VISIBLE
@@ -118,7 +126,14 @@ class WishlistFragment : Fragment() {
 
     private fun setGridLayoutManager(wishList: List<WishlistEntity>) {
         binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = WishListGridAdapter(model, myCoroutineScope, this.requireContext())
+        val adapter = WishListGridAdapter(
+            model,
+            myCoroutineScope,
+            this.requireContext(),
+            onProductClick = { product ->
+                (requireActivity() as MainActivity).goToProduct(product.productId)
+            }
+        )
         binding.recyclerView.adapter = adapter
         adapter.submitList(wishList)
         binding.recyclerView.visibility = View.VISIBLE

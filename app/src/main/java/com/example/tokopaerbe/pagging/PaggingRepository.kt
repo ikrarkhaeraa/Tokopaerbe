@@ -1,18 +1,18 @@
-//package com.example.tokopaerbe.pagging
+// package com.example.tokopaerbe.pagging
 //
-//import androidx.lifecycle.LiveData
-//import androidx.paging.Pager
-//import androidx.paging.PagingConfig
-//import androidx.paging.PagingData
-//import androidx.paging.liveData
-//import com.example.tokopaerbe.retrofit.ApiService
-//import com.example.tokopaerbe.retrofit.UserPreferences
-//import com.example.tokopaerbe.retrofit.response.Product
+// import androidx.lifecycle.LiveData
+// import androidx.paging.Pager
+// import androidx.paging.PagingConfig
+// import androidx.paging.PagingData
+// import androidx.paging.liveData
+// import com.example.tokopaerbe.retrofit.ApiService
+// import com.example.tokopaerbe.retrofit.UserPreferences
+// import com.example.tokopaerbe.retrofit.response.Product
 //
-//class PaggingRepository(
+// class PaggingRepository(
 //    private val apiService: ApiService,
 //    private val preferences: UserPreferences
-//) {
+// ) {
 //    fun getProductPaging(
 //        search: String?,
 //        sort: String?,
@@ -31,4 +31,4 @@
 //            }
 //        ).liveData
 //    }
-//}
+// }

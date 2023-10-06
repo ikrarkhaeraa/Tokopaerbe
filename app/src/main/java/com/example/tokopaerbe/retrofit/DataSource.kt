@@ -1,43 +1,43 @@
-//package com.example.tokopaerbe.retrofit
+// package com.example.tokopaerbe.retrofit
 //
-//import android.util.Log
-//import androidx.lifecycle.LiveData
-//import androidx.lifecycle.MutableLiveData
-//import androidx.lifecycle.asFlow
-//import androidx.lifecycle.asLiveData
-//import com.example.tokopaerbe.retrofit.response.DetailProductResponse
-//import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
-//import com.example.tokopaerbe.retrofit.response.LoginResponse
-//import com.example.tokopaerbe.retrofit.response.PaymentResponse
-//import com.example.tokopaerbe.retrofit.response.ProfileResponse
-//import com.example.tokopaerbe.retrofit.response.RatingResponse
-//import com.example.tokopaerbe.retrofit.response.RegisterResponse
-//import com.example.tokopaerbe.retrofit.response.ReviewResponse
-//import com.example.tokopaerbe.retrofit.response.SearchResponse
-//import com.example.tokopaerbe.retrofit.response.TransactionResponse
-//import com.example.tokopaerbe.retrofit.user.UserLogin
-//import com.example.tokopaerbe.retrofit.user.UserProfile
-//import com.example.tokopaerbe.retrofit.user.UserRegister
-//import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
-//import com.example.tokopaerbe.room.CartDao
-//import com.example.tokopaerbe.room.CartEntity
-//import com.example.tokopaerbe.room.NotificationDao
-//import com.example.tokopaerbe.room.NotificationsEntity
-//import com.example.tokopaerbe.room.WishlistDao
-//import com.example.tokopaerbe.room.WishlistEntity
-//import kotlinx.coroutines.flow.Flow
-//import okhttp3.MultipartBody
-//import retrofit2.Call
-//import retrofit2.Callback
-//import retrofit2.Response
-//import javax.inject.Inject
+// import android.util.Log
+// import androidx.lifecycle.LiveData
+// import androidx.lifecycle.MutableLiveData
+// import androidx.lifecycle.asFlow
+// import androidx.lifecycle.asLiveData
+// import com.example.tokopaerbe.retrofit.response.DetailProductResponse
+// import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
+// import com.example.tokopaerbe.retrofit.response.LoginResponse
+// import com.example.tokopaerbe.retrofit.response.PaymentResponse
+// import com.example.tokopaerbe.retrofit.response.ProfileResponse
+// import com.example.tokopaerbe.retrofit.response.RatingResponse
+// import com.example.tokopaerbe.retrofit.response.RegisterResponse
+// import com.example.tokopaerbe.retrofit.response.ReviewResponse
+// import com.example.tokopaerbe.retrofit.response.SearchResponse
+// import com.example.tokopaerbe.retrofit.response.TransactionResponse
+// import com.example.tokopaerbe.retrofit.user.UserLogin
+// import com.example.tokopaerbe.retrofit.user.UserProfile
+// import com.example.tokopaerbe.retrofit.user.UserRegister
+// import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
+// import com.example.tokopaerbe.room.CartDao
+// import com.example.tokopaerbe.room.CartEntity
+// import com.example.tokopaerbe.room.NotificationDao
+// import com.example.tokopaerbe.room.NotificationsEntity
+// import com.example.tokopaerbe.room.WishlistDao
+// import com.example.tokopaerbe.room.WishlistEntity
+// import kotlinx.coroutines.flow.Flow
+// import okhttp3.MultipartBody
+// import retrofit2.Call
+// import retrofit2.Callback
+// import retrofit2.Response
+// import javax.inject.Inject
 //
-//class DataSource @Inject constructor(
+// class DataSource @Inject constructor(
 //    private val pref: UserPreferences,
 //    private val cartDao: CartDao,
 //    private val wishDao: WishlistDao,
 //    private val notifDao: NotificationDao
-//) {
+// ) {
 //
 //    companion object {
 //        @Volatile
@@ -514,4 +514,4 @@
 //    fun getNotification(): LiveData<List<NotificationsEntity>?> {
 //        return notifDao.getNotifications()
 //    }
-//}
+// }

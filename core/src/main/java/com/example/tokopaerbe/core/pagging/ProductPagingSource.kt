@@ -39,6 +39,11 @@ class ProductPagingSource(
                 params.loadSize,
                 page
             )
+            Log.d("cek431", search.toString())
+            Log.d("cek431", sort.toString())
+            Log.d("cek431", brand.toString())
+            Log.d("cek431", lowest.toString())
+            Log.d("cek431", highest.toString())
             Log.d("dataPaging", "${responseData.data.items}")
             preferences.saveCode(ErrorState(responseData.code))
             Log.d("cekSaveCode", responseData.code.toString())

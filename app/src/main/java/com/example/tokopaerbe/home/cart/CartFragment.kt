@@ -12,12 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.core.room.CartEntity
 import com.example.tokopaerbe.databinding.FragmentCartBinding
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
 import com.example.tokopaerbe.home.checkout.ListCheckout
-import com.example.tokopaerbe.core.room.CartEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -51,8 +52,21 @@ class CartFragment : Fragment() {
             isCheckedToTrue = { cartEntity -> model.isChecked(cartEntity.productId, true) },
             isCheckedToFalse = { cartEntity -> model.isChecked(cartEntity.productId, false) },
             deleteItem = { cartEntity -> model.deleteCartProduct(cartEntity.productId) },
-            plusToggle = { cartEntity, totalToggleValue -> model.quantity(cartEntity.productId, totalToggleValue) },
-            minusToggle = { cartEntity,totalToggleValue  -> model.quantity(cartEntity.productId, totalToggleValue) }
+            plusToggle = { cartEntity, totalToggleValue ->
+                model.quantity(
+                    cartEntity.productId,
+                    totalToggleValue
+                )
+            },
+            minusToggle = { cartEntity, totalToggleValue ->
+                model.quantity(
+                    cartEntity.productId,
+                    totalToggleValue
+                )
+            },
+            onProductClick = { product ->
+                (requireActivity() as MainActivity).goToProduct(product.productId)
+            },
         )
 
         binding.recyclerView.adapter = adapter
@@ -68,9 +82,7 @@ class CartFragment : Fragment() {
 
         model.getCartProduct().observe(viewLifecycleOwner) { cartList ->
 
-            if (cartList.isNullOrEmpty()) {
-                hideEmptyCartUI()
-            } else {
+            if (cartList?.isNotEmpty() == true) {
                 adapter.submitList(cartList)
                 showCartItemsUI()
                 calculateTotalPrice(cartList)
@@ -136,6 +148,8 @@ class CartFragment : Fragment() {
                         param(FirebaseAnalytics.Param.ITEMS, arrayOf(cartList).toString())
                     }
                 }
+            } else {
+                hideEmptyCartUI()
             }
         }
 

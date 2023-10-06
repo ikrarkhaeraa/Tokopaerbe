@@ -1,11 +1,11 @@
-//package com.example.tokopaerbe.room
+// package com.example.tokopaerbe.room
 //
-//import androidx.room.ColumnInfo
-//import androidx.room.Entity
-//import androidx.room.PrimaryKey
+// import androidx.room.ColumnInfo
+// import androidx.room.Entity
+// import androidx.room.PrimaryKey
 //
-//@Entity(tableName = "notificationList")
-//class NotificationsEntity(
+// @Entity(tableName = "notificationList")
+// class NotificationsEntity(
 //
 //    @field:ColumnInfo(name = "notifId")
 //    @PrimaryKey(autoGenerate = true)
@@ -32,4 +32,4 @@
 //    @field:ColumnInfo("isChecked")
 //    var isChecked: Boolean = false,
 //
-//)
+// )

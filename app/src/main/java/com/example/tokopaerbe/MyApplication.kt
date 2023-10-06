@@ -5,7 +5,6 @@ import android.app.Application
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.tokopaerbe.core.retrofit.ApiConfig
-import com.example.tokopaerbe.core.retrofit.ApiService
 import com.example.tokopaerbe.core.retrofit.UserPreferences
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp

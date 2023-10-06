@@ -4,11 +4,9 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
-import com.example.tokopaerbe.core.retrofit.ApiService
 import com.example.tokopaerbe.core.retrofit.DataSource
 import com.example.tokopaerbe.core.retrofit.UserPreferences
 import com.example.tokopaerbe.core.retrofit.database
-import com.example.tokopaerbe.core.retrofit.user.AccessToken
 import com.example.tokopaerbe.core.room.CartDao
 import com.example.tokopaerbe.core.room.NotificationDao
 import com.example.tokopaerbe.core.room.ProductDatabase
@@ -19,8 +17,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module

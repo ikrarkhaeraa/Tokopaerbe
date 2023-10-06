@@ -1,8 +1,8 @@
-//package com.example.tokopaerbe.retrofit.response
+// package com.example.tokopaerbe.retrofit.response
 //
-//import com.google.gson.annotations.SerializedName
+// import com.google.gson.annotations.SerializedName
 //
-//data class ProductsResponse(
+// data class ProductsResponse(
 //
 //    @field:SerializedName("data")
 //    val data: DataProduct,
@@ -12,9 +12,9 @@
 //
 //    @field:SerializedName("message")
 //    val message: String
-//)
+// )
 //
-//data class DataProduct(
+// data class DataProduct(
 //    @field:SerializedName("items")
 //    val items: List<Product>,
 //
@@ -29,9 +29,9 @@
 //
 //    @field:SerializedName("totalPages")
 //    val totalPages: Int,
-//)
+// )
 //
-//data class Product(
+// data class Product(
 //
 //    @field:SerializedName("productId")
 //    val productId: String,
@@ -56,4 +56,4 @@
 //
 //    @field:SerializedName("productRating")
 //    val productRating: Float,
-//)
+// )

@@ -1,11 +1,11 @@
-//package com.example.tokopaerbe.room
+// package com.example.tokopaerbe.room
 //
-//import androidx.lifecycle.LiveData
-//import androidx.room.Delete
-//import androidx.room.Query
+// import androidx.lifecycle.LiveData
+// import androidx.room.Delete
+// import androidx.room.Query
 //
-//@androidx.room.Dao
-//interface CartDao {
+// @androidx.room.Dao
+// interface CartDao {
 //
 //    @Query("UPDATE productList SET isChecked = :isChecked WHERE productId = :id ")
 //    fun isChecked(id: String, isChecked: Boolean)
@@ -54,4 +54,4 @@
 //
 //    @Query("SELECT * FROM productList WHERE productId = :id")
 //    suspend fun getCartForWishlist(id: String): CartEntity?
-//}
+// }

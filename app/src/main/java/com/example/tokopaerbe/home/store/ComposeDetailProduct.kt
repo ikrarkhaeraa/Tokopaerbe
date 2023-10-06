@@ -43,7 +43,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -75,11 +74,11 @@ import androidx.navigation.fragment.navArgs
 import coil.compose.rememberImagePainter
 import com.example.mycompose.ui.theme.MyComposeTheme
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.core.retrofit.response.ProductVariant
+import com.example.tokopaerbe.core.room.WishlistEntity
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
 import com.example.tokopaerbe.home.checkout.ListCheckout
-import com.example.tokopaerbe.core.retrofit.response.ProductVariant
-import com.example.tokopaerbe.core.room.WishlistEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -282,7 +281,7 @@ class ComposeDetailProduct : Fragment() {
 //        selectedVariantIndex = model.selectedChip
 
         var favorite: WishlistEntity? = null
-        var isImageChanged by rememberSaveable {mutableStateOf(false)}
+        var isImageChanged by rememberSaveable { mutableStateOf(false) }
 
         lifecycleScope.launch {
             favorite = model.getWishlistforDetail(productId)
@@ -298,7 +297,6 @@ class ComposeDetailProduct : Fragment() {
         } else {
             painterResource(id = R.drawable.baseline_favorite_24)
         }
-
 
         fun formatPrice(price: Double?): String {
             val numberFormat = NumberFormat.getNumberInstance(

@@ -7,8 +7,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.tokopaerbe.databinding.ItemProductBinding
 import com.example.tokopaerbe.core.retrofit.response.Product
+import com.example.tokopaerbe.databinding.ItemProductBinding
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent

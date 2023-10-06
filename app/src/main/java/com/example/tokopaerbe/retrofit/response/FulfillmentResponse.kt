@@ -1,8 +1,8 @@
-//package com.example.tokopaerbe.retrofit.response
+// package com.example.tokopaerbe.retrofit.response
 //
-//import com.google.gson.annotations.SerializedName
+// import com.google.gson.annotations.SerializedName
 //
-//data class FulfillmentResponse(
+// data class FulfillmentResponse(
 //    @field:SerializedName("data")
 //    val data: Fulfillment,
 //
@@ -11,9 +11,9 @@
 //
 //    @field:SerializedName("message")
 //    val message: String
-//)
+// )
 //
-//data class Fulfillment(
+// data class Fulfillment(
 //    @field:SerializedName("invoiceId")
 //    val invoiceId: String,
 //
@@ -31,4 +31,4 @@
 //
 //    @field:SerializedName("total")
 //    val total: Int
-//)
+// )

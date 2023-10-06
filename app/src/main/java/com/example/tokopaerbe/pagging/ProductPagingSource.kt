@@ -1,16 +1,16 @@
-//package com.example.tokopaerbe.pagging
+// package com.example.tokopaerbe.pagging
 //
-//import android.util.Log
-//import androidx.paging.PagingSource
-//import androidx.paging.PagingState
-//import com.example.tokopaerbe.retrofit.ApiService
-//import com.example.tokopaerbe.retrofit.UserPreferences
-//import com.example.tokopaerbe.retrofit.response.Product
-//import com.example.tokopaerbe.retrofit.user.ErrorState
-//import kotlinx.coroutines.flow.first
-//import retrofit2.HttpException
+// import android.util.Log
+// import androidx.paging.PagingSource
+// import androidx.paging.PagingState
+// import com.example.tokopaerbe.retrofit.ApiService
+// import com.example.tokopaerbe.retrofit.UserPreferences
+// import com.example.tokopaerbe.retrofit.response.Product
+// import com.example.tokopaerbe.retrofit.user.ErrorState
+// import kotlinx.coroutines.flow.first
+// import retrofit2.HttpException
 //
-//class ProductPagingSource(
+// class ProductPagingSource(
 //    private val search: String? = null,
 //    private val sort: String? = null,
 //    private val brand: String? = null,
@@ -18,7 +18,7 @@
 //    private val highest: Int? = null,
 //    private val apiService: ApiService,
 //    private val preferences: UserPreferences
-//) : PagingSource<Int, Product>() {
+// ) : PagingSource<Int, Product>() {
 //
 //    private companion object {
 //        const val INITIAL_PAGE_INDEX = 1
@@ -70,4 +70,4 @@
 //            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
 //        }
 //    }
-//}
+// }

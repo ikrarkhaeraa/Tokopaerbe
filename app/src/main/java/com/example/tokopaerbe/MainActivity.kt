@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -21,8 +20,6 @@ import com.example.tokopaerbe.home.store.ComposeDetailProductArgs
 import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -86,18 +83,18 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        Firebase.messaging.subscribeToTopic("promo")
-            .addOnCompleteListener { task ->
-                var msg = "Subscribe Success"
-                if (!task.isSuccessful) {
-                    msg = "Subscribe Failed"
-                }
-                Log.d("cekSubs", msg)
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-            }
+//        Firebase.messaging.subscribeToTopic("promo")
+//            .addOnCompleteListener { task ->
+//                var msg = "Subscribe Success"
+//                if (!task.isSuccessful) {
+//                    msg = "Subscribe Failed"
+//                }
+//                Log.d("cekSubs", msg)
+//                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+//            }
 
         model.getRefreshResponseCode().observe(this) {
-            if (it == 401){
+            if (it == 401) {
                 logout()
             }
         }
@@ -139,7 +136,16 @@ class MainActivity : AppCompatActivity() {
 
     fun logout() {
         model.userLogout()
-//        model.userInstall()
+        model.storeSearchText = null
+        model.storeSelectedText1 = null
+        model.storeSelectedText2 = null
+        model.storeTextTerendah = null
+        model.storeTextTertinggi = null
+        model.sort = ""
+        model.brand = ""
+        model.textTerendah = ""
+        model.textTertinggi = ""
+        //        model.userInstall()
         navController.navigate(R.id.main_to_prelogin)
     }
 

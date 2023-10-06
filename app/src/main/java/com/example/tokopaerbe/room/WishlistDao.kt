@@ -1,10 +1,10 @@
-//package com.example.tokopaerbe.room
+// package com.example.tokopaerbe.room
 //
-//import androidx.lifecycle.LiveData
-//import androidx.room.Query
+// import androidx.lifecycle.LiveData
+// import androidx.room.Query
 //
-//@androidx.room.Dao
-//interface WishlistDao {
+// @androidx.room.Dao
+// interface WishlistDao {
 //
 //    @Query(
 //        "INSERT OR REPLACE INTO wishList (productId, " +
@@ -45,4 +45,4 @@
 //
 //    @Query("SELECT * FROM wishList WHERE productId = :id")
 //    suspend fun getWishlistForDetail(id: String): WishlistEntity?
-//}
+// }

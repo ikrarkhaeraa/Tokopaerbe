@@ -8,10 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.core.retrofit.response.Product
-import com.example.tokopaerbe.databinding.ItemCartBinding
 import com.example.tokopaerbe.core.room.CartEntity
-import com.example.tokopaerbe.viewmodel.ViewModel
+import com.example.tokopaerbe.databinding.ItemCartBinding
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
@@ -25,7 +23,9 @@ class CartAdapter(
     private val isCheckedToFalse: (CartEntity) -> Unit,
     private val deleteItem: (CartEntity) -> Unit,
     private val plusToggle: (CartEntity, Int) -> Unit,
-    private val minusToggle: (CartEntity, Int) -> Unit,) :
+    private val minusToggle: (CartEntity, Int) -> Unit,
+    private val onProductClick: (CartEntity) -> Unit
+) :
     ListAdapter<CartEntity, CartAdapter.ListViewHolder>(CartEntityDiffCallback()) {
 
     private var totalToggleValue = 1
@@ -40,6 +40,10 @@ class CartAdapter(
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val cartEntity = getItem(position)
         holder.bind(cartEntity)
+
+        holder.itemView.setOnClickListener {
+            onProductClick(cartEntity)
+        }
 
         val togglePlus = holder.binding.togglePlus
         val toggleMinus = holder.binding.toggleMinus

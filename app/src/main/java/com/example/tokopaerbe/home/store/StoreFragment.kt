@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.databinding.FragmentStoreBinding
-import com.example.tokopaerbe.pagging.LoadingStateAdapter
 import com.example.tokopaerbe.core.pagging.PaggingModel
 import com.example.tokopaerbe.core.retrofit.response.Product
 import com.example.tokopaerbe.core.retrofit.user.UserFilter
+import com.example.tokopaerbe.databinding.FragmentStoreBinding
+import com.example.tokopaerbe.pagging.LoadingStateAdapter
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.chip.Chip
@@ -39,7 +39,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class StoreFragment : Fragment() {
@@ -93,6 +92,7 @@ class StoreFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -225,24 +225,27 @@ class StoreFragment : Fragment() {
             delay(delayMillis)
             if (isVisible) {
                 settingFilter()
-                Log.d("cek123", model.storeSelectedText1.toString())
                 val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
-
-                filterLiveData.observe(viewLifecycleOwner) { filter ->
+                filterLiveData.observe(viewLifecycleOwner) {
                     paggingModel.sendFilter(
                         model.storeSearchText,
                         model.storeSelectedText1,
                         model.storeSelectedText2,
                         model.storeTextTerendah?.toInt(),
-                        model.storeTextTerendah?.toInt()
+                        model.storeTextTertinggi?.toInt()
                     ).observe(viewLifecycleOwner) { result ->
 
                         binding.chipgroup.removeAllViews()
-                        val listFilter = listOf(model.storeSelectedText1, model.storeSelectedText2, model.storeTextTerendah, model.storeTextTertinggi)
+                        val listFilter = listOf(
+                            model.storeSelectedText1,
+                            model.storeSelectedText2,
+                            model.storeTextTerendah,
+                            model.storeTextTertinggi
+                        )
                         for (i in listFilter.indices) {
                             val chip = Chip(requireActivity())
                             chip.text = listFilter[i]
-                            chip.isClickable = true
+//                            chip.isClickable = true
                             if (chip.text.isNotEmpty()) {
                                 binding.chipgroup.addView(chip)
                                 Log.d("cekAddChip", "add")
@@ -251,6 +254,8 @@ class StoreFragment : Fragment() {
 
                         model.getCode().observe(viewLifecycleOwner) {
                             Log.d("cekCode", it.toString())
+                            Log.d("cekFilterData", model.storeSelectedText1.toString())
+                            Log.d("cekFilterData", model.storeSelectedText2.toString())
                             when (it) {
                                 200, 0 -> {
                                     listProduct = result
@@ -290,12 +295,12 @@ class StoreFragment : Fragment() {
 
         setFragmentResultListener("searchText") { _, bundle ->
             model.storeSearchText = bundle.getString("bundleKey").toString()
-            Log.d("searchText", model.storeSearchText!!)
+            Log.d("searchText", model.storeSearchText.toString())
             binding.searchTextField.setText(model.storeSearchText)
-            updateFilterAndRequestData()
+            updateFilter()
 
             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS) {
-                param(FirebaseAnalytics.Param.SEARCH_TERM, model.searchFilter!!)
+                param(FirebaseAnalytics.Param.SEARCH_TERM, model.searchFilter)
             }
         }
 
@@ -305,129 +310,8 @@ class StoreFragment : Fragment() {
         }
     }
 
-//    private fun toggleLayoutManager() {
-//        if (!model.rvStateStore) {
-//            setGridLayoutManager()
-//            binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
-//        } else {
-//            setLinearLayoutManager()
-//            binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
-//        }
-//    }
-
-//    private fun setGridLayoutManager() {
-//        binding.shimmerGrid.visibility = GONE
-//        binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-//        binding.recyclerView.adapter = gridProductAdapter
-//
-//        settingFilter()
-//
-//        binding.recyclerView.adapter = gridProductAdapter.withLoadStateFooter(
-//            footer = LoadingStateAdapter { gridProductAdapter.retry() }
-//        )
-//
-//        (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =
-//            object : GridLayoutManager.SpanSizeLookup() {
-//                override fun getSpanSize(position: Int): Int {
-//                    return if (position == gridProductAdapter.itemCount) {
-//                        2
-//                    } else {
-//                        1
-//                    }
-//                }
-//            }
-//
-//        val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
-//
-//        filterLiveData.observe(viewLifecycleOwner) { filter ->
-//            paggingModel.sendFilter(
-//                filter.search,
-//                filter.sort,
-//                filter.brand,
-//                filter.lowest,
-//                filter.highest
-//            ).observe(viewLifecycleOwner) { result ->
-//
-//                model.getCode().observe(viewLifecycleOwner) {
-//                    Log.d("cekCode", it.toString())
-//                    when (it) {
-//                        200 -> {
-//                            gridProductAdapter.submitData(lifecycle, result)
-//                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
-//                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
-//                            }
-//                        }
-//
-//                        404 -> {
-//                            emptyData()
-//                        }
-//
-//                        500 -> {
-//                            errorState()
-//                        }
-//
-//                        else -> {
-//                            errorState()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-//    private fun setLinearLayoutManager() {
-//        binding.shimmer.visibility = GONE
-//        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-//        binding.recyclerView.adapter = linearProductAdapter
-//
-//        settingFilter()
-//
-//        binding.recyclerView.adapter = linearProductAdapter.withLoadStateFooter(
-//            footer = LoadingStateAdapter { linearProductAdapter.retry() }
-//        )
-//
-//        val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
-//
-//        filterLiveData.observe(viewLifecycleOwner) { filter ->
-//            paggingModel.sendFilter(
-//                filter.search,
-//                filter.sort,
-//                filter.brand,
-//                filter.lowest,
-//                filter.highest
-//            ).observe(viewLifecycleOwner) { result ->
-//
-//                model.getCode().observe(viewLifecycleOwner) {
-//                    Log.d("cekCode", it.toString())
-//
-//                    when (it) {
-//                        200, 0 -> {
-//                            linearProductAdapter.submitData(lifecycle, result)
-//                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
-//                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
-//                            }
-//                        }
-//
-//                        404 -> {
-//                            emptyData()
-//                        }
-//
-//                        500 -> {
-//                            errorState()
-//                        }
-//
-//                        else -> {
-//                            errorState()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     private fun settingAdapter() {
         if (!model.rvStateStore) {
-//            setGridLayoutManager()
             binding.shimmerGrid.visibility = GONE
             binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
             binding.recyclerView.adapter = gridProductAdapter
@@ -435,27 +319,25 @@ class StoreFragment : Fragment() {
                 footer = LoadingStateAdapter { gridProductAdapter.retry() }
             )
             (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =
-            object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return if (position == gridProductAdapter.itemCount) {
-                        2
-                    } else {
-                        1
+                object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return if (position == gridProductAdapter.itemCount) {
+                            2
+                        } else {
+                            1
+                        }
                     }
                 }
-            }
-            gridProductAdapter.submitData(lifecycle,listProduct)
+            gridProductAdapter.submitData(lifecycle, listProduct)
             binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
-
         } else {
-//            setLinearLayoutManager()
             binding.shimmer.visibility = GONE
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
             binding.recyclerView.adapter = linearProductAdapter
             binding.recyclerView.adapter = linearProductAdapter.withLoadStateFooter(
                 footer = LoadingStateAdapter { linearProductAdapter.retry() }
             )
-            linearProductAdapter.submitData(lifecycle,listProduct)
+            linearProductAdapter.submitData(lifecycle, listProduct)
             binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
         }
     }
@@ -475,24 +357,23 @@ class StoreFragment : Fragment() {
             model.storeTextTerendah = terendah
             model.storeTextTertinggi = tertinggi
 
-            updateFilterAndRequestData()
+            updateFilter()
         }
     }
 
-    private fun updateFilterAndRequestData() {
-
+    private fun updateFilter() {
+        if (model.storeSearchText?.isEmpty() == true) {
+            model.storeSearchText = null
+        }
         if (model.storeSelectedText1?.isEmpty() == true) {
             model.storeSelectedText1 = null
         }
-
         if (model.storeSelectedText2?.isEmpty() == true) {
             model.storeSelectedText2 = null
         }
-
         if (model.storeTextTerendah?.isEmpty() == true) {
             model.storeTextTerendah = null
         }
-
         if (model.storeTextTertinggi?.isEmpty() == true) {
             model.storeTextTertinggi = null
         }
@@ -508,6 +389,8 @@ class StoreFragment : Fragment() {
     }
 
     private fun emptyData() {
+        binding.shimmerGrid.visibility = GONE
+        binding.shimmer.visibility = GONE
         binding.recyclerView.visibility = GONE
         binding.gambarerror.visibility = VISIBLE
         binding.errorTitle.visibility = VISIBLE
@@ -515,12 +398,14 @@ class StoreFragment : Fragment() {
         binding.errorDesc.visibility = VISIBLE
         binding.errorDesc.text = getString(R.string.errorDesc)
         binding.resetButton.visibility = VISIBLE
-        binding.resetButton.setOnClickListener { view ->
+        binding.resetButton.setOnClickListener {
             resetOrRefresh()
         }
     }
 
     private fun errorState() {
+        binding.shimmerGrid.visibility = GONE
+        binding.shimmer.visibility = GONE
         binding.recyclerView.visibility = GONE
         binding.gambarerror.visibility = VISIBLE
         binding.errorTitle.visibility = VISIBLE
@@ -546,15 +431,15 @@ class StoreFragment : Fragment() {
         model.brand = ""
         model.textTerendah = ""
         model.textTertinggi = ""
-        updateFilterAndRequestData()
+        updateFilter()
         val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
         resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
             paggingModel.sendFilter(
-                filterResetEmpty.search,
-                filterResetEmpty.sort,
-                filterResetEmpty.brand,
-                filterResetEmpty.lowest,
-                filterResetEmpty.highest
+                model.storeSearchText,
+                model.storeSelectedText1,
+                model.storeSelectedText2,
+                model.storeTextTerendah?.toInt(),
+                model.storeTextTertinggi?.toInt()
             ).observe(viewLifecycleOwner) { reset ->
                 Log.d("cekResetFilter", resetFilter.toString())
                 linearProductAdapter.submitData(lifecycle, reset)
@@ -568,5 +453,4 @@ class StoreFragment : Fragment() {
             }
         }
     }
-
 }

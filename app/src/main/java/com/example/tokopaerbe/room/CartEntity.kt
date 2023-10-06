@@ -1,11 +1,11 @@
-//package com.example.tokopaerbe.room
+// package com.example.tokopaerbe.room
 //
-//import androidx.room.ColumnInfo
-//import androidx.room.Entity
-//import androidx.room.PrimaryKey
+// import androidx.room.ColumnInfo
+// import androidx.room.Entity
+// import androidx.room.PrimaryKey
 //
-//@Entity(tableName = "productList")
-//class CartEntity(
+// @Entity(tableName = "productList")
+// class CartEntity(
 //    @field:ColumnInfo(name = "productId")
 //    @field:PrimaryKey
 //    val productId: String,
@@ -30,4 +30,4 @@
 //
 //    @field:ColumnInfo("isChecked")
 //    var isChecked: Boolean = false,
-//)
+// )

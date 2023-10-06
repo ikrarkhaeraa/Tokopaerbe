@@ -1,8 +1,8 @@
-//package com.example.tokopaerbe.retrofit.response
+// package com.example.tokopaerbe.retrofit.response
 //
-//import com.google.gson.annotations.SerializedName
+// import com.google.gson.annotations.SerializedName
 //
-//data class RegisterResponse(
+// data class RegisterResponse(
 //
 //    @field:SerializedName("data")
 //    val data: DataRegister,
@@ -12,9 +12,9 @@
 //
 //    @field:SerializedName("message")
 //    val message: String
-//)
+// )
 //
-//data class DataRegister(
+// data class DataRegister(
 //
 //    @field:SerializedName("accessToken")
 //    val accessToken: String,
@@ -24,4 +24,4 @@
 //
 //    @field:SerializedName("expiresAt")
 //    val expiresAt: Long,
-//)
+// )

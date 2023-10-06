@@ -1,10 +1,10 @@
-//package com.example.tokopaerbe.room
+// package com.example.tokopaerbe.room
 //
-//import androidx.lifecycle.LiveData
-//import androidx.room.Query
+// import androidx.lifecycle.LiveData
+// import androidx.room.Query
 //
-//@androidx.room.Dao
-//interface NotificationDao {
+// @androidx.room.Dao
+// interface NotificationDao {
 //
 //    @Query("UPDATE notificationList SET isChecked = :isChecked WHERE notifId = :id ")
 //    fun notifIsChecked(id: Int, isChecked: Boolean)
@@ -36,4 +36,4 @@
 //
 //    @Query("DELETE FROM notificationList")
 //    fun deleteAllNotif()
-//}
+// }

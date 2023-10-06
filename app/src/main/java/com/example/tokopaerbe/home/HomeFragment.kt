@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.databinding.FragmentHomeBinding
-import com.example.tokopaerbe.core.room.CartEntity
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics

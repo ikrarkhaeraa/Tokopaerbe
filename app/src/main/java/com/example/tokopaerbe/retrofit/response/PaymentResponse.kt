@@ -1,8 +1,8 @@
-//package com.example.tokopaerbe.retrofit.response
+// package com.example.tokopaerbe.retrofit.response
 //
-//import com.google.gson.annotations.SerializedName
+// import com.google.gson.annotations.SerializedName
 //
-//data class PaymentResponse(
+// data class PaymentResponse(
 //
 //    @field:SerializedName("data")
 //    val data: List<Payment>,
@@ -12,17 +12,17 @@
 //
 //    @field:SerializedName("message")
 //    val message: String
-//)
+// )
 //
-//data class Payment(
+// data class Payment(
 //    @field:SerializedName("title")
 //    val title: String,
 //
 //    @field:SerializedName("item")
 //    val item: List<PaymentMethod>
-//)
+// )
 //
-//data class PaymentMethod(
+// data class PaymentMethod(
 //
 //    @field:SerializedName("label")
 //    val label: String,
@@ -32,4 +32,4 @@
 //
 //    @field:SerializedName("status")
 //    var status: Boolean
-//)
+// )

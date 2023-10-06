@@ -1,8 +1,8 @@
-//package com.example.tokopaerbe.retrofit.response
+// package com.example.tokopaerbe.retrofit.response
 //
-//import com.google.gson.annotations.SerializedName
+// import com.google.gson.annotations.SerializedName
 //
-//data class SearchResponse(
+// data class SearchResponse(
 //
 //    @field:SerializedName("data")
 //    val data: List<String>,
@@ -12,4 +12,4 @@
 //
 //    @field:SerializedName("message")
 //    val message: String
-//)
+// )

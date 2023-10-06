@@ -1,22 +1,22 @@
-//package com.example.tokopaerbe.retrofit
+// package com.example.tokopaerbe.retrofit
 //
-//import androidx.datastore.core.DataStore
-//import androidx.datastore.preferences.core.Preferences
-//import androidx.datastore.preferences.core.booleanPreferencesKey
-//import androidx.datastore.preferences.core.edit
-//import androidx.datastore.preferences.core.intPreferencesKey
-//import androidx.datastore.preferences.core.longPreferencesKey
-//import androidx.datastore.preferences.core.stringPreferencesKey
-//import com.example.tokopaerbe.retrofit.user.ErrorState
-//import com.example.tokopaerbe.retrofit.user.UserLogin
-//import com.example.tokopaerbe.retrofit.user.UserProfile
-//import com.example.tokopaerbe.retrofit.user.UserRegister
-//import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
-//import kotlinx.coroutines.flow.Flow
-//import kotlinx.coroutines.flow.map
-//import javax.inject.Inject
+// import androidx.datastore.core.DataStore
+// import androidx.datastore.preferences.core.Preferences
+// import androidx.datastore.preferences.core.booleanPreferencesKey
+// import androidx.datastore.preferences.core.edit
+// import androidx.datastore.preferences.core.intPreferencesKey
+// import androidx.datastore.preferences.core.longPreferencesKey
+// import androidx.datastore.preferences.core.stringPreferencesKey
+// import com.example.tokopaerbe.retrofit.user.ErrorState
+// import com.example.tokopaerbe.retrofit.user.UserLogin
+// import com.example.tokopaerbe.retrofit.user.UserProfile
+// import com.example.tokopaerbe.retrofit.user.UserRegister
+// import com.example.tokopaerbe.retrofit.user.ValueBottomSheet
+// import kotlinx.coroutines.flow.Flow
+// import kotlinx.coroutines.flow.map
+// import javax.inject.Inject
 //
-//class UserPreferences @Inject constructor(private val database: DataStore<Preferences>) {
+// class UserPreferences @Inject constructor(private val database: DataStore<Preferences>) {
 //
 //    companion object {
 //        @Volatile
@@ -36,13 +36,13 @@
 //        private val HIGHEST_KEY = stringPreferencesKey("highest")
 //        private val DARKTHEME_KEY = booleanPreferencesKey("darkTheme")
 //
-////        fun getInstance(database: DataStore<Preferences>): UserPreferences {
-////            return INSTANCE ?: synchronized(this) {
-////                val instance = UserPreferences(database)
-////                INSTANCE = instance
-////                instance
-////            }
-////        }
+// //        fun getInstance(database: DataStore<Preferences>): UserPreferences {
+// //            return INSTANCE ?: synchronized(this) {
+// //                val instance = UserPreferences(database)
+// //                INSTANCE = instance
+// //                instance
+// //            }
+// //        }
 //    }
 //
 //    suspend fun saveCode(errorState: ErrorState) {
@@ -168,7 +168,7 @@
 //
 //    suspend fun logout() {
 //        database.edit { preferences ->
-////            preferences.clear()
+// //            preferences.clear()
 //            preferences.remove(USERNAME_KEY)
 //            preferences.remove(USERIMAGE_KEY)
 //            preferences.remove(CODE_KEY)
@@ -179,4 +179,4 @@
 //            preferences.remove(EXPIRESAT_KEY)
 //        }
 //    }
-//}
+// }

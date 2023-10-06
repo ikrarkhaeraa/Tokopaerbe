@@ -331,7 +331,11 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         }
     }
 
-    fun postDataProfile(auth: String, userName: MultipartBody.Part, userImage: MultipartBody.Part?) {
+    fun postDataProfile(
+        auth: String,
+        userName: MultipartBody.Part,
+        userImage: MultipartBody.Part?
+    ) {
         viewModelScope.launch {
             data.uploadProfileData(auth, userName, userImage)
         }

@@ -41,8 +41,8 @@
     <string name="johnDoe">John Doe</string>
     <string name="en">EN</string>
     <string name="id">ID</string>
-    <string name="light">Light</string>
-    <string name="dark">Dark</string>
+    <string name="light">Terang</string>
+    <string name="dark">Gelap</string>
     <string name="logout">Keluar</string>
     <string name="home">Beranda</string>
     <string name="store">Belanja</string>

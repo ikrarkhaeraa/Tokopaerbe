@@ -110,7 +110,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             if (checkedId != View.NO_ID) {
                 val selectedChip = group.findViewById<Chip>(checkedId)
                 selectedText1 = selectedChip?.text.toString()
-
             } else {
                 selectedText1 = ""
             }
@@ -120,7 +119,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
             if (checkedId != View.NO_ID) {
                 val selectedChip = group.findViewById<Chip>(checkedId)
                 selectedText2 = selectedChip?.text.toString()
-
             } else {
                 selectedText2 = ""
             }

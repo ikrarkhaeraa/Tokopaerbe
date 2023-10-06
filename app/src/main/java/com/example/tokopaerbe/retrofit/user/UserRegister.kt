@@ -1,7 +1,7 @@
-//package com.example.tokopaerbe.retrofit.user
+// package com.example.tokopaerbe.retrofit.user
 //
-//data class UserRegister(
+// data class UserRegister(
 //    val accessToken: String,
 //    val refreshToken: String,
 //    val expiresAt: Long,
-//)
+// )

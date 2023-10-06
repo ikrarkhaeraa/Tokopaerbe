@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tokopaerbe.databinding.ItemMetodePembayaranBinding
 import com.example.tokopaerbe.core.retrofit.response.Payment
+import com.example.tokopaerbe.databinding.ItemMetodePembayaranBinding
 
 class PilihPembayaranAdapter(
     private val itemClickListener: MetodePembayaranAdapter.OnItemClickListener

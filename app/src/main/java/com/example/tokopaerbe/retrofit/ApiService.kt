@@ -1,29 +1,29 @@
-//package com.example.tokopaerbe.retrofit
+// package com.example.tokopaerbe.retrofit
 //
-//import com.example.tokopaerbe.retrofit.response.DetailProductResponse
-//import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
-//import com.example.tokopaerbe.retrofit.response.LoginResponse
-//import com.example.tokopaerbe.retrofit.response.PaymentResponse
-//import com.example.tokopaerbe.retrofit.response.ProductsResponse
-//import com.example.tokopaerbe.retrofit.response.ProfileResponse
-//import com.example.tokopaerbe.retrofit.response.RatingResponse
-//import com.example.tokopaerbe.retrofit.response.RefreshResponse
-//import com.example.tokopaerbe.retrofit.response.RegisterResponse
-//import com.example.tokopaerbe.retrofit.response.ReviewResponse
-//import com.example.tokopaerbe.retrofit.response.SearchResponse
-//import com.example.tokopaerbe.retrofit.response.TransactionResponse
-//import okhttp3.MultipartBody
-//import retrofit2.Call
-//import retrofit2.http.Body
-//import retrofit2.http.GET
-//import retrofit2.http.Header
-//import retrofit2.http.Multipart
-//import retrofit2.http.POST
-//import retrofit2.http.Part
-//import retrofit2.http.Path
-//import retrofit2.http.Query
+// import com.example.tokopaerbe.retrofit.response.DetailProductResponse
+// import com.example.tokopaerbe.retrofit.response.FulfillmentResponse
+// import com.example.tokopaerbe.retrofit.response.LoginResponse
+// import com.example.tokopaerbe.retrofit.response.PaymentResponse
+// import com.example.tokopaerbe.retrofit.response.ProductsResponse
+// import com.example.tokopaerbe.retrofit.response.ProfileResponse
+// import com.example.tokopaerbe.retrofit.response.RatingResponse
+// import com.example.tokopaerbe.retrofit.response.RefreshResponse
+// import com.example.tokopaerbe.retrofit.response.RegisterResponse
+// import com.example.tokopaerbe.retrofit.response.ReviewResponse
+// import com.example.tokopaerbe.retrofit.response.SearchResponse
+// import com.example.tokopaerbe.retrofit.response.TransactionResponse
+// import okhttp3.MultipartBody
+// import retrofit2.Call
+// import retrofit2.http.Body
+// import retrofit2.http.GET
+// import retrofit2.http.Header
+// import retrofit2.http.Multipart
+// import retrofit2.http.POST
+// import retrofit2.http.Part
+// import retrofit2.http.Path
+// import retrofit2.http.Query
 //
-//interface ApiService {
+// interface ApiService {
 //    @POST("register")
 //    fun uploadDataRegister(
 //        @Header("API_KEY") apiKey: String,
@@ -101,4 +101,4 @@
 //    fun getTransactionData(
 //        @Header("Authorization") auth: String,
 //    ): Call<TransactionResponse>
-//}
+// }

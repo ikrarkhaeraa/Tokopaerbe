@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.databinding.FragmentTransactionBinding
-import com.example.tokopaerbe.home.checkout.StatusFragment
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.Dispatchers

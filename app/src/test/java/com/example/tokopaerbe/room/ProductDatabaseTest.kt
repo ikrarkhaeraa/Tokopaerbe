@@ -43,8 +43,6 @@ class ProductDatabaseTest : TestCase() {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-
-
     // TEST CART DAO
     @Test
     fun testGetProductFromCartDao() = runBlocking {
@@ -415,10 +413,6 @@ class ProductDatabaseTest : TestCase() {
         }
     }
 
-
-
-
-
     // TEST WISHLIST DAO
     @Test
     fun testGetWishlistFromWishlistDao() = runBlocking {
@@ -641,11 +635,6 @@ class ProductDatabaseTest : TestCase() {
         }
     }
 
-
-
-
-
-
     // TEST NOTIFICATION DAO
     @Test
     fun testGetNotificationsFromNotifDao() = runBlocking {
@@ -818,5 +807,4 @@ class ProductDatabaseTest : TestCase() {
             assertEquals(isChecked, notifEntity?.isChecked)
         }
     }
-
 }

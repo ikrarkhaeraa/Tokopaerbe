@@ -22,7 +22,9 @@ class NotificationAdapter(
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
         val binding = ItemNotificationsBinding.inflate(
-            LayoutInflater.from(viewGroup.context), viewGroup, false
+            LayoutInflater.from(viewGroup.context),
+            viewGroup,
+            false
         )
         return ListViewHolder(binding)
     }
@@ -51,13 +53,16 @@ class NotificationAdapter(
                 if (!data.isChecked) {
                     cardView.setCardBackgroundColor(
                         ContextCompat.getColor(
-                            itemView.context, R.color.bgSelesai
+                            itemView.context,
+                            R.color.bgSelesai
                         )
                     )
                 } else {
                     cardView.setCardBackgroundColor(
                         MaterialColors.getColor(
-                            itemView, android.R.attr.windowBackground)
+                            itemView,
+                            android.R.attr.windowBackground
+                        )
                     )
                 }
             }
@@ -66,14 +71,16 @@ class NotificationAdapter(
 
     private class NotificationsEntityDiffCallback : DiffUtil.ItemCallback<NotificationsEntity>() {
         override fun areItemsTheSame(
-            oldItem: NotificationsEntity, newItem: NotificationsEntity
+            oldItem: NotificationsEntity,
+            newItem: NotificationsEntity
         ): Boolean {
             return oldItem.notifId == newItem.notifId
         }
 
         @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(
-            oldItem: NotificationsEntity, newItem: NotificationsEntity
+            oldItem: NotificationsEntity,
+            newItem: NotificationsEntity
         ): Boolean {
             return oldItem == newItem
         }

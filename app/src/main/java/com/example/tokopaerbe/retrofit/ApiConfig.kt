@@ -1,10 +1,10 @@
-//package com.example.tokopaerbe.retrofit
+// package com.example.tokopaerbe.retrofit
 //
-//import okhttp3.OkHttpClient
-//import retrofit2.Retrofit
-//import retrofit2.converter.gson.GsonConverterFactory
+// import okhttp3.OkHttpClient
+// import retrofit2.Retrofit
+// import retrofit2.converter.gson.GsonConverterFactory
 //
-//class ApiConfig {
+// class ApiConfig {
 //    companion object {
 //        private lateinit var apiService: ApiService
 //
@@ -22,4 +22,4 @@
 //            return apiService
 //        }
 //    }
-//}
+// }

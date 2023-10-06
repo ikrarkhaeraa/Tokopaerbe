@@ -1,12 +1,12 @@
-//package com.example.tokopaerbe.room
+// package com.example.tokopaerbe.room
 //
-//import androidx.room.ColumnInfo
-//import androidx.room.Entity
-//import androidx.room.PrimaryKey
-//import com.google.gson.annotations.SerializedName
+// import androidx.room.ColumnInfo
+// import androidx.room.Entity
+// import androidx.room.PrimaryKey
+// import com.google.gson.annotations.SerializedName
 //
-//@Entity(tableName = "wishList")
-//class WishlistEntity(
+// @Entity(tableName = "wishList")
+// class WishlistEntity(
 //    @field:ColumnInfo(name = "productId")
 //    @field:PrimaryKey
 //    val productId: String,
@@ -38,4 +38,4 @@
 //    @field:ColumnInfo("quantity")
 //    var quantity: Int = 1,
 //
-//)
+// )

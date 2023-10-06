@@ -48,7 +48,7 @@ class NotificationsFragment : Fragment() {
                 if (!notifEntity.isChecked) {
                     model.notifIsChecked(notifEntity.notifId, true)
                 } else {
-                    //do nothing
+                    // do nothing
                 }
             }
         )

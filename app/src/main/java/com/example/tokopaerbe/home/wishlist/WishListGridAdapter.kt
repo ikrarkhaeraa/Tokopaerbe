@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.tokopaerbe.databinding.ItemGridWishlistBinding
 import com.example.tokopaerbe.core.room.WishlistEntity
+import com.example.tokopaerbe.databinding.ItemGridWishlistBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -21,7 +21,8 @@ import java.util.Locale
 class WishListGridAdapter(
     private val model: ViewModel,
     private val coroutineScope: CoroutineScope,
-    private val context: Context
+    private val context: Context,
+    private val onProductClick: (WishlistEntity) -> Unit
 ) :
     ListAdapter<WishlistEntity, WishListGridAdapter.ListViewHolder>(WishListEntityDiffCallback()) {
 
@@ -37,6 +38,10 @@ class WishListGridAdapter(
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val wishlistEntity = getItem(position)
         holder.bind(wishlistEntity)
+
+        holder.itemView.setOnClickListener {
+            onProductClick(wishlistEntity)
+        }
 
         val addCartButton = holder.binding.addCart
         addCartButton.setOnClickListener {

@@ -1,24 +1,24 @@
-//import android.content.Context
-//import android.util.Log
-//import com.chuckerteam.chucker.api.ChuckerInterceptor
-//import com.example.tokopaerbe.retrofit.ApiService
-//import com.example.tokopaerbe.retrofit.RefreshRequestBody
-//import com.example.tokopaerbe.retrofit.UserPreferences
-//import com.example.tokopaerbe.retrofit.response.RefreshResponse
-//import kotlinx.coroutines.flow.first
-//import kotlinx.coroutines.runBlocking
-//import okhttp3.Authenticator
-//import okhttp3.OkHttpClient
-//import okhttp3.Request
-//import okhttp3.Response
-//import okhttp3.Route
-//import okhttp3.logging.HttpLoggingInterceptor
-//import retrofit2.Call
-//import retrofit2.Retrofit
-//import retrofit2.converter.gson.GsonConverterFactory
-//import javax.inject.Inject
+// import android.content.Context
+// import android.util.Log
+// import com.chuckerteam.chucker.api.ChuckerInterceptor
+// import com.example.tokopaerbe.retrofit.ApiService
+// import com.example.tokopaerbe.retrofit.RefreshRequestBody
+// import com.example.tokopaerbe.retrofit.UserPreferences
+// import com.example.tokopaerbe.retrofit.response.RefreshResponse
+// import kotlinx.coroutines.flow.first
+// import kotlinx.coroutines.runBlocking
+// import okhttp3.Authenticator
+// import okhttp3.OkHttpClient
+// import okhttp3.Request
+// import okhttp3.Response
+// import okhttp3.Route
+// import okhttp3.logging.HttpLoggingInterceptor
+// import retrofit2.Call
+// import retrofit2.Retrofit
+// import retrofit2.converter.gson.GsonConverterFactory
+// import javax.inject.Inject
 //
-//class Authenticator @Inject constructor(val preferences: UserPreferences, val chucker: Context) :
+// class Authenticator @Inject constructor(val preferences: UserPreferences, val chucker: Context) :
 //    Authenticator {
 //
 //    override fun authenticate(route: Route?, response: Response): Request? {
@@ -82,4 +82,4 @@
 //        val requestBody = RefreshRequestBody(token)
 //        return service.uploadDataRefresh(apiKey, requestBody)
 //    }
-//}
+// }

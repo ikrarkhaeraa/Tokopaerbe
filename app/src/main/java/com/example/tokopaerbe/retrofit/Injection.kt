@@ -1,15 +1,15 @@
-//package com.example.tokopaerbe.retrofit
+// package com.example.tokopaerbe.retrofit
 //
-//import android.content.Context
-//import androidx.datastore.core.DataStore
-//import androidx.datastore.preferences.core.Preferences
-//import androidx.datastore.preferences.preferencesDataStore
-//import com.example.tokopaerbe.pagging.PaggingRepository
-//import com.example.tokopaerbe.room.ProductDatabase
+// import android.content.Context
+// import androidx.datastore.core.DataStore
+// import androidx.datastore.preferences.core.Preferences
+// import androidx.datastore.preferences.preferencesDataStore
+// import com.example.tokopaerbe.pagging.PaggingRepository
+// import com.example.tokopaerbe.room.ProductDatabase
 //
-//val Context.database: DataStore<Preferences> by preferencesDataStore("token")
+// val Context.database: DataStore<Preferences> by preferencesDataStore("token")
 //
-//object Injection {
+// object Injection {
 //
 //    fun provideRepository(context: Context): DataSource {
 //        val preferences = UserPreferences(context.database)
@@ -25,4 +25,4 @@
 //        val preferences = UserPreferences(context.database)
 //        return PaggingRepository(apiService, preferences)
 //    }
-//}
+// }
