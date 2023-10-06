@@ -83,6 +83,18 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
             if (searchText.isNotEmpty()) {
                 Log.d("cekcek", searchText)
                 binding.searchedittext.setText(searchText)
+                lifecycleScope.launch {
+                    val userToken = model.getUserToken().first()
+                    val token = "Bearer $userToken"
+                    Log.d("cekTokeninSearchFragment", token)
+                    Log.d("cekSearchText", searchText)
+
+                    model.postDataSearch(token, searchText)
+
+                    if (isAdded) {
+                        showData()
+                    }
+                }
             }
 
             binding.searchedittext.requestFocus()
@@ -93,8 +105,9 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
                 InputMethodManager.SHOW_IMPLICIT
             )
 
+
             val coroutineScope = CoroutineScope(Dispatchers.Main)
-            val queryTextFlow = MutableStateFlow("")
+            val queryTextFlow = MutableStateFlow(searchText)
 
             coroutineScope.launch {
                 queryTextFlow
@@ -125,7 +138,6 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
                     // User pressed Enter, handle the text here
                     searchText = binding.searchedittext.text.toString()
                     model.searchFilter = searchText
-                    // Do something with searchText, e.g., call a search function
                     Log.d("SearchText", searchText)
                     setFragmentResult("searchText", bundleOf("bundleKey" to searchText))
 
@@ -151,6 +163,7 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
         model.search.observe(viewLifecycleOwner) {
             if (isAdded && it.code == 200) {
                 showLoading(false)
+                Log.d("cekSearchResponse", it.data.toString())
                 listSearchResult = it.data
                 binding.recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
                 binding.recyclerView.adapter = SearchAdapter(listSearchResult, this)

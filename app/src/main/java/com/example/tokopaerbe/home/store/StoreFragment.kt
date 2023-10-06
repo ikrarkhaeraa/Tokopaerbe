@@ -225,61 +225,7 @@ class StoreFragment : Fragment() {
             delay(delayMillis)
             if (isVisible) {
                 settingFilter()
-                val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
-                filterLiveData.observe(viewLifecycleOwner) {
-                    paggingModel.sendFilter(
-                        model.storeSearchText,
-                        model.storeSelectedText1,
-                        model.storeSelectedText2,
-                        model.storeTextTerendah?.toInt(),
-                        model.storeTextTertinggi?.toInt()
-                    ).observe(viewLifecycleOwner) { result ->
-
-                        binding.chipgroup.removeAllViews()
-                        val listFilter = listOf(
-                            model.storeSelectedText1,
-                            model.storeSelectedText2,
-                            model.storeTextTerendah,
-                            model.storeTextTertinggi
-                        )
-                        for (i in listFilter.indices) {
-                            val chip = Chip(requireActivity())
-                            chip.text = listFilter[i]
-//                            chip.isClickable = true
-                            if (chip.text.isNotEmpty()) {
-                                binding.chipgroup.addView(chip)
-                                Log.d("cekAddChip", "add")
-                            }
-                        }
-
-                        model.getCode().observe(viewLifecycleOwner) {
-                            Log.d("cekCode", it.toString())
-                            Log.d("cekFilterData", model.storeSelectedText1.toString())
-                            Log.d("cekFilterData", model.storeSelectedText2.toString())
-                            when (it) {
-                                200, 0 -> {
-                                    listProduct = result
-                                    settingAdapter()
-                                    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
-                                        param(FirebaseAnalytics.Param.ITEMS, result.toString())
-                                    }
-                                }
-
-                                404 -> {
-                                    emptyData()
-                                }
-
-                                500 -> {
-                                    errorState()
-                                }
-
-                                else -> {
-                                    errorState()
-                                }
-                            }
-                        }
-                    }
-                }
+                hitApi()
             }
         }
 
@@ -307,6 +253,64 @@ class StoreFragment : Fragment() {
         binding.changeRV.setOnClickListener {
             model.rvStateStore = !model.rvStateStore
             settingAdapter()
+        }
+    }
+
+    private fun hitApi(){
+        val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
+        filterLiveData.observe(viewLifecycleOwner) {
+            paggingModel.sendFilter(
+                model.storeSearchText,
+                model.storeSelectedText1,
+                model.storeSelectedText2,
+                model.storeTextTerendah?.toInt(),
+                model.storeTextTertinggi?.toInt()
+            ).observe(viewLifecycleOwner) { result ->
+
+                binding.chipgroup.removeAllViews()
+                val listFilter = listOf(
+                    model.storeSelectedText1,
+                    model.storeSelectedText2,
+                    model.storeTextTerendah,
+                    model.storeTextTertinggi
+                )
+                for (i in listFilter.indices) {
+                    val chip = Chip(requireActivity())
+                    chip.text = listFilter[i]
+//                            chip.isClickable = true
+                    if (chip.text.isNotEmpty()) {
+                        binding.chipgroup.addView(chip)
+                        Log.d("cekAddChip", "add")
+                    }
+                }
+
+                model.getCode().observe(viewLifecycleOwner) {
+                    Log.d("cekCode", it.toString())
+                    Log.d("cekFilterData", model.storeSelectedText1.toString())
+                    Log.d("cekFilterData", model.storeSelectedText2.toString())
+                    when (it) {
+                        200, 0 -> {
+                            listProduct = result
+                            settingAdapter()
+                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
+                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
+                            }
+                        }
+
+                        404 -> {
+                            emptyData()
+                        }
+
+                        500 -> {
+                            errorState()
+                        }
+
+                        else -> {
+                            errorState()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -386,6 +390,7 @@ class StoreFragment : Fragment() {
             model.storeTextTertinggi?.toInt()
         )
         filterParams.value = newFilter
+        hitApi()
     }
 
     private fun emptyData() {
@@ -427,6 +432,7 @@ class StoreFragment : Fragment() {
         model.storeSelectedText2 = null
         model.storeTextTerendah = null
         model.storeTextTertinggi = null
+        model.searchFilter = ""
         model.sort = ""
         model.brand = ""
         model.textTerendah = ""

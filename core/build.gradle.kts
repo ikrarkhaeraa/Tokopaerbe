@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("org.gradle.jacoco")
 }
 
 android {
@@ -34,6 +35,40 @@ android {
     }
     kapt {
         correctErrorTypes = true
+    }
+    val jacocoTestReport = tasks.create("jacocoTestReport")
+
+
+    androidComponents.onVariants { variant ->
+        val testTaskName = "test${variant.name.capitalize()}UnitTest"
+
+
+        val reportTask =
+            tasks.register("jacoco${testTaskName.capitalize()}Report", JacocoReport::class) {
+                dependsOn(testTaskName)
+
+
+                reports {
+                    html.required.set(true)
+                }
+
+
+                classDirectories.setFrom(
+                    fileTree("$buildDir/tmp/kotlin-classes/${variant.name}") {
+                        exclude(coverageExclusions)
+                    }
+                )
+
+
+                sourceDirectories.setFrom(
+                    files("$projectDir/src/main/java")
+                )
+                executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
+//                executionData.setFrom(file("$buildDir/outputs/unit_test_code_coverage/${variant.name}UnitTest/$testTaskName.exec"))
+            }
+
+
+        jacocoTestReport.dependsOn(reportTask)
     }
 }
 
@@ -80,4 +115,24 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
+}
+
+private val coverageExclusions = listOf(
+    "**/R.class",
+    "**/R\$*.class",
+    "**/BuildConfig.*",
+    "**/Manifest*.*"
+)
+
+
+configure<JacocoPluginExtension> {
+    toolVersion = "0.8.10"
+}
+
+
+tasks.withType<Test>().configureEach {
+    configure<JacocoTaskExtension> {
+        isIncludeNoLocationClasses = true
+        excludes = listOf("jdk.internal.*")
+    }
 }

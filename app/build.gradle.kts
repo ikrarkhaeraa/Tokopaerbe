@@ -1,5 +1,3 @@
-import com.android.builder.model.SigningConfig
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -69,13 +67,12 @@ android {
 
     val jacocoTestReport = tasks.create("jacocoTestReport")
 
-
     androidComponents.onVariants { variant ->
         val testTaskName = "test${variant.name.capitalize()}UnitTest"
 
-
         val reportTask =
             tasks.register("jacoco${testTaskName.capitalize()}Report", JacocoReport::class) {
+                dependsOn(":core:jacocoTestReport")
                 dependsOn(testTaskName)
 
 
@@ -87,17 +84,23 @@ android {
                 classDirectories.setFrom(
                     fileTree("$buildDir/tmp/kotlin-classes/${variant.name}") {
                         exclude(coverageExclusions)
+                    },
+                    fileTree("../core/build/tmp/kotlin-classes/${variant.name}") {
+                        exclude(coverageExclusions)
                     }
                 )
 
 
                 sourceDirectories.setFrom(
-                    files("$projectDir/src/main/java")
+                    files("$projectDir/src/main/java"),
+                    files("../core/src/main/java")
                 )
-                executionData.setFrom(file("$buildDir/jacoco/$testTaskName.exec"))
-//                executionData.setFrom(file("$buildDir/outputs/unit_test_code_coverage/${variant.name}UnitTest/$testTaskName.exec"))
+                executionData.setFrom(
+                    file("$buildDir/jacoco/$testTaskName.exec"),
+                    file("../core/build/jacoco/$testTaskName.exec")
+                )
+                //executionData.setFrom(file("$buildDir/outputs/unit_test_code_coverage/${variant.name}UnitTest/$testTaskName.exec"))
             }
-
 
         jacocoTestReport.dependsOn(reportTask)
     }

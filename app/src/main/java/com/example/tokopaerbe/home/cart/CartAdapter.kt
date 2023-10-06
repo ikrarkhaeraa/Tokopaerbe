@@ -37,6 +37,7 @@ class CartAdapter(
         return ListViewHolder(binding)
     }
 
+
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val cartEntity = getItem(position)
         holder.bind(cartEntity)

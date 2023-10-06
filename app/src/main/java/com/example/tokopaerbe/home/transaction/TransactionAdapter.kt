@@ -1,6 +1,7 @@
 package com.example.tokopaerbe.home.transaction
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -54,7 +55,8 @@ class TransactionAdapter(
                 var itemPrice = formatPrice(data.total.toDouble())
                 binding.totalHarga.text = "Rp$itemPrice"
 
-                if (data.rating == 0 || data.review.isEmpty()) {
+                if (data.rating == null || data.review.isNullOrEmpty()) {
+                    Log.d("cekDataRating", data.rating.toString())
                     binding.buttonUlas.visibility = VISIBLE
                 } else {
                     binding.buttonUlas.visibility = GONE

@@ -36,10 +36,10 @@ data class Transaction(
     val items: List<Item>,
 
     @field:SerializedName("rating")
-    val rating: Int,
+    val rating: Int?,
 
     @field:SerializedName("review")
-    val review: String,
+    val review: String?,
 
     @field:SerializedName("image")
     val image: String,

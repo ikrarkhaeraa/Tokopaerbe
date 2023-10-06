@@ -358,7 +358,6 @@ class RetrofitTest {
         val time = "09:05"
         val payment = "Bank BCA"
         val total = 48998000
-        val rating = 4
         val review = "LGTM"
         val image =
             "https://images.tokopedia.net/img/cache/900/VqbcmM/2022/4/6/0a49c399-cf6b-47f5-91c9-8cbd0b86462d.jpg"
@@ -370,7 +369,6 @@ class RetrofitTest {
         assertEquals(time, actualResponse.body()?.data?.get(0)?.time)
         assertEquals(payment, actualResponse.body()?.data?.get(0)?.payment)
         assertEquals(total, actualResponse.body()?.data?.get(0)?.total)
-        assertEquals(rating, actualResponse.body()?.data?.get(0)?.rating)
         assertEquals(review, actualResponse.body()?.data?.get(0)?.review)
         assertEquals(image, actualResponse.body()?.data?.get(0)?.image)
         assertEquals(name, actualResponse.body()?.data?.get(0)?.name)

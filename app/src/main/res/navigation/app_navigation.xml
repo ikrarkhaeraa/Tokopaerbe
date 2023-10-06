@@ -196,7 +196,7 @@
         android:id="@+id/transactionFragment"
         android:name="com.example.tokopaerbe.home.transaction.TransactionFragment"
         android:label="fragment_transaction"
-        tools:layout="@layout/fragment_transaction"/>
+        tools:layout="@layout/fragment_transaction" />
 
 
     <fragment

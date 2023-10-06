@@ -82,7 +82,7 @@
             android:layout_marginTop="8dp"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@id/materialDivider2"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@drawable/image_loadingsmall" />
 
         <TextView
             android:id="@+id/productName"

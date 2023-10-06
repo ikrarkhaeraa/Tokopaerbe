@@ -30,19 +30,21 @@
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
             card_view:layout_constraintVertical_bias="0.555"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@drawable/image_loading" />
 
         <TextView
             android:id="@+id/item_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_toEndOf="@id/item_image"
             android:ellipsize="end"
             android:fontFamily="@font/medium"
             android:maxLines="1"
             android:textSize="14sp"
+            card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toEndOf="@+id/item_image"
             card_view:layout_constraintTop_toTopOf="parent"
             tools:text="@string/Title" />

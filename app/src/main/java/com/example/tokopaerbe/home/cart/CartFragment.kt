@@ -10,8 +10,11 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.room.CartEntity
@@ -25,6 +28,9 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -83,7 +89,6 @@ class CartFragment : Fragment() {
         model.getCartProduct().observe(viewLifecycleOwner) { cartList ->
 
             if (cartList?.isNotEmpty() == true) {
-                adapter.submitList(cartList)
                 showCartItemsUI()
                 calculateTotalPrice(cartList)
 
@@ -148,6 +153,7 @@ class CartFragment : Fragment() {
                         param(FirebaseAnalytics.Param.ITEMS, arrayOf(cartList).toString())
                     }
                 }
+                adapter.submitList(cartList)
             } else {
                 hideEmptyCartUI()
             }
