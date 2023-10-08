@@ -10,6 +10,7 @@ import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.INVISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -190,6 +191,7 @@ class LoginFragment : Fragment() {
     private fun chooseButton() {
         binding.apply {
             buttonMasuk.setOnClickListener {
+                buttonMasuk.visibility = INVISIBLE
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN) {
                     param(FirebaseAnalytics.Param.METHOD, email)
                 }

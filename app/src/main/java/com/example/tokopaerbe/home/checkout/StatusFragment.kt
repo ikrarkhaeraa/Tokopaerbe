@@ -7,6 +7,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -106,6 +108,8 @@ class StatusFragment : Fragment() {
             binding.totalPembayaranValue.text = "Rp$totalPrice"
 
             binding.buttonSelesai.setOnClickListener { view ->
+                binding.buttonSelesai.visibility = INVISIBLE
+                showLoading(true)
                 lifecycleScope.launch {
                     val token = model.getUserToken().first()
                     val auth = "Bearer $token"
@@ -178,5 +182,13 @@ class StatusFragment : Fragment() {
             )
         )
         return numberFormat.format(price)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
     }
 }

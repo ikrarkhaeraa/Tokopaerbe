@@ -120,7 +120,7 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
             .addInterceptor(chuckerInterceptor).build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://172.17.20.114:5000/")
+            .baseUrl("http://192.168.153.125:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

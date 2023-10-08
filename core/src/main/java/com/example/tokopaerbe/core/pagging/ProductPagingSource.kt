@@ -57,12 +57,15 @@ class ProductPagingSource(
             Log.d("pagingError", exception.toString())
             when (exception) {
                 is HttpException ->
-                    if (exception.code() == 200) {
+                    if (exception.code() == 404) {
                         preferences.saveCode(ErrorState(exception.code()))
-                    } else if (exception.code() == 404) {
-                        preferences.saveCode(ErrorState(exception.code()))
+                        Log.d("cekSaveCode", exception.code().toString())
                     } else if (exception.code() == 500) {
                         preferences.saveCode(ErrorState(exception.code()))
+                        Log.d("cekSaveCode", exception.code().toString())
+                    } else {
+                        preferences.saveCode(ErrorState(exception.code()))
+                        Log.d("cekSaveCode", exception.code().toString())
                     }
             }
             return LoadResult.Error(exception)

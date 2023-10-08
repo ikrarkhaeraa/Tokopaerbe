@@ -17,9 +17,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.PagingDataAdapter
+import androidx.paging.flatMap
+import androidx.paging.log
+import androidx.paging.map
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.pagging.PaggingModel
@@ -34,12 +40,15 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
+import okhttp3.internal.wait
 
 class StoreFragment : Fragment() {
 
@@ -67,6 +76,7 @@ class StoreFragment : Fragment() {
 //    private var textTerendah: String? = null
 //    private var textTertinggi: String? = null
 
+    private var totalCount = 0
     private val delayMillis = 1000L
     private val filterParams = MutableStateFlow(UserFilter(null, null, null, null, null))
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -306,7 +316,7 @@ class StoreFragment : Fragment() {
                         }
 
                         else -> {
-                            errorState()
+                            noConnection()
                         }
                     }
                 }
@@ -319,6 +329,19 @@ class StoreFragment : Fragment() {
             binding.shimmerGrid.visibility = GONE
             binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
             binding.recyclerView.adapter = gridProductAdapter
+
+            gridProductAdapter.addLoadStateListener {
+                totalCount = gridProductAdapter.itemCount
+                Log.d("ItemCount", "Total Item Count: $totalCount")
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(500)
+                    if (totalCount == 0) {
+                        noConnection()
+                    }
+                }
+            }
+
             binding.recyclerView.adapter = gridProductAdapter.withLoadStateFooter(
                 footer = LoadingStateAdapter { gridProductAdapter.retry() }
             )
@@ -334,13 +357,29 @@ class StoreFragment : Fragment() {
                 }
             gridProductAdapter.submitData(lifecycle, listProduct)
             binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
+
         } else {
             binding.shimmer.visibility = GONE
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
             binding.recyclerView.adapter = linearProductAdapter
+
             binding.recyclerView.adapter = linearProductAdapter.withLoadStateFooter(
                 footer = LoadingStateAdapter { linearProductAdapter.retry() }
             )
+
+            linearProductAdapter.addLoadStateListener {
+                totalCount = linearProductAdapter.itemCount
+                Log.d("ItemCount", "Total Item Count: $totalCount")
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(500)
+                    if (totalCount == 0) {
+                        noConnection()
+                    }
+                }
+            }
+
+
             linearProductAdapter.submitData(lifecycle, listProduct)
             binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
         }
@@ -408,6 +447,26 @@ class StoreFragment : Fragment() {
         }
     }
 
+    private fun noConnection() {
+
+        if (totalCount == 0) {
+            binding.shimmerGrid.visibility = GONE
+            binding.shimmer.visibility = GONE
+            binding.recyclerView.visibility = GONE
+            binding.gambarerror.visibility = VISIBLE
+            binding.errorTitle.visibility = VISIBLE
+            binding.errorTitle.text = getString(R.string.errorTitleConnection)
+            binding.errorDesc.visibility = VISIBLE
+            binding.errorDesc.text = getString(R.string.errorDescConnection)
+            binding.resetButton.visibility = VISIBLE
+            binding.resetButton.text = getString(R.string.refreshButtonError)
+            binding.resetButton.setOnClickListener {
+                resetOrRefresh()
+            }
+        }
+
+    }
+
     private fun errorState() {
         binding.shimmerGrid.visibility = GONE
         binding.shimmer.visibility = GONE
@@ -419,7 +478,7 @@ class StoreFragment : Fragment() {
         binding.errorDesc.text = getString(R.string.errorDesc500)
         binding.resetButton.visibility = VISIBLE
         binding.resetButton.text = getString(R.string.refreshButtonError)
-        binding.resetButton.setOnClickListener { view ->
+        binding.resetButton.setOnClickListener {
             resetOrRefresh()
         }
     }
@@ -439,7 +498,7 @@ class StoreFragment : Fragment() {
         model.textTertinggi = ""
         updateFilter()
         val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-        resetFilter.observe(viewLifecycleOwner) { filterResetEmpty ->
+        resetFilter.observe(viewLifecycleOwner) {
             paggingModel.sendFilter(
                 model.storeSearchText,
                 model.storeSelectedText1,
@@ -459,4 +518,5 @@ class StoreFragment : Fragment() {
             }
         }
     }
+
 }

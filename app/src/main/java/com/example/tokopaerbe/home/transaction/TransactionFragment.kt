@@ -85,7 +85,7 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
 
             if (isVisible) {
                 model.transaction.observe(viewLifecycleOwner) {
-                    if (it == null) {
+                    if (it.data.isEmpty()) {
                         Log.d("transaction", it.toString())
                         showLoading(false)
                         binding.imageView5.visibility = VISIBLE
@@ -95,8 +95,8 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
                         binding.buttonRefresh.setOnClickListener {
                             refresh()
                         }
-                    } else if (it.code == 200) {
-                        Log.d("transaction", it.code.toString())
+                    } else {
+                        Log.d("transaction", it?.code.toString())
                         showLoading(false)
                         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
                         val adapter = TransactionAdapter(this@TransactionFragment)
@@ -120,17 +120,18 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
                             )
                             itemTransaction.add(product)
                         }
-                    } else {
-                        Log.d("transaction", it.toString())
-                        showLoading(false)
-                        binding.imageView5.visibility = VISIBLE
-                        binding.textView5.visibility = VISIBLE
-                        binding.descempty.visibility = VISIBLE
-                        binding.buttonRefresh.visibility = VISIBLE
-                        binding.buttonRefresh.setOnClickListener {
-                            refresh()
-                        }
                     }
+//                    else {
+//                        Log.d("transaction", it.toString())
+//                        showLoading(false)
+//                        binding.imageView5.visibility = VISIBLE
+//                        binding.textView5.visibility = VISIBLE
+//                        binding.descempty.visibility = VISIBLE
+//                        binding.buttonRefresh.visibility = VISIBLE
+//                        binding.buttonRefresh.setOnClickListener {
+//                            refresh()
+//                        }
+//                    }
                 }
             }
         }

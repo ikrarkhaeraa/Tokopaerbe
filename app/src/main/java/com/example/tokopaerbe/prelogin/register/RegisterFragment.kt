@@ -10,6 +10,8 @@ import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -226,6 +228,7 @@ class RegisterFragment : Fragment() {
             }
 
             buttonDaftar.setOnClickListener {
+                buttonDaftar.visibility = INVISIBLE
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
                     param(FirebaseAnalytics.Param.METHOD, email)
                 }

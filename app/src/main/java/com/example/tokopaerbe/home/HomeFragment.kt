@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -48,9 +49,10 @@ class HomeFragment : Fragment() {
         binding.switch1.isChecked =
             AppCompatDelegate.getApplicationLocales().get(0)?.language == "in"
 
-        binding.testCrash.setOnClickListener {
-            throw RuntimeException("Test Crash") // Force a crash
-        }
+//        binding.testCrash.setOnClickListener {
+//            throw RuntimeException("Test Crash") // Force a crash
+//        }
+        binding.testCrash.visibility = GONE
 
         language()
         theme()
