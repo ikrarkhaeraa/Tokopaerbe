@@ -6,18 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_marginLeft="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginBottom="8dp"
-    card_view:cardBackgroundColor="?android:attr/windowBackground"
-    card_view:cardCornerRadius="8dp">
+    card_view:cardBackgroundColor="?android:attr/windowBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/item_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/item_image"
@@ -43,12 +37,12 @@
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/materialDivider2"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent" />
+            card_view:layout_constraintStart_toStartOf="@id/item_image" />
 
         <ImageView
             android:layout_width="wrap_content"

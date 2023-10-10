@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+    <entry>
+        <key>Payment</key>
+        <value>{"code":200,"message":"OK","data":[{"title":"Transfer Virtual
+            Account","item":[{"label":"BCA Virtual
+            Account","image":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png","status":true},{"label":"BNI
+            Virtual
+            Account","image":"https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/1200px-BNI_logo.svg.png","status":true},{"label":"BRI
+            Virtual
+            Account","image":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BRI_logo.svg/1200px-BANK_BRI_logo.svg.png","status":true},{"label":"Mandiri
+            Virtual
+            Account","image":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/2560px-Bank_Mandiri_logo_2016.svg.png","status":true}]},{"title":"Transfer
+            Bank","item":[{"label":"Bank
+            BCA","image":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png","status":true},{"label":"Bank
+            BNI","image":"https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/1200px-BNI_logo.svg.png","status":true},{"label":"Bank
+            BRI","image":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BRI_logo.svg/1200px-BANK_BRI_logo.svg.png","status":true},{"label":"Bank
+            Mandiri","image":"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/2560px-Bank_Mandiri_logo_2016.svg.png","status":true}]},{"title":"Pembayaran
+            Instan","item":[{"label":"GoPay","image":"https://gopay.co.id/icon.png","status":true},{"label":"OVO","image":"https://theme.zdassets.com/theme_assets/1379487/2cb35fe96fa1191f49c2b769b50cf8b546fff65e.png","status":true}]}]}
+        </value>
+    </entry>
+</defaults>

@@ -56,7 +56,6 @@ class ProductAdapter(private val onProductClick: (Product) -> Unit) :
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_ITEM) {
                     param(FirebaseAnalytics.Param.ITEM_LIST_ID, productData.productId)
                     param(FirebaseAnalytics.Param.ITEM_LIST_NAME, productData.productName)
-                    param(FirebaseAnalytics.Param.ITEMS, productData.toString())
                 }
             }
         }

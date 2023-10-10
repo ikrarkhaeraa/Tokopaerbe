@@ -22,10 +22,12 @@ import com.example.tokopaerbe.core.retrofit.user.UserLogin
 import com.example.tokopaerbe.databinding.FragmentLoginBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -63,6 +65,22 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        Firebase.messaging.token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("cekTask", "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+                firebaseToken = token
+
+                // Log and toast
+                Log.d("cekFCMToken", firebaseToken)
+            },
+        )
 
         runBlocking {
             val userFirstInstallState = model.getUserFirstInstallState().first()

@@ -101,7 +101,7 @@ class RegisterFragment : Fragment() {
 
                 // Log and toast
                 Log.d("cekFCMToken", firebaseToken)
-                Toast.makeText(requireContext(), token, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), token, Toast.LENGTH_SHORT).show()
             },
         )
 

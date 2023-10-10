@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                     msg = "Subscribe Failed"
                 }
                 Log.d("cekSubs", msg)
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
 
         model.getRefreshResponseCode().observe(this) {

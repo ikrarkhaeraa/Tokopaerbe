@@ -266,6 +266,7 @@ class StoreFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun hitApi(){
         val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
         filterLiveData.observe(viewLifecycleOwner) {
@@ -284,10 +285,16 @@ class StoreFragment : Fragment() {
                     model.storeTextTerendah,
                     model.storeTextTertinggi
                 )
+                Log.d("cekListIndices", listFilter.indices.toString())
                 for (i in listFilter.indices) {
                     val chip = Chip(requireActivity())
                     chip.text = listFilter[i]
-//                            chip.isClickable = true
+                    if (i == 2 && model.storeTextTerendah != null) {
+                        chip.text = "> ${listFilter[2]}"
+                    }
+                    if (i == 3 && model.storeTextTertinggi != null) {
+                        chip.text = "< ${listFilter[3]}"
+                    }
                     if (chip.text.isNotEmpty()) {
                         binding.chipgroup.addView(chip)
                         Log.d("cekAddChip", "add")

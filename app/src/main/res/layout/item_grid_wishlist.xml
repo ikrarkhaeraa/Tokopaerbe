@@ -36,6 +36,7 @@
             android:fontFamily="@font/poppins"
             android:textColor="@color/lightonsurfacevariant"
             android:textSize="12sp"
+            android:maxLines="2"
             android:textStyle="bold"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"

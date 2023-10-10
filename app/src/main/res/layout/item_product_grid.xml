@@ -34,6 +34,7 @@
             android:layout_toEndOf="@id/item_image"
             android:fontFamily="@font/poppins"
             android:textSize="12sp"
+            android:maxLines="2"
             android:textStyle="bold"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"

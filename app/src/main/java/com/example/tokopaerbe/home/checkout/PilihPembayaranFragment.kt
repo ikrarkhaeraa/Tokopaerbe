@@ -12,6 +12,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.databinding.FragmentPilihPembayaranBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
@@ -74,6 +75,7 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
             minimumFetchIntervalInSeconds = 3600
         }
         remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_default)
 
         remoteConfig.fetchAndActivate().addOnCompleteListener(requireActivity()) { task ->
             if (task.isSuccessful) {
