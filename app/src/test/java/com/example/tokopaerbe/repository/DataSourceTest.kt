@@ -9,17 +9,30 @@ import com.example.tokopaerbe.core.retrofit.LoginRequestBody
 import com.example.tokopaerbe.core.retrofit.RatingRequestBody
 import com.example.tokopaerbe.core.retrofit.RegisterRequestBody
 import com.example.tokopaerbe.core.retrofit.UserPreferences
+import com.example.tokopaerbe.core.retrofit.response.DataLogin
+import com.example.tokopaerbe.core.retrofit.response.DataRegister
+import com.example.tokopaerbe.core.retrofit.response.Fulfillment
+import com.example.tokopaerbe.core.retrofit.response.FulfillmentResponse
+import com.example.tokopaerbe.core.retrofit.response.LoginResponse
+import com.example.tokopaerbe.core.retrofit.response.RegisterResponse
+import com.example.tokopaerbe.core.retrofit.response.SearchResponse
 import com.example.tokopaerbe.core.room.CartDao
 import com.example.tokopaerbe.core.room.NotificationDao
 import com.example.tokopaerbe.core.room.WishlistDao
+import com.example.tokopaerbe.retrofit.MockResponseFileReader
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import okhttp3.MultipartBody
+import okhttp3.mockwebserver.MockResponse
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.whenever
+import java.net.HttpURLConnection
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -61,8 +74,9 @@ class DataSourceTest {
         val notifDao = mock(NotificationDao::class.java)
         apiService = mock(ApiService::class.java)
 
-        dataSource = DataSource(preferences, cartDao, wishDao, notifDao)
+        dataSource = DataSource(preferences, cartDao, wishDao, notifDao, apiService)
     }
+
 
     @Test
     fun testUploadRegisterData() = runTest {
@@ -70,13 +84,17 @@ class DataSourceTest {
         val email = "test@example.com"
         val password = "test_password"
         val firebaseToken = "firebase_token"
+        val expectedResponse = RegisterResponse(
+            DataRegister(
+                "","",0L
+            ),
+            200,
+            "OK"
+        )
         val requestBody = RegisterRequestBody(email, password, firebaseToken)
-
-        apiService.uploadDataRegister(apiKey, requestBody)
-        backgroundScope.launch {
-            val data = dataSource.signUp.first()
-            assertEquals(200, data.code)
-        }
+        whenever(apiService.uploadDataRegister(apiKey, requestBody)).thenReturn(expectedResponse)
+        val result = dataSource.uploadRegisterData(apiKey, requestBody).first()
+        assertEquals(expectedResponse, result)
     }
 
     @Test
@@ -85,13 +103,17 @@ class DataSourceTest {
         val email = "test@example.com"
         val password = "test_password"
         val firebaseToken = "firebase_token"
+        val expectedResponse = LoginResponse(
+            DataLogin(
+                "","","","",0L
+            ),
+            200,
+            "OK"
+        )
         val requestBody = LoginRequestBody(email, password, firebaseToken)
-
-        apiService.uploadDataLogin(apiKey, requestBody)
-        backgroundScope.launch {
-            val data = dataSource.signIn.first()
-            assertEquals(200, data.code)
-        }
+        whenever(apiService.uploadDataLogin(apiKey, requestBody)).thenReturn(expectedResponse)
+        val result = dataSource.uploadLoginData(apiKey, requestBody).first()
+        assertEquals(expectedResponse, result)
     }
 
     @Test
@@ -111,12 +133,14 @@ class DataSourceTest {
     fun testUploadSearchData() = runTest {
         val auth = "auth"
         val query = "query"
-
-        apiService.uploadDataSearch(auth, query)
-        backgroundScope.launch {
-            val data = dataSource.search.getOrAwaitValue()
-            assertEquals(200, data.code)
-        }
+        val expectedResponse = SearchResponse(
+            listOf(""),
+            200,
+            "OK"
+        )
+        whenever(apiService.uploadDataSearch(auth, query)).thenReturn(expectedResponse)
+        val result = dataSource.uploadSearchData(auth, query).first()
+        assertEquals(expectedResponse, result)
     }
 
     @Test
@@ -127,17 +151,6 @@ class DataSourceTest {
         apiService.getReviewData(auth, id)
         backgroundScope.launch {
             val data = dataSource.review.getOrAwaitValue()
-            assertEquals(200, data.code)
-        }
-    }
-
-    @Test
-    fun testGetPaymentData() = runTest {
-        val auth = "auth"
-
-        apiService.getPaymentData(auth)
-        backgroundScope.launch {
-            val data = dataSource.payment.getOrAwaitValue()
             assertEquals(200, data.code)
         }
     }
@@ -158,13 +171,15 @@ class DataSourceTest {
     fun testUploadFulfillmentData() = runTest {
         val auth = "auth"
         val payment = "payment"
+        val expectedResponse = FulfillmentResponse(
+            Fulfillment("", true, "","","", 10000000),
+            200,
+            "OK"
+        )
         val requestBody = FulfillmentRequestBody(payment, mock())
-
-        apiService.uploadDataFulfillment(auth, requestBody)
-        backgroundScope.launch {
-            val data = dataSource.fulfillment.getOrAwaitValue()
-            assertEquals(200, data.code)
-        }
+        whenever(apiService.uploadDataFulfillment(auth, requestBody)).thenReturn(expectedResponse)
+        val result = dataSource.uploadFulfillmentData(auth, requestBody).first()
+        assertEquals(expectedResponse, result)
     }
 
     @Test

@@ -5,10 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
+import com.example.tokopaerbe.core.pagging.ProductPagingSource
 import com.example.tokopaerbe.core.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.core.retrofit.response.FulfillmentResponse
 import com.example.tokopaerbe.core.retrofit.response.LoginResponse
 import com.example.tokopaerbe.core.retrofit.response.PaymentResponse
+import com.example.tokopaerbe.core.retrofit.response.Product
+import com.example.tokopaerbe.core.retrofit.response.ProductsResponse
 import com.example.tokopaerbe.core.retrofit.response.ProfileResponse
 import com.example.tokopaerbe.core.retrofit.response.RatingResponse
 import com.example.tokopaerbe.core.retrofit.response.RegisterResponse
@@ -25,7 +32,10 @@ import com.example.tokopaerbe.core.room.NotificationDao
 import com.example.tokopaerbe.core.room.NotificationsEntity
 import com.example.tokopaerbe.core.room.WishlistDao
 import com.example.tokopaerbe.core.room.WishlistEntity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,22 +46,9 @@ class DataSource @Inject constructor(
     private val pref: UserPreferences,
     private val cartDao: CartDao,
     private val wishDao: WishlistDao,
-    private val notifDao: NotificationDao
+    private val notifDao: NotificationDao,
+    private val apiService: ApiService
 ) {
-
-    companion object {
-        @Volatile
-        private var instance: DataSource? = null
-        fun getInstance(
-            preferences: UserPreferences,
-            cartDao: CartDao,
-            wishDao: WishlistDao,
-            notifDao: NotificationDao
-        ): DataSource =
-            instance ?: synchronized(this) {
-                instance ?: DataSource(preferences, cartDao, wishDao, notifDao)
-            }.also { instance = it }
-    }
 
     private var _signUp = MutableLiveData<RegisterResponse>()
     var signUp: Flow<RegisterResponse> = _signUp.asFlow()
@@ -83,228 +80,65 @@ class DataSource @Inject constructor(
     private val _transaction = MutableLiveData<TransactionResponse>()
     val transaction: LiveData<TransactionResponse> = _transaction
 
-    fun uploadRegisterData(
-        API_KEY: String,
-        email: String,
-        password: String,
-        firebaseToken: String
-    ) {
-        val requestBody = RegisterRequestBody(email, password, firebaseToken)
-        val client = ApiConfig.getApiService().uploadDataRegister(API_KEY, requestBody)
-        client.enqueue(object : Callback<RegisterResponse> {
-            override fun onResponse(
-                call: Call<RegisterResponse>,
-                response: Response<RegisterResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("signUpResponse", "onResponse: ${response.message()}")
-                    _signUp.value = response.body()
-                } else {
-                    Log.e("signUp", "onResponse: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                Log.e("signUpFailure", "onFailure: ${t.message}")
-            }
-        })
+    fun uploadRegisterData(API_KEY: String, requestBody: RegisterRequestBody) = flow {
+        emit(apiService.uploadDataRegister(API_KEY, requestBody))
     }
 
-    fun uploadLoginData(API_KEY: String, email: String, password: String, firebaseToken: String) {
-        val requestBody = LoginRequestBody(email, password, firebaseToken)
-        val client = ApiConfig.getApiService().uploadDataLogin(API_KEY, requestBody)
-        client.enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(
-                call: Call<LoginResponse>,
-                response: Response<LoginResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("signInResponse", "onResponse: ${response.message()}")
-                    _signIn.value = response.body()
-                } else {
-                    Log.e("signIn", "onResponse: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Log.e("signInFailure", "onFailure: ${t.message}")
-            }
-        })
+    fun uploadLoginData(API_KEY: String, requestBody: LoginRequestBody) = flow {
+        emit(apiService.uploadDataLogin(API_KEY, requestBody))
     }
 
     fun uploadProfileData(
         auth: String,
         userName: MultipartBody.Part,
         userImage: MultipartBody.Part?
-    ) {
-        val client = ApiConfig.getApiService().uploadDataProfile(auth, userName, userImage)
-        client.enqueue(object : Callback<ProfileResponse> {
-            override fun onResponse(
-                call: Call<ProfileResponse>,
-                response: Response<ProfileResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("profileResponse", "onResponse: ${response.message()}")
-                    _profile.value = response.body()
-                } else {
-                    Log.e("profile", "onResponse: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
-                Log.e("profileFailure", "onFailure: ${t.message}")
-            }
-        })
+    ) = flow {
+        emit(apiService.uploadDataProfile(auth, userName, userImage))
     }
 
-    fun uploadSearchData(auth: String, query: String) {
-        val client = ApiConfig.getApiService().uploadDataSearch(auth, query)
-        client.enqueue(object : Callback<SearchResponse> {
-            override fun onResponse(
-                call: Call<SearchResponse>,
-                response: Response<SearchResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("searchResponse", "onResponse: ${response.message()}")
-                    _search.value = response.body()
-                } else {
-                    Log.e("search", "onResponse: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                Log.e("searchFailure", "onFailure: ${t.message}")
-            }
-        })
+    fun uploadSearchData(auth: String, query: String) = flow {
+        emit(apiService.uploadDataSearch(auth, query))
     }
 
-    fun getReviewData(auth: String, id: String) {
-        val client = ApiConfig.getApiService().getReviewData(auth, id)
-        client.enqueue(object : Callback<ReviewResponse> {
-            override fun onResponse(
-                call: Call<ReviewResponse>,
-                response: Response<ReviewResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("reviewResponse", "onResponse: ${response.message()}")
-                    _review.value = response.body()
-                } else {
-                    Log.e("review", "onResponse: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
-                Log.e("reviewFailure", "onFailure: ${t.message}")
-            }
-        })
+    fun getReviewData(auth: String, id: String) = flow {
+        emit(apiService.getReviewData(auth, id))
     }
 
-    fun getPaymentData(auth: String) {
-        val client = ApiConfig.getApiService().getPaymentData(auth)
-        client.enqueue(object : Callback<PaymentResponse> {
-            override fun onResponse(
-                call: Call<PaymentResponse>,
-                response: Response<PaymentResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("paymentResponse", "onResponse: ${response.message()}")
-                    _payment.value = response.body()
-                } else {
-                    Log.e("payment", "onResponse: ${response.message()}")
-                }
-            }
 
-            override fun onFailure(call: Call<PaymentResponse>, t: Throwable) {
-                Log.e("paymentFailure", "onFailure: ${t.message}")
-            }
-        })
+    fun getDetailProductData(auth: String, id: String) = flow {
+        emit(apiService.getDetailProductData(auth, id))
     }
 
-    fun getDetailProductData(auth: String, id: String) {
-        val client = ApiConfig.getApiService().getDetailProductData(auth, id)
-        client.enqueue(object : Callback<DetailProductResponse> {
-            override fun onResponse(
-                call: Call<DetailProductResponse>,
-                response: Response<DetailProductResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("detailResponse", "onResponse: ${response.message()}")
-                    _detail.value = response.body()
-                } else {
-                    Log.e("detail", "onResponse: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<DetailProductResponse>, t: Throwable) {
-                Log.e("detailFailure", "onFailure: ${t.message}")
-            }
-        })
+    fun uploadFulfillmentData(auth: String, requestBody: FulfillmentRequestBody) = flow {
+        emit(apiService.uploadDataFulfillment(auth, requestBody))
     }
 
-    fun uploadFulfillmentData(auth: String, payment: String, items: List<Item>) {
-        val requestBody = FulfillmentRequestBody(payment, items)
-        val client = ApiConfig.getApiService().uploadDataFulfillment(auth, requestBody)
-        client.enqueue(object : Callback<FulfillmentResponse> {
-            override fun onResponse(
-                call: Call<FulfillmentResponse>,
-                response: Response<FulfillmentResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("fulfillmentResponse", "onResponse: ${response.message()}")
-                    _fulfillment.value = response.body()
-                } else {
-                    Log.e("fulfillment", "onResponse: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<FulfillmentResponse>, t: Throwable) {
-                Log.e("fulfillmentFailure", "onFailure: ${t.message}")
-            }
-        })
+    fun uploadRatingData(auth: String, requestBody: RatingRequestBody) = flow {
+        emit(apiService.uploadDataRating(auth, requestBody))
     }
 
-    fun uploadRatingData(auth: String, invoiceId: String, rating: Int?, review: String?) {
-        val requestBody = RatingRequestBody(invoiceId, rating, review)
-        val client = ApiConfig.getApiService().uploadDataRating(auth, requestBody)
-        client.enqueue(object : Callback<RatingResponse> {
-            override fun onResponse(
-                call: Call<RatingResponse>,
-                response: Response<RatingResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("ratingResponse", "onResponse: ${response.message()}")
-                    _rating.value = response.body()
-                } else {
-                    Log.e("rating", "onResponse: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<RatingResponse>, t: Throwable) {
-                Log.e("ratingFailure", "onFailure: ${t.message}")
-            }
-        })
+    fun uploadTransactionData(auth: String) = flow {
+        emit(apiService.getTransactionData(auth))
     }
 
-    fun getTransactionData(auth: String) {
-        val client = ApiConfig.getApiService().getTransactionData(auth)
-        client.enqueue(object : Callback<TransactionResponse> {
-            override fun onResponse(
-                call: Call<TransactionResponse>,
-                response: Response<TransactionResponse>
-            ) {
-                if (response.isSuccessful) {
-                    Log.e("transactionResponse", "onResponse: ${response.message()}")
-                    _transaction.value = response.body()
-                } else {
-                    Log.e("transaction", "onResponse: ${response.message()}")
-                    _transaction.value = response.body()
-                }
+    fun getProductPaging(
+        search: String?,
+        sort: String?,
+        brand: String?,
+        lowest: Int?,
+        highest: Int?
+    ): Flow<PagingData<Product>> {
+        Log.d("cekRepository", "keHitRepositorynya")
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+                initialLoadSize = 10,
+                prefetchDistance = 1
+            ),
+            pagingSourceFactory = {
+                ProductPagingSource(search, sort, brand, lowest, highest, apiService, pref)
             }
-
-            override fun onFailure(call: Call<TransactionResponse>, t: Throwable) {
-                Log.e("transactionFailure", "onFailure: ${t.message}")
-            }
-        })
+        ).flow
     }
 
     suspend fun saveSessionProfile(sessionProfile: UserProfile) {
@@ -331,8 +165,8 @@ class DataSource @Inject constructor(
         return pref.getAccessToken()
     }
 
-    fun getCode(): LiveData<Int> {
-        return pref.getCode().asLiveData()
+    fun getCode(): Flow<Int> {
+        return pref.getCode()
     }
 
     fun userName(): Flow<String> {

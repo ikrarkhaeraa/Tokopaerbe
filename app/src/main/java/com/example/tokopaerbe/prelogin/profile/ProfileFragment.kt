@@ -25,20 +25,22 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.retrofit.user.UserProfile
+import com.example.tokopaerbe.core.utils.ErrorMessage.errorMessage
+import com.example.tokopaerbe.core.utils.SealedClass
 import com.example.tokopaerbe.databinding.FragmentProfileBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -50,6 +52,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
@@ -57,8 +60,7 @@ class ProfileFragment : Fragment() {
 
     private var getMyFile: File? = null
 
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
     private val delayMillis = 3000L
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var fileRequestBody: RequestBody
@@ -98,7 +100,6 @@ class ProfileFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
     }
 
@@ -187,10 +188,7 @@ class ProfileFragment : Fragment() {
 
     private fun sendData() {
         binding.buttonSelesai.setOnClickListener {
-            binding.buttonSelesai.visibility = INVISIBLE
-            showLoading(true)
-
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 val it = model.getUserToken().first()
                 val auth = "Bearer $it"
                 Log.d("cekit", it)
@@ -198,8 +196,6 @@ class ProfileFragment : Fragment() {
 
                 val username = binding.nameedittext.text.toString()
                 val userName = MultipartBody.Part.createFormData("userName", username)
-
-//                val fileRequestBody = getMyFile!!.asRequestBody("image/*".toMediaTypeOrNull())
 
                 if (it.isNotEmpty()) {
                     if (getMyFile != null) {
@@ -214,29 +210,41 @@ class ProfileFragment : Fragment() {
                         model.postDataProfile(auth, userName, null)
                     }
 
-                    lifecycleScope.launch {
-                        val it = model.profile.first()
-                        if (it.code == 200) {
-                            val userProfile =
-                                UserProfile(
-                                    it.data.userName,
-                                    it.data.userImage,
-                                )
-                            // Save the user session
-                            saveUserProfile(userProfile)
+                    model.profileData.collect {
+                        when (it) {
+                            is SealedClass.Loading -> {
+                                binding.buttonSelesai.visibility = INVISIBLE
+                                showLoading(true)
+                            }
 
-                            GlobalScope.launch(Dispatchers.Main) {
-                                delay(delayMillis)
-                                goToHome()
+                            is SealedClass.Success -> {
+                                val userProfile =
+                                    UserProfile(
+                                        it.data.data.userName,
+                                        it.data.data.userImage,
+                                    )
+                                // Save the user session
+                                saveUserProfile(userProfile)
+
+                                GlobalScope.launch(Dispatchers.Main) {
+                                    delay(delayMillis)
+                                    goToHome()
+                                }
+                            }
+
+                            is SealedClass.Error -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    it.message.errorMessage(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            else -> {
+
                             }
                         }
                     }
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.AUTHinvalid),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
 

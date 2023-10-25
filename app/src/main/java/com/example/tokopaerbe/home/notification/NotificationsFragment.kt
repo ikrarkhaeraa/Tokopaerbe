@@ -6,24 +6,25 @@ import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.databinding.FragmentNotificationsBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class NotificationsFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +32,6 @@ class NotificationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
     }
 
@@ -56,7 +56,7 @@ class NotificationsFragment : Fragment() {
         binding.recyclerView.itemAnimator?.changeDuration = 0
 
         navigationIcon.setOnClickListener {
-            findNavController().navigateUp()
+                findNavController().navigateUp()
         }
 
         lifecycleScope.launch {

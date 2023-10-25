@@ -1,10 +1,10 @@
 // import android.content.Context
 // import android.util.Log
 // import com.chuckerteam.chucker.api.ChuckerInterceptor
-// import com.example.tokopaerbe.retrofit.ApiService
-// import com.example.tokopaerbe.retrofit.RefreshRequestBody
-// import com.example.tokopaerbe.retrofit.UserPreferences
-// import com.example.tokopaerbe.retrofit.response.RefreshResponse
+// import com.example.tokopaerbe.core.retrofit.ApiService
+// import com.example.tokopaerbe.core.retrofit.RefreshRequestBody
+// import com.example.tokopaerbe.core.retrofit.UserPreferences
+// import com.example.tokopaerbe.core.retrofit.response.RefreshResponse
 // import kotlinx.coroutines.flow.first
 // import kotlinx.coroutines.runBlocking
 // import okhttp3.Authenticator
@@ -73,7 +73,7 @@
 //            .addInterceptor(chuckerInterceptor).build()
 //
 //        val retrofit = Retrofit.Builder()
-//            .baseUrl("http://172.17.20.114:5000/")
+//            .baseUrl("http://192.168.0.198:5000/")
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .client(okHttpClient)
 //            .build()

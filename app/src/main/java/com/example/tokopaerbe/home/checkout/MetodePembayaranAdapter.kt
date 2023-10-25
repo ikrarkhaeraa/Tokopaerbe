@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.retrofit.response.PaymentMethod
 import com.example.tokopaerbe.databinding.ItemPlatformPembayaranBinding
 import com.squareup.picasso.Picasso
@@ -38,7 +39,7 @@ class MetodePembayaranAdapter(
         @SuppressLint("SetTextI18n", "ResourceAsColor")
         fun bind(data: PaymentMethod) {
             binding.apply {
-                Picasso.get().load(data.image).into(itemImage)
+                Picasso.get().load(data.image).placeholder(R.drawable.image_loading).into(itemImage)
                 namaPlatform.text = data.label
                 if (!data.status) {
                     cardView.alpha = 0.4f

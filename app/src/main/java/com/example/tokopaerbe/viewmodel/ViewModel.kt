@@ -1,14 +1,22 @@
 package com.example.tokopaerbe.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.tokopaerbe.core.retrofit.DataSource
-import com.example.tokopaerbe.core.retrofit.Item
+import com.example.tokopaerbe.core.retrofit.FulfillmentRequestBody
+import com.example.tokopaerbe.core.retrofit.LoginRequestBody
+import com.example.tokopaerbe.core.retrofit.RatingRequestBody
+import com.example.tokopaerbe.core.retrofit.RegisterRequestBody
 import com.example.tokopaerbe.core.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.core.retrofit.response.FulfillmentResponse
 import com.example.tokopaerbe.core.retrofit.response.LoginResponse
 import com.example.tokopaerbe.core.retrofit.response.PaymentResponse
+import com.example.tokopaerbe.core.retrofit.response.Product
+import com.example.tokopaerbe.core.retrofit.response.ProductsResponse
 import com.example.tokopaerbe.core.retrofit.response.ProfileResponse
 import com.example.tokopaerbe.core.retrofit.response.RatingResponse
 import com.example.tokopaerbe.core.retrofit.response.RegisterResponse
@@ -18,15 +26,23 @@ import com.example.tokopaerbe.core.retrofit.response.TransactionResponse
 import com.example.tokopaerbe.core.retrofit.user.UserLogin
 import com.example.tokopaerbe.core.retrofit.user.UserProfile
 import com.example.tokopaerbe.core.retrofit.user.UserRegister
-import com.example.tokopaerbe.core.retrofit.user.ValueBottomSheet
 import com.example.tokopaerbe.core.room.CartEntity
 import com.example.tokopaerbe.core.room.NotificationsEntity
 import com.example.tokopaerbe.core.room.WishlistEntity
+import com.example.tokopaerbe.core.utils.SealedClass
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import retrofit2.Call
 import javax.inject.Inject
 
+@HiltViewModel
 class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() {
 
     var profile: Flow<ProfileResponse> = data.profile
@@ -269,16 +285,6 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         return data.userName()
     }
 
-    fun getValueBottomSheet(): Flow<String> {
-        return data.getValueBottomSheet()
-    }
-
-    fun saveValueBottomSheet(valueBottomSheet: ValueBottomSheet) {
-        viewModelScope.launch {
-            data.saveValueBottomSheet(valueBottomSheet)
-        }
-    }
-
     fun saveSessionRegister(sessionRegister: UserRegister) {
         viewModelScope.launch {
             data.saveSessionRegister(sessionRegister)
@@ -303,7 +309,7 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         }
     }
 
-    fun getCode(): LiveData<Int> {
+    fun getCode(): Flow<Int> {
         return data.getCode()
     }
 
@@ -331,70 +337,144 @@ class ViewModel @Inject constructor(private val data: DataSource) : ViewModel() 
         }
     }
 
+    private val _profileData = MutableSharedFlow<SealedClass<ProfileResponse>>()
+    val profileData = _profileData
+
     fun postDataProfile(
         auth: String,
         userName: MultipartBody.Part,
         userImage: MultipartBody.Part?
-    ) {
-        viewModelScope.launch {
-            data.uploadProfileData(auth, userName, userImage)
+    ) = viewModelScope.launch {
+        _profileData.emit(SealedClass.Init)
+        _profileData.emit(SealedClass.Loading)
+
+        data.uploadProfileData(auth, userName, userImage).catch {
+            _profileData.emit(SealedClass.Error(it))
+        }.collect {
+            _profileData.emit(SealedClass.Success(it))
         }
     }
 
-    fun postDataSearch(auth: String, query: String) {
-        viewModelScope.launch {
-            data.uploadSearchData(auth, query)
+
+    private val _searchData = MutableStateFlow<SealedClass<SearchResponse>>(SealedClass.Init)
+    val searchData = _searchData
+
+    fun postDataSearch(auth: String, query: String) = viewModelScope.launch {
+        _searchData.emit(SealedClass.Loading)
+
+        data.uploadSearchData(auth, query).catch {
+            _searchData.emit(SealedClass.Error(it))
+        }.collect {
+            _searchData.emit(SealedClass.Success(it))
         }
     }
 
-    fun getDetailProductData(auth: String, id: String) {
-        viewModelScope.launch {
-//            val token = getUserToken().first()
-//            val auth = "Bearer $token"
-//            Log.d("cekAuthDetail", auth)
-            data.getDetailProductData(auth, id)
+    private val _productDetailData = MutableStateFlow<SealedClass<DetailProductResponse>>(SealedClass.Init)
+    val productDetailData = _productDetailData
+    fun getDetailProductData(id: String) = viewModelScope.launch {
+        val token = getUserToken().first()
+        val auth = "Bearer $token"
+        Log.d("cekAuthDetail", auth)
+
+        _productDetailData.emit(SealedClass.Loading)
+
+        data.getDetailProductData(auth, id).catch {
+            _productDetailData.emit(SealedClass.Error(it))
+        }.collect {
+            _productDetailData.emit(SealedClass.Success(it))
         }
     }
 
-    fun getReviewData(auth: String, id: String) {
-        viewModelScope.launch {
-            data.getReviewData(auth, id)
+    private val _reviewData = MutableStateFlow<SealedClass<ReviewResponse>>(SealedClass.Init)
+    val reviewData = _reviewData
+    fun getReviewData(id: String) = viewModelScope.launch {
+        val token = getUserToken().first()
+        val auth = "Bearer $token"
+        Log.d("cekAuthDetail", auth)
+
+        _reviewData.emit(SealedClass.Loading)
+
+        data.getReviewData(auth, id).catch {
+            _reviewData.emit(SealedClass.Error(it))
+        }.collect {
+            _reviewData.emit(SealedClass.Success(it))
         }
     }
 
-    fun getPaymentData(auth: String) {
+
+    private val _registerData = MutableSharedFlow<SealedClass<RegisterResponse>>()
+    val registerData = _registerData
+
+    fun postDataRegister(API_KEY: String, requestBody: RegisterRequestBody) =
         viewModelScope.launch {
-            data.getPaymentData(auth)
+            _registerData.emit(SealedClass.Loading)
+
+            data.uploadRegisterData(API_KEY, requestBody).catch {
+                _registerData.emit(SealedClass.Error(it))
+            }.collect {
+                _registerData.emit(SealedClass.Success(it))
+            }
+        }
+
+    private val _loginData = MutableSharedFlow<SealedClass<LoginResponse>>()
+    val loginData = _loginData
+
+    fun postDataLogin(API_KEY: String, requestBody: LoginRequestBody) = viewModelScope.launch {
+        _loginData.emit(SealedClass.Loading)
+
+        data.uploadLoginData(API_KEY, requestBody).catch {
+            _loginData.emit(SealedClass.Error(it))
+        }.collect {
+            _loginData.emit(SealedClass.Success(it))
         }
     }
 
-    fun postDataRegister(API_KEY: String, email: String, password: String, firebaseToken: String) {
+    private val _fulfillmentData = MutableSharedFlow<SealedClass<FulfillmentResponse>>()
+    val fulfillmentData = _fulfillmentData
+
+    fun postDataFulfillment(auth: String, requestBody: FulfillmentRequestBody) =
         viewModelScope.launch {
-            data.uploadRegisterData(API_KEY, email, password, firebaseToken)
+            _fulfillmentData.emit(SealedClass.Loading)
+
+            data.uploadFulfillmentData(auth, requestBody).catch {
+                _fulfillmentData.emit(SealedClass.Error(it))
+            }.collect {
+                _fulfillmentData.emit(SealedClass.Success(it))
+            }
+        }
+
+    private val _ratingData = MutableSharedFlow<SealedClass<RatingResponse>>()
+    val ratingData = _ratingData
+
+    fun postDataRating(auth: String, requestBody: RatingRequestBody) = viewModelScope.launch {
+        _ratingData.emit(SealedClass.Loading)
+
+        data.uploadRatingData(auth, requestBody).catch {
+            _ratingData.emit(SealedClass.Error(it))
+        }.collect {
+            _ratingData.emit(SealedClass.Success(it))
         }
     }
 
-    fun postDataLogin(API_KEY: String, email: String, password: String, firebaseToken: String) {
-        viewModelScope.launch {
-            data.uploadLoginData(API_KEY, email, password, firebaseToken)
+    private val _transactionData =
+        MutableStateFlow<SealedClass<TransactionResponse>>(SealedClass.Init)
+    val transactionData = _transactionData
+
+    fun postDataTransaction(auth: String) = viewModelScope.launch {
+        _transactionData.emit(SealedClass.Loading)
+
+        data.uploadTransactionData(auth).catch {
+            _transactionData.emit(SealedClass.Error(it))
+        }.collect {
+            _transactionData.emit(SealedClass.Success(it))
         }
     }
 
-    fun postDataFulfillment(auth: String, payment: String, items: List<Item>) {
-        viewModelScope.launch {
-            data.uploadFulfillmentData(auth, payment, items)
-        }
+    val sendFilter: (String?, String?, String?, Int?, Int?) -> Flow<PagingData<Product>> = { search, sort, brand, lowest, highest ->
+        Log.d("cekViewModel", "keHitViewModelnya")
+        data.getProductPaging(search, sort, brand, lowest, highest)
+            .cachedIn(viewModelScope)
     }
 
-    fun postDataRating(auth: String, invoiceId: String, rating: Int?, review: String?) {
-        viewModelScope.launch {
-            data.uploadRatingData(auth, invoiceId, rating, review)
-        }
-    }
-
-    fun getTransactionData(auth: String) {
-        viewModelScope.launch {
-            data.getTransactionData(auth)
-        }
-    }
 }
+

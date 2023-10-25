@@ -32,3 +32,5 @@ data class RatingRequestBody(
     val rating: Int?,
     val review: String?
 )
+
+data class ErrorResponse(val code: Int, val message: String)

@@ -17,23 +17,23 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentMainBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigationrail.NavigationRailView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var factory: ViewModelFactory
     private val model: ViewModel by activityViewModels()
 
     private val navController by lazy {
@@ -46,7 +46,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
     }
 

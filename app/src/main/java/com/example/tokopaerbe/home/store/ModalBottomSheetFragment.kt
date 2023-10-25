@@ -15,14 +15,15 @@ import androidx.fragment.app.setFragmentResult
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.databinding.FragmentModalBottomSheetBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ModalBottomSheetFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentModalBottomSheetBinding? = null
@@ -34,7 +35,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
     private var textTerendah: String = ""
     private var textTertinggi: String = ""
 
-    private lateinit var factory: ViewModelFactory
     private val model: ViewModel by activityViewModels()
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -48,7 +48,6 @@ class ModalBottomSheetFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val theme = ContextThemeWrapper(requireContext(), baseTheme)
-        factory = ViewModelFactory.getInstance(requireContext())
         _binding = FragmentModalBottomSheetBinding.inflate(inflater, container, false)
         return binding.root
     }

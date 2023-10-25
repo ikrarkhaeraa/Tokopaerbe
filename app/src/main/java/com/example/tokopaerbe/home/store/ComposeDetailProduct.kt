@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -38,7 +37,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.InputChip
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,7 +45,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,9 +54,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -73,6 +68,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -81,28 +77,32 @@ import com.example.mycompose.ui.theme.MyComposeTheme
 import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.retrofit.response.ProductVariant
 import com.example.tokopaerbe.core.room.WishlistEntity
+import com.example.tokopaerbe.core.utils.ErrorMessage.errorMessage
+import com.example.tokopaerbe.core.utils.SealedClass
 import com.example.tokopaerbe.home.checkout.CheckoutDataClass
 import com.example.tokopaerbe.home.checkout.CheckoutFragmentArgs
 import com.example.tokopaerbe.home.checkout.ListCheckout
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
+@AndroidEntryPoint
 class ComposeDetailProduct : Fragment() {
 
-    private lateinit var factory: ViewModelFactory
     private val model: ViewModel by activityViewModels()
     private val args: ComposeDetailProductArgs by navArgs()
     private var productId: String = ""
     private var token: String = ""
-    private var listSearchResult: List<String>? = listOf()
+    private var userToken: String = ""
+    private var listImage: List<String>? = listOf()
     private var productVariant: List<ProductVariant>? = listOf()
 
     private lateinit var listCheckout: ArrayList<CheckoutDataClass>
@@ -127,71 +127,29 @@ class ComposeDetailProduct : Fragment() {
     @SuppressLint("CoroutineCreationDuringComposition")
     @Composable
     fun DetailProductScreenViewModel() {
-        val userToken = model.getUserToken().collectAsState(initial = null).value
-        token = "Bearer $userToken"
-        Log.d("cekTokenForDetail", token)
         productId = args.productIdCompose
-        Log.d("cekComposeId", productId)
-        model.getDetailProductData(token, productId)
-
-        var price: Int? = 0
-        var itemPrice: String? = ""
-        var productName: String? = ""
-        var sold: String? = ""
-        var rating: String? = ""
-        var review: String? = ""
-        var selectedVariant: String? = ""
-        var descProduct: String? = ""
-        var ratingGedeDibawah: String? = ""
-        var satisfaction: String? = ""
-        var totalRating: String? = ""
-        var index: Int? = 0
-        var stock: Int? = 0
-        var store: String? = ""
-        var sale: Int? = 0
-        var code: Int? = 0
-
-        price = model.detail.observeAsState().value?.data?.productPrice
-        productName = model.detail.observeAsState().value?.data?.productName
-        sold = "${model.detail.observeAsState().value?.data?.sale}"
-        rating = model.detail.observeAsState().value?.data?.productRating.toString()
-        review = model.detail.observeAsState().value?.data?.totalReview.toString()
-        descProduct = model.detail.observeAsState().value?.data?.description
-        ratingGedeDibawah = model.detail.observeAsState().value?.data?.productRating.toString()
-        satisfaction =
-            "${model.detail.observeAsState().value?.data?.totalSatisfaction} pembeli merasa puas"
-        totalRating =
-            "${model.detail.observeAsState().value?.data?.totalRating} rating ${model.detail.observeAsState().value?.data?.totalReview} ulasan"
-        productVariant = model.detail.observeAsState().value?.data?.productVariant
-        stock = model.detail.observeAsState().value?.data?.stock
-        store = model.detail.observeAsState().value?.data?.store
-        sale = model.detail.observeAsState().value?.data?.sale
-        code = model.detail.observeAsState().value?.code
-        Log.d("cekPriceDetailCompose", itemPrice.toString())
-
-        listSearchResult = model.detail.observeAsState().value?.data?.image
-        Log.d("cekImage", listSearchResult.toString())
-
-        if (price != null) {
-            fun formatPrice(price: Double?): String {
-                val numberFormat = NumberFormat.getNumberInstance(
-                    Locale(
-                        "id",
-                        "ID"
-                    )
-                ) // Use the appropriate locale for your formatting
-                return numberFormat.format(price)
-            }
-            itemPrice = formatPrice(price.toDouble())
+        LaunchedEffect(key1 = Unit) {
+            model.getDetailProductData(productId)
         }
-        model.priceDetail = itemPrice.toString()
+            var price: Int? = 0
+            var itemPrice: String? = ""
+            var productName: String? = ""
+            var sold: String? = ""
+            var rating: String? = ""
+            var review: String? = ""
+            var selectedVariant: String? = ""
+            var descProduct: String? = ""
+            var ratingGedeDibawah: String? = ""
+            var satisfaction: String? = ""
+            var totalRating: String? = ""
+            var index: Int? = 0
+            var stock: Int? = 0
+            var store: String? = ""
+            var sale: Int? = 0
 
-        Log.d("cekCodeDetail", code.toString())
-
-        ProgressBarDemo(isLoading = true)
         var showDetail by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
-
+        ProgressBarDemo()
         LaunchedEffect(Unit) {
             coroutineScope.launch {
                 delay(1000)
@@ -199,37 +157,92 @@ class ComposeDetailProduct : Fragment() {
             }
         }
 
-        if (code != 200 && showDetail) {
-            Log.d("test", "null")
-            ErrorStateScreen()
-        } else if (showDetail) {
-            Log.d("test", "non null")
-            ProgressBarDemo(isLoading = false)
-            DetailProductScreen(
-                price,
-                itemPrice,
-                productName,
-                sold,
-                rating,
-                review,
-                selectedVariant,
-                descProduct,
-                ratingGedeDibawah,
-                satisfaction,
-                totalRating,
-                listSearchResult,
-                productVariant,
-                index,
-                stock,
-                store,
-                sale,
-            )
+        if (showDetail) {
+            val detailProductData = model.productDetailData.collectAsStateWithLifecycle(initialValue = null).value
+
+            when (detailProductData) {
+                is SealedClass.Init -> {
+                    Log.d("cekDetailFlow", "init")
+                }
+                is SealedClass.Loading -> {
+//                    ProgressBarDemo()
+                    Log.d("cekDetailFlow", "Loading")
+                }
+                is SealedClass.Success -> {
+                    Log.d("cekDetailFlow", "success")
+                    price = detailProductData.data.data.productPrice
+                    productName = detailProductData.data.data.productName
+                    sold = "${detailProductData.data.data.sale}"
+                    rating = detailProductData.data.data.productRating.toString()
+                    review = detailProductData.data.data.totalReview.toString()
+                    descProduct = detailProductData.data.data.description
+                    ratingGedeDibawah = detailProductData.data.data.productRating.toString()
+                    satisfaction =
+                        "${detailProductData.data.data.totalSatisfaction} pembeli merasa puas"
+                    totalRating =
+                        "${detailProductData.data.data.totalRating} rating ${detailProductData.data.data.totalReview} ulasan"
+                    productVariant = detailProductData.data.data.productVariant
+                    stock = detailProductData.data.data.stock
+                    store = detailProductData.data.data.store
+                    sale = detailProductData.data.data.sale
+                    listImage = detailProductData.data.data.image
+
+                    fun formatPrice(price: Double?): String {
+                        val numberFormat = NumberFormat.getNumberInstance(
+                            Locale(
+                                "id",
+                                "ID"
+                            )
+                        )
+                        return numberFormat.format(price)
+                    }
+
+                    itemPrice = formatPrice(price.toDouble())
+                    model.priceDetail = itemPrice
+
+                    DetailProductScreen(
+                        price,
+                        itemPrice,
+                        productName,
+                        sold,
+                        rating,
+                        review,
+                        selectedVariant,
+                        descProduct,
+                        ratingGedeDibawah,
+                        satisfaction,
+                        totalRating,
+                        listImage,
+                        productVariant,
+                        index,
+                        stock,
+                        store,
+                        sale,
+                    )
+                }
+
+                is SealedClass.Error -> {
+                    Log.d("cekDetailFlow", "error")
+                    ErrorStateScreen()
+                    Toast.makeText(
+                        requireContext(),
+                        detailProductData.message.errorMessage(),
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+
+                else -> {
+
+                }
+            }
         }
+
+
     }
 
     @Composable
-    fun ProgressBarDemo(isLoading: Boolean) {
-        if (isLoading) {
+    fun ProgressBarDemo() {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -239,7 +252,6 @@ class ComposeDetailProduct : Fragment() {
                     color = colorResource(id = R.color.primaryColor)
                 )
             }
-        }
     }
 
     @OptIn(
@@ -261,7 +273,7 @@ class ComposeDetailProduct : Fragment() {
         ratingGedeDibawah: String? = "",
         satisfaction: String? = "",
         totalRating: String? = "",
-        listSearchResult: List<String>? = listOf(),
+        listImage: List<String>? = listOf(),
         productVariant: List<ProductVariant>? = listOf(),
         index: Int? = 0,
         stock: Int? = 0,
@@ -280,10 +292,7 @@ class ComposeDetailProduct : Fragment() {
         var priceState by rememberSaveable { mutableStateOf(price) }
         var itemPriceState by rememberSaveable { mutableStateOf(itemPrice) }
 
-//        priceState = price
-//        itemPriceState = itemPrice
         selectedVariantState = selectedVariant
-//        selectedVariantIndex = model.selectedChip
 
         var favorite: WishlistEntity? = null
         var isImageChanged by rememberSaveable { mutableStateOf(false) }
@@ -345,9 +354,9 @@ class ComposeDetailProduct : Fragment() {
                                 // Handle button click here
                                 listCheckout = ArrayList()
                                 if (selectedVariantIndex == 0) {
-                                    if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
+                                    if (productName != null && productVariant != null && stock != null && price != null && listImage != null) {
                                         val productId = productId
-                                        val productImage = listSearchResult[0]
+                                        val productImage = listImage[0]
                                         val productNameData = productName
                                         val productVariantData = productVariant[0].variantName
                                         val productStock = stock
@@ -365,9 +374,9 @@ class ComposeDetailProduct : Fragment() {
                                         listCheckout.add(product)
                                     }
                                 } else {
-                                    if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
+                                    if (productName != null && productVariant != null && stock != null && price != null && listImage != null) {
                                         val productId = productId
-                                        val productImage = listSearchResult[0]
+                                        val productImage = listImage[0]
                                         val productNameData = productName
                                         val productVariantData = productVariant[1].variantName
                                         val productStock = stock
@@ -420,7 +429,7 @@ class ComposeDetailProduct : Fragment() {
                                         Log.d("cek1", "klik1")
 
                                         if (productCart.toString() == "null") {
-                                            if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
+                                            if (productName != null && productVariant != null && stock != null && price != null && listImage != null) {
                                                 model.addCartProduct(
                                                     productId,
                                                     productName,
@@ -428,7 +437,7 @@ class ComposeDetailProduct : Fragment() {
                                                     stock,
                                                     priceState!!,
                                                     1,
-                                                    listSearchResult[0],
+                                                    listImage[0],
                                                     false
                                                 )
                                                 Toast.makeText(
@@ -455,7 +464,7 @@ class ComposeDetailProduct : Fragment() {
                                         Log.d("cek2", "klik2")
 
                                         if (productCart.toString() == "null") {
-                                            if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null) {
+                                            if (productName != null && productVariant != null && stock != null && price != null && listImage != null) {
                                                 model.addCartProduct(
                                                     productId,
                                                     productName,
@@ -463,7 +472,7 @@ class ComposeDetailProduct : Fragment() {
                                                     stock,
                                                     priceState!!,
                                                     1,
-                                                    listSearchResult[0],
+                                                    listImage[0],
                                                     false
                                                 )
                                             }
@@ -524,14 +533,14 @@ class ComposeDetailProduct : Fragment() {
             ) {
                 val pagerState = rememberPagerState()
 
-                listSearchResult?.size?.let {
+                listImage?.size?.let {
                     Box {
                         HorizontalPager(
                             modifier = Modifier.fillMaxSize(),
                             pageCount = it,
                             state = pagerState
                         ) { pageIndex ->
-                            val imageUrl = listSearchResult[pageIndex]
+                            val imageUrl = listImage[pageIndex]
                             Image(
                                 painter = rememberImagePainter(
                                     data = imageUrl,
@@ -608,18 +617,18 @@ class ComposeDetailProduct : Fragment() {
                                 lifecycleScope.launch {
                                     val productWishlist = model.getWishlistforDetail(productId)
                                     if (productWishlist.toString() == "null") {
-                                        if (productName != null && productVariant != null && stock != null && price != null && listSearchResult != null && store != null && rating != null && sale != null) {
+                                        if (productName != null && productVariant != null && stock != null && price != null && listImage != null && store != null && rating != null && sale != null) {
                                             isImageChanged = true
                                             model.addWishList(
                                                 productId,
                                                 productName,
                                                 priceState!!,
-                                                listSearchResult[0],
+                                                listImage[0],
                                                 store,
                                                 rating.toFloat(),
                                                 sale,
                                                 stock,
-                                                productVariant[selectedVariantIndex!!].variantName,
+                                                productVariant[selectedVariantIndex].variantName,
                                                 1
                                             )
                                             Toast
@@ -678,7 +687,13 @@ class ComposeDetailProduct : Fragment() {
 //                            contentDescription = null,
 //                            modifier = Modifier.matchParentSize()
 //                        )
-                        Row (Modifier.border(width = 1.dp, color = colorResource(id = R.color.greyBorder), shape = RoundedCornerShape(4.dp))) {
+                        Row(
+                            Modifier.border(
+                                width = 1.dp,
+                                color = colorResource(id = R.color.greyBorder),
+                                shape = RoundedCornerShape(4.dp)
+                            )
+                        ) {
                             Image(
                                 painter = painterResource(id = R.drawable.star_15),
                                 contentDescription = null,
@@ -691,7 +706,11 @@ class ComposeDetailProduct : Fragment() {
                             )
                             Text(
                                 text = "($review)",
-                                modifier = Modifier.padding(start = 6.dp, bottom = 4.dp, end = 8.dp),
+                                modifier = Modifier.padding(
+                                    start = 6.dp,
+                                    bottom = 4.dp,
+                                    end = 8.dp
+                                ),
                             )
                         }
                     }
@@ -896,7 +915,7 @@ class ComposeDetailProduct : Fragment() {
 
                 Button(
                     onClick = {
-                        model.getDetailProductData(token, productId)
+                        model.getDetailProductData(productId)
                     }
                 ) {
                     Text(text = stringResource(id = R.string.refreshButtonError))

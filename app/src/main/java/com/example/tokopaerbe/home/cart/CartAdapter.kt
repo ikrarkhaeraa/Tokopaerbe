@@ -107,6 +107,7 @@ class CartAdapter(
             binding.apply {
                 Glide.with(itemView.context)
                     .load(data.image)
+                    .placeholder(R.drawable.image_loading)
                     .into(itemImage)
                 itemTitle.text = data.productName
                 variant.text = data.variantName

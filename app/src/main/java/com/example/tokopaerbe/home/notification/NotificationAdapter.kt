@@ -44,7 +44,7 @@ class NotificationAdapter(
         @SuppressLint("SetTextI18n", "ResourceAsColor")
         fun bind(data: NotificationsEntity) {
             binding.apply {
-                Glide.with(itemView.context).load(data.notifImage).into(itemImage)
+                Glide.with(itemView.context).load(data.notifImage).placeholder(R.drawable.image_loading).into(itemImage)
                 itemTitle.text = data.notifType
                 transactionSuccess.text = data.notifTitle
                 body.text = data.notifBody

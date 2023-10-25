@@ -7,36 +7,39 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.core.retrofit.RatingRequestBody
+import com.example.tokopaerbe.core.utils.ErrorMessage.errorMessage
+import com.example.tokopaerbe.core.utils.SealedClass
 import com.example.tokopaerbe.databinding.FragmentStatusBinding
 import com.example.tokopaerbe.home.transaction.TransactionDataClass
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
+@AndroidEntryPoint
 class StatusFragment : Fragment() {
 
     private var _binding: FragmentStatusBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
     private var ratingBar: Int? = null
     private var review: String? = null
 
@@ -59,75 +62,70 @@ class StatusFragment : Fragment() {
 
         binding.reviewedittext.addTextChangedListener(reviewTextWatcher)
 
-        if (model.fulfillment.value?.code == 200 && itemTransaction.toString() == "null") {
-            model.fulfillment.observe(viewLifecycleOwner) {
-                binding.idTransaksiValue.text = it.data.invoiceId
-                binding.StatusValue.text = getString(R.string.statusValue)
-                binding.tanggalValue.text = it.data.date
-                binding.waktuValue.text = it.data.time
-                binding.metodePembayaranValue.text = it.data.payment
-                val totalPrice = formatPrice(it.data.total.toDouble())
-                binding.totalPembayaranValue.text = "Rp$totalPrice"
+        binding.idTransaksiValue.text = itemTransaction?.invoiceId
+        binding.StatusValue.text = getString(R.string.statusValue)
+        binding.tanggalValue.text = itemTransaction?.tanggalValue
+        binding.waktuValue.text = itemTransaction?.waktuValue
+        binding.metodePembayaranValue.text = itemTransaction?.metodePembayaranValue
+        val totalPrice = formatPrice(itemTransaction?.totalPembayaranValue!!.toDouble())
+        binding.totalPembayaranValue.text = "Rp$totalPrice"
 
-                binding.buttonSelesai.setOnClickListener { view ->
-                    lifecycleScope.launch {
-                        val token = model.getUserToken().first()
-                        val auth = "Bearer $token"
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.PURCHASE) {
+            param(
+                FirebaseAnalytics.Param.TRANSACTION_ID,
+                itemTransaction!!.invoiceId
+            )
+            param(FirebaseAnalytics.Param.AFFILIATION, "Google Store")
+            param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
+            param(FirebaseAnalytics.Param.VALUE, itemTransaction?.totalPembayaranValue.toString())
+            param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
+            param(
+                FirebaseAnalytics.Param.ITEMS,
+                arrayOf(itemTransaction).toString()
+            )
+        }
 
-                        model.postDataRating(auth, it.data.invoiceId, ratingBar, review)
-                        Log.d("cekStatusData", ratingBar.toString())
-                        Log.d("cekStatusData", review.toString())
+        binding.buttonSelesai.setOnClickListener { view ->
 
-                        model.rating.observe(viewLifecycleOwner) { ratingResponse ->
-                            if (ratingResponse.code == "200") {
-                                findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
-                            }
-                        }
-                    }
-                }
-
-                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.PURCHASE) {
-                    param(FirebaseAnalytics.Param.TRANSACTION_ID, it.data.invoiceId)
-                    param(FirebaseAnalytics.Param.AFFILIATION, "Google Store")
-                    param(FirebaseAnalytics.Param.CURRENCY, "Rupiah")
-                    param(FirebaseAnalytics.Param.VALUE, it.data.total.toString())
-//                    param(FirebaseAnalytics.Param.TAX, 2.58)
-//                    param(FirebaseAnalytics.Param.SHIPPING, 5.34)
-                    param(FirebaseAnalytics.Param.COUPON, "SUMMER_FUN")
-                    param(FirebaseAnalytics.Param.ITEMS, arrayOf(itemTransaction).toString())
-                }
+            firebaseAnalytics.logEvent("button_click") {
+                param(
+                    FirebaseAnalytics.Param.METHOD,
+                    "Finish Transaction Button"
+                )
             }
-        } else {
-            Log.d("cekItemTransaction", itemTransaction.toString())
-            binding.idTransaksiValue.text = itemTransaction?.invoiceId
-            binding.StatusValue.text = getString(R.string.statusValue)
-            binding.tanggalValue.text = itemTransaction?.tanggalValue
-            binding.waktuValue.text = itemTransaction?.waktuValue
-            binding.metodePembayaranValue.text = itemTransaction?.metodePembayaranValue
-            val totalPrice = formatPrice(itemTransaction?.totalPembayaranValue!!.toDouble())
-            binding.totalPembayaranValue.text = "Rp$totalPrice"
 
-            binding.buttonSelesai.setOnClickListener { view ->
-                binding.buttonSelesai.visibility = INVISIBLE
-                showLoading(true)
-                lifecycleScope.launch {
-                    val token = model.getUserToken().first()
-                    val auth = "Bearer $token"
+            viewLifecycleOwner.lifecycleScope.launch {
+                val token = model.getUserToken().first()
+                val auth = "Bearer $token"
+                val requestBody = RatingRequestBody(itemTransaction!!.invoiceId, ratingBar, review)
+                model.postDataRating(auth, requestBody)
+                Log.d("cekStatusData", ratingBar.toString())
+                Log.d("cekStatusData", review.toString())
+                model.ratingData.collect {
+                    when (it) {
+                        is SealedClass.Loading -> {
+                            binding.buttonSelesai.visibility = INVISIBLE
+                            showLoading(true)
+                        }
 
-                    model.postDataRating(auth, itemTransaction!!.invoiceId, ratingBar, review)
-                    Log.d("cekStatusData", ratingBar.toString())
-                    Log.d("cekStatusData", review.toString())
-
-                    model.rating.observe(viewLifecycleOwner) { ratingResponse ->
-                        if (ratingResponse.code == "200") {
+                        is SealedClass.Success -> {
                             findNavController().navigate(R.id.action_statusFragment_to_main_navigation)
                         }
+
+                        is SealedClass.Error -> {
+                            Toast.makeText(
+                                requireContext(),
+                                it.message.errorMessage(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                        else -> {
+
+                        }
                     }
                 }
 
-                firebaseAnalytics.logEvent("button_click") {
-                    param(FirebaseAnalytics.Param.METHOD, "Finish Transaction Button")
-                }
             }
         }
 
@@ -156,7 +154,6 @@ class StatusFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentStatusBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
     }
 

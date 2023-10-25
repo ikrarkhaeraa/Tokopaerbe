@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +17,6 @@ import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.retrofit.response.PaymentResponse
 import com.example.tokopaerbe.databinding.FragmentPilihPembayaranBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ConfigUpdate
 import com.google.firebase.remoteconfig.ConfigUpdateListener
@@ -25,14 +25,15 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigException
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.gson.Gson
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickListener {
 
     private var _binding: FragmentPilihPembayaranBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
     private var clickedLabel: String? = null
     private var clickedImage: String? = null
     private lateinit var jsonModel: PaymentResponse
@@ -43,7 +44,6 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPilihPembayaranBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
     }
 
@@ -62,14 +62,6 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
         val adapter = PilihPembayaranAdapter(this)
         binding.recyclerView.adapter = adapter
 
-//        model.payment.observe(viewLifecycleOwner) {
-//            Log.d("cekPayment", it.toString())
-//            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-//            val adapter = PilihPembayaranAdapter(this)
-//            binding.recyclerView.adapter = adapter
-//            adapter.submitList(it.data)
-//        }
-
         val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
         val configSettings = remoteConfigSettings {
             minimumFetchIntervalInSeconds = 3600
@@ -78,6 +70,7 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
         remoteConfig.setDefaultsAsync(R.xml.remote_config_default)
 
         remoteConfig.fetchAndActivate().addOnCompleteListener(requireActivity()) { task ->
+            showLoading(true)
             if (task.isSuccessful) {
                 val updated = task.result
                 Log.d("cekRemoteConfig", "Config params updated: $updated")
@@ -93,6 +86,7 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
                 if (stringJson.isNotEmpty()) {
                     jsonModel = gson.fromJson(stringJson, PaymentResponse::class.java)
                     Log.d("cekPayment", jsonModel.toString())
+                    showLoading(false)
                     adapter.submitList(jsonModel.data)
                 } else {
                     // probably your remote param not exists
@@ -140,5 +134,13 @@ class PilihPembayaranFragment : Fragment(), MetodePembayaranAdapter.OnItemClickL
         Log.d("cekChoosenMethod", choosenMethod.toString())
 
         findNavController().navigateUp()
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
     }
 }

@@ -43,7 +43,7 @@
 
     <action
         android:id="@+id/store_to_detailCompose"
-        app:destination="@id/composeDetailProduct" />
+        app:destination="@id/detailProductCompose" />
 
     <action
         android:id="@+id/action_detailProductCompose_to_checkoutFragment"
@@ -186,11 +186,11 @@
             app:argType="integer" />
     </fragment>
 
-    <fragment
-        android:id="@+id/composeDetailProduct"
-        android:name="com.example.tokopaerbe.home.store.ComposeDetailProduct"
-        android:label="fragment_compose_detail_product"
-        tools:layout="@layout/fragment_compose_detail_product" />
+<!--    <fragment-->
+<!--        android:id="@+id/composeDetailProduct"-->
+<!--        android:name="com.example.tokopaerbe.home.store.ComposeDetailProduct"-->
+<!--        android:label="fragment_compose_detail_product"-->
+<!--        tools:layout="@layout/fragment_compose_detail_product" />-->
 
     <fragment
         android:id="@+id/transactionFragment"

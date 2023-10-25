@@ -7,6 +7,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.retrofit.response.Product
 import com.example.tokopaerbe.databinding.ItemProductGridBinding
 import java.text.NumberFormat
@@ -56,6 +57,7 @@ class GridProductAdapter(private val onProductClick: (Product) -> Unit) :
             binding.apply {
                 Glide.with(itemView)
                     .load(productData.image)
+                    .placeholder(R.drawable.image_loadinggrid)
                     .into(binding.itemImage)
                 binding.itemTitle.text = productData.productName
                 val itemPrice = formatPrice(productData.productPrice.toDouble())

@@ -10,32 +10,36 @@ import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.core.retrofit.RegisterRequestBody
 import com.example.tokopaerbe.core.retrofit.user.UserRegister
+import com.example.tokopaerbe.core.utils.ErrorMessage.errorMessage
+import com.example.tokopaerbe.core.utils.SealedClass
 import com.example.tokopaerbe.databinding.FragmentRegisterBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
 
     private var _binding: FragmentRegisterBinding? = null
@@ -44,8 +48,7 @@ class RegisterFragment : Fragment() {
     private var isEmailValid = false
     private var isPasswordValid = false
 
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
 
     private lateinit var email: String
     private lateinit var password: String
@@ -81,7 +84,6 @@ class RegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
     }
 
@@ -218,6 +220,7 @@ class RegisterFragment : Fragment() {
         binding.buttonDaftar.isEnabled = isBothFieldsValid && isBothFieldsNotEmpty
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun chooseButton() {
         binding.apply {
             buttonMasuk.setOnClickListener {
@@ -228,42 +231,44 @@ class RegisterFragment : Fragment() {
             }
 
             buttonDaftar.setOnClickListener {
-                buttonDaftar.visibility = INVISIBLE
                 firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP) {
                     param(FirebaseAnalytics.Param.METHOD, email)
                 }
 
-                showLoading(true)
-                model.postDataRegister(API_KEY, email, password, firebaseToken)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val requestBody = RegisterRequestBody(email, password, firebaseToken)
+                    model.postDataRegister(API_KEY, requestBody)
+                    model.registerData.collect {
+                        when (it) {
+                            is SealedClass.Loading -> {
+                                buttonDaftar.visibility = INVISIBLE
+                                showLoading(true)
+                            }
+                            is SealedClass.Success -> {
+                                model.userLogin()
+                                saveUserRegister(
+                                    UserRegister(
+                                        it.data.data.accessToken,
+                                        it.data.data.refreshToken,
+                                        it.data.data.expiresAt
+                                    )
+                                )
+                                GlobalScope.launch(Dispatchers.Main) {
+                                    delay(delayMillis)
+                                    goToProfile()
+                                }
+                            }
+                            is SealedClass.Error -> {
+                                Toast.makeText(requireContext(), it.message.errorMessage(), Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
 
-                lifecycleScope.launch {
-                    val it = model.signUp.first()
-
-                    Log.d("cekRegisterResponse", it.data.toString())
-
-                    if (it.code == 200) {
-                        model.userLogin()
-
-                        saveUserRegister(
-                            UserRegister(
-                                it.data.accessToken,
-                                it.data.refreshToken,
-                                it.data.expiresAt
-                            )
-                        )
-
-                        GlobalScope.launch(Dispatchers.Main) {
-                            delay(delayMillis)
-                            goToProfile()
+                            }
                         }
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.registerInvalid),
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
                 }
+
+
             }
         }
     }

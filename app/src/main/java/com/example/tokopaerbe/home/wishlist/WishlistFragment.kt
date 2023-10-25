@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,17 +17,17 @@ import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.room.WishlistEntity
 import com.example.tokopaerbe.databinding.FragmentWishlistBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
+@AndroidEntryPoint
 class WishlistFragment : Fragment() {
 
     private var _binding: FragmentWishlistBinding? = null
     private val binding get() = _binding!!
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
 
     private val myCoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -37,7 +38,6 @@ class WishlistFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentWishlistBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

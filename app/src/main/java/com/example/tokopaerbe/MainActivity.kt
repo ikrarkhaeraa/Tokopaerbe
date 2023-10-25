@@ -23,14 +23,18 @@ import com.example.tokopaerbe.viewmodel.ViewModel
 import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var factory: ViewModelFactory
+    @Inject
+    lateinit var factory: ViewModelFactory
     private val model: ViewModel by viewModels { factory }
 
     private val navHostFragment: NavHostFragment by lazy {
@@ -74,7 +78,6 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        factory = ViewModelFactory.getInstance(this)
         setContentView(binding.root)
         supportActionBar?.hide()
 
@@ -93,7 +96,6 @@ class MainActivity : AppCompatActivity() {
                     msg = "Subscribe Failed"
                 }
                 Log.d("cekSubs", msg)
-//                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
 
         model.getRefreshResponseCode().observe(this) {
@@ -102,27 +104,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        checkUserStatus()
         cekTheme()
-    }
-
-    private fun checkUserStatus() {
-        lifecycleScope.launch {
-            val userFirstInstallState = model.getUserFirstInstallState().first()
-            val userLoginState = model.getUserLoginState().first()
-            val userName = model.getUserName().first()
-
-            if (userFirstInstallState) {
-//                model.userInstall()
-                navController.navigate(R.id.action_loginFragment_to_onBoardingFragment)
-            } else if (!userLoginState && !userFirstInstallState) {
-                navController.navigate(R.id.main_to_prelogin)
-            } else if (userName.isEmpty()) {
-                navController.navigate(R.id.action_loginFragment_to_profileFragment)
-            } else {
-                navController.navigate(R.id.prelogin_to_main)
-            }
-        }
     }
 
     private fun cekTheme() {

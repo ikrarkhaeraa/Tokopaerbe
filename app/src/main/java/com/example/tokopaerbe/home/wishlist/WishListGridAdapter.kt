@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.room.WishlistEntity
 import com.example.tokopaerbe.databinding.ItemGridWishlistBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
@@ -106,6 +107,7 @@ class WishListGridAdapter(
             binding.apply {
                 Glide.with(itemView.context)
                     .load(data.image)
+                    .placeholder(R.drawable.image_loadinggrid)
                     .into(itemImage)
                 itemTitle.text = data.productName
                 var itemPrice = formatPrice(data.productPrice.toDouble())

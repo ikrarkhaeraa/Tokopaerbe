@@ -9,7 +9,7 @@
         android:id="@+id/mainFragment"
         android:name="com.example.tokopaerbe.home.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main"></fragment>
+        tools:layout="@layout/fragment_main"/>
 
 
 </navigation>

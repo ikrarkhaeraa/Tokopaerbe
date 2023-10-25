@@ -13,54 +13,37 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.PagingDataAdapter
-import androidx.paging.flatMap
-import androidx.paging.log
-import androidx.paging.map
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.R
-import com.example.tokopaerbe.core.pagging.PaggingModel
 import com.example.tokopaerbe.core.retrofit.response.Product
 import com.example.tokopaerbe.core.retrofit.user.UserFilter
 import com.example.tokopaerbe.databinding.FragmentStoreBinding
 import com.example.tokopaerbe.pagging.LoadingStateAdapter
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.android.material.chip.Chip
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
-import okhttp3.internal.wait
+import okio.IOException
 
 class StoreFragment : Fragment() {
 
     private var _binding: FragmentStoreBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var factory: ViewModelFactory
     private val model: ViewModel by activityViewModels()
-
-    private val paggingModel: PaggingModel by viewModels {
-        com.example.tokopaerbe.core.pagging.ViewModelFactory(requireContext())
-    }
 
     private val gridProductAdapter = GridProductAdapter { product ->
         (requireActivity() as MainActivity).goToProduct(product.productId)
@@ -70,174 +53,16 @@ class StoreFragment : Fragment() {
         (requireActivity() as MainActivity).goToProduct(product.productId)
     }
 
-//    private var searchText: String? = null
-//    private var selectedText1: String? = null
-//    private var selectedText2: String? = null
-//    private var textTerendah: String? = null
-//    private var textTertinggi: String? = null
-
-    private var totalCount = 0
-    private val delayMillis = 1000L
     private val filterParams = MutableStateFlow(UserFilter(null, null, null, null, null))
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private lateinit var listProduct: PagingData<Product>
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentStoreBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
-
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().navigateUp()
-            }
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
-
-        return binding.root
-    }
-
-    @SuppressLint("SetTextI18n")
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Obtain the FirebaseAnalytics instance.
         firebaseAnalytics = Firebase.analytics
 
-        binding.filterChip.visibility = GONE
-        binding.changeRV.visibility = GONE
-        binding.divider.visibility = GONE
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(1200)
-            binding.shimmerFilter.visibility = GONE
-            binding.shimmerChangerv.visibility = GONE
-            binding.divider.visibility = VISIBLE
-            binding.filterChip.visibility = VISIBLE
-            binding.changeRV.visibility = VISIBLE
-        }
-
-        if (!model.rvStateStore) {
-            binding.shimmer.visibility = GONE
-        } else {
-            binding.shimmerGrid.visibility = GONE
-        }
-
-        binding.gambarerror.visibility = GONE
-        binding.errorTitle.visibility = GONE
-        binding.errorDesc.visibility = GONE
-        binding.resetButton.visibility = GONE
-
-        // Set up the refresh listener
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            binding.swipeRefreshLayout.isRefreshing = false
-            binding.recyclerView.visibility = GONE
-            binding.chipgroup.visibility = GONE
-            if (!model.rvStateStore) {
-                Log.d("cekPullRefresh", "grid")
-                binding.shimmerGrid.visibility = VISIBLE
-                binding.filterChip.visibility = GONE
-                binding.changeRV.visibility = GONE
-                binding.divider.visibility = GONE
-                binding.shimmerFilter.visibility = VISIBLE
-                binding.shimmerChangerv.visibility = VISIBLE
-
-                paggingModel.sendFilter(
-                    model.storeSearchText,
-                    model.storeSelectedText1,
-                    model.storeSelectedText2,
-                    model.storeTextTerendah?.toInt(),
-                    model.storeTextTertinggi?.toInt()
-                ).observe(viewLifecycleOwner) { result ->
-                    model.getCode().observe(viewLifecycleOwner) { code ->
-                        if (code == 200) {
-                            Log.d("cekCode", code.toString())
-                            gridProductAdapter.submitData(lifecycle, result)
-                            GlobalScope.launch(Dispatchers.Main) {
-                                delay(1000)
-                                binding.chipgroup.visibility = VISIBLE
-                                binding.shimmerFilter.visibility = GONE
-                                binding.shimmerChangerv.visibility = GONE
-                                binding.divider.visibility = VISIBLE
-                                binding.filterChip.visibility = VISIBLE
-                                binding.changeRV.visibility = VISIBLE
-                                binding.shimmerGrid.visibility = GONE
-                                binding.recyclerView.visibility = VISIBLE
-                            }
-                        } else {
-                            binding.recyclerView.visibility = GONE
-                            binding.gambarerror.visibility = VISIBLE
-                            binding.errorTitle.visibility = VISIBLE
-                            binding.errorTitle.text = getString(R.string.errorTitle)
-                            binding.errorDesc.visibility = VISIBLE
-                            binding.errorDesc.text = getString(R.string.errorDesc)
-                            binding.resetButton.visibility = VISIBLE
-                            binding.resetButton.setOnClickListener {
-                                resetOrRefresh()
-                            }
-                        }
-                    }
-                }
-            } else {
-                Log.d("cekPullRefresh", "linear")
-                binding.shimmer.visibility = VISIBLE
-                binding.filterChip.visibility = GONE
-                binding.changeRV.visibility = GONE
-                binding.divider.visibility = GONE
-                binding.shimmerFilter.visibility = VISIBLE
-                binding.shimmerChangerv.visibility = VISIBLE
-
-                paggingModel.sendFilter(
-                    model.storeSearchText,
-                    model.storeSelectedText1,
-                    model.storeSelectedText2,
-                    model.storeTextTerendah?.toInt(),
-                    model.storeTextTertinggi?.toInt()
-                ).observe(viewLifecycleOwner) { result ->
-                    model.getCode().observe(viewLifecycleOwner) { code ->
-                        if (code == 200) {
-                            Log.d("cekCode", code.toString())
-                            linearProductAdapter.submitData(lifecycle, result)
-                            GlobalScope.launch(Dispatchers.Main) {
-                                delay(1000)
-                                binding.chipgroup.visibility = VISIBLE
-                                binding.shimmerFilter.visibility = GONE
-                                binding.shimmerChangerv.visibility = GONE
-                                binding.divider.visibility = VISIBLE
-                                binding.filterChip.visibility = VISIBLE
-                                binding.changeRV.visibility = VISIBLE
-                                binding.shimmer.visibility = GONE
-                                binding.recyclerView.visibility = VISIBLE
-                            }
-                        } else {
-                            binding.recyclerView.visibility = GONE
-                            binding.gambarerror.visibility = VISIBLE
-                            binding.errorTitle.visibility = VISIBLE
-                            binding.errorTitle.text = getString(R.string.errorTitle)
-                            binding.errorDesc.visibility = VISIBLE
-                            binding.errorDesc.text = getString(R.string.errorDesc)
-                            binding.resetButton.visibility = VISIBLE
-                            binding.resetButton.setOnClickListener {
-                                resetOrRefresh()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(delayMillis)
-            if (isVisible) {
-                settingFilter()
-                hitApi()
-            }
-        }
+        settingAdapter()
 
         binding.filterChip.setOnClickListener {
             val modalBottomSheet = ModalBottomSheetFragment()
@@ -260,140 +85,6 @@ class StoreFragment : Fragment() {
             }
         }
 
-        binding.changeRV.setOnClickListener {
-            model.rvStateStore = !model.rvStateStore
-            settingAdapter()
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun hitApi(){
-        val filterLiveData: LiveData<UserFilter> = filterParams.asLiveData()
-        filterLiveData.observe(viewLifecycleOwner) {
-            paggingModel.sendFilter(
-                model.storeSearchText,
-                model.storeSelectedText1,
-                model.storeSelectedText2,
-                model.storeTextTerendah?.toInt(),
-                model.storeTextTertinggi?.toInt()
-            ).observe(viewLifecycleOwner) { result ->
-
-                binding.chipgroup.removeAllViews()
-                val listFilter = listOf(
-                    model.storeSelectedText1,
-                    model.storeSelectedText2,
-                    model.storeTextTerendah,
-                    model.storeTextTertinggi
-                )
-                Log.d("cekListIndices", listFilter.indices.toString())
-                for (i in listFilter.indices) {
-                    val chip = Chip(requireActivity())
-                    chip.text = listFilter[i]
-                    if (i == 2 && model.storeTextTerendah != null) {
-                        chip.text = "> ${listFilter[2]}"
-                    }
-                    if (i == 3 && model.storeTextTertinggi != null) {
-                        chip.text = "< ${listFilter[3]}"
-                    }
-                    if (chip.text.isNotEmpty()) {
-                        binding.chipgroup.addView(chip)
-                        Log.d("cekAddChip", "add")
-                    }
-                }
-
-                model.getCode().observe(viewLifecycleOwner) {
-                    Log.d("cekCode", it.toString())
-                    Log.d("cekFilterData", model.storeSelectedText1.toString())
-                    Log.d("cekFilterData", model.storeSelectedText2.toString())
-                    when (it) {
-                        200, 0 -> {
-                            listProduct = result
-                            settingAdapter()
-                            firebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM_LIST) {
-                                param(FirebaseAnalytics.Param.ITEMS, result.toString())
-                            }
-                        }
-
-                        404 -> {
-                            emptyData()
-                        }
-
-                        500 -> {
-                            errorState()
-                        }
-
-                        else -> {
-                            noConnection()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun settingAdapter() {
-        if (!model.rvStateStore) {
-            binding.shimmerGrid.visibility = GONE
-            binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-            binding.recyclerView.adapter = gridProductAdapter
-
-            gridProductAdapter.addLoadStateListener {
-                totalCount = gridProductAdapter.itemCount
-                Log.d("ItemCount", "Total Item Count: $totalCount")
-
-                CoroutineScope(Dispatchers.Main).launch {
-                    delay(500)
-                    if (totalCount == 0) {
-                        noConnection()
-                    }
-                }
-            }
-
-            binding.recyclerView.adapter = gridProductAdapter.withLoadStateFooter(
-                footer = LoadingStateAdapter { gridProductAdapter.retry() }
-            )
-            (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =
-                object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return if (position == gridProductAdapter.itemCount) {
-                            2
-                        } else {
-                            1
-                        }
-                    }
-                }
-            gridProductAdapter.submitData(lifecycle, listProduct)
-            binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
-
-        } else {
-            binding.shimmer.visibility = GONE
-            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerView.adapter = linearProductAdapter
-
-            binding.recyclerView.adapter = linearProductAdapter.withLoadStateFooter(
-                footer = LoadingStateAdapter { linearProductAdapter.retry() }
-            )
-
-            linearProductAdapter.addLoadStateListener {
-                totalCount = linearProductAdapter.itemCount
-                Log.d("ItemCount", "Total Item Count: $totalCount")
-
-                CoroutineScope(Dispatchers.Main).launch {
-                    delay(500)
-                    if (totalCount == 0) {
-                        noConnection()
-                    }
-                }
-            }
-
-
-            linearProductAdapter.submitData(lifecycle, listProduct)
-            binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun settingFilter() {
         setFragmentResultListener("filter") { _, bundle ->
             binding.chipgroup.removeAllViews()
 
@@ -408,6 +99,182 @@ class StoreFragment : Fragment() {
             model.storeTextTertinggi = tertinggi
 
             updateFilter()
+        }
+
+        binding.changeRV.setOnClickListener {
+            model.rvStateStore = !model.rvStateStore
+            settingAdapter()
+            if (!model.rvStateStore) {
+                gridProductAdapter.submitData(viewLifecycleOwner.lifecycle, listProduct)
+            } else {
+                linearProductAdapter.submitData(viewLifecycleOwner.lifecycle, listProduct)
+            }
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = false
+            viewLifecycleOwner.lifecycleScope.launch {
+                sendAndGetRequestData()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val filterData: Flow<UserFilter> = filterParams
+            filterData.collectLatest {
+                Log.d("cekHit", "kehit")
+                sendAndGetRequestData()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            linearProductAdapter.loadStateFlow.collectLatest { pagingState ->
+                val isLoading = pagingState.refresh is LoadState.Loading
+                val isError = pagingState.refresh is LoadState.Error
+                val isSuccess = pagingState.refresh is LoadState.NotLoading
+
+                hideError()
+
+                if (isLoading) {
+                    hideUi()
+                    showShimmer()
+                } else if (isSuccess) {
+                    hideShimmer()
+                    showUi()
+                } else if (isError) {
+                    val error = (pagingState.refresh as LoadState.Error).error
+                    Log.d("cekError", error.message.toString())
+                    when (error) {
+                        is retrofit2.HttpException -> {
+                            Log.d("cekFlowError", "http")
+                            Log.d("cekCode", error.code().toString())
+                            if (error.code() == 404) {
+                                hideShimmer()
+                                emptyData()
+                            } else if (error.code() == 500) {
+                                hideShimmer()
+                                errorState()
+                            }
+                        }
+
+                        is IOException -> {
+                            Log.d("cekFlowError", "masukio")
+                            hideShimmer()
+                            noConnection()
+                        }
+                    }
+
+                } else {
+                    hideShimmer()
+                    errorState()
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            gridProductAdapter.loadStateFlow.collectLatest { pagingState ->
+                val isLoading = pagingState.refresh is LoadState.Loading
+                val isError = pagingState.refresh is LoadState.Error
+                val isSuccess = pagingState.refresh is LoadState.NotLoading
+
+                hideError()
+
+                if (isLoading) {
+                    hideUi()
+                    showShimmer()
+                } else if (isSuccess) {
+                    hideShimmer()
+                    showUi()
+                } else if (isError) {
+                    val error = (pagingState.refresh as LoadState.Error).error
+                    Log.d("cekError", error.message.toString())
+                    when (error) {
+                        is retrofit2.HttpException -> {
+                            if (error.code() == 404) {
+                                hideShimmer()
+                                emptyData()
+                            } else if (error.code() == 500) {
+                                hideShimmer()
+                                errorState()
+                            }
+                        }
+
+                        is IOException -> {
+                            hideShimmer()
+                            noConnection()
+                        }
+                    }
+
+                } else {
+                    hideShimmer()
+                    errorState()
+                }
+            }
+        }
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        // Inflate the layout for this fragment
+        _binding = FragmentStoreBinding.inflate(inflater, container, false)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
+
+        return binding.root
+    }
+
+    private suspend fun sendAndGetRequestData() {
+        model.sendFilter(
+            model.storeSearchText,
+            model.storeSelectedText1,
+            model.storeSelectedText2,
+            model.storeTextTerendah?.toInt(),
+            model.storeTextTertinggi?.toInt()
+        ).collectLatest {
+            Log.d("cekGetPaging", "get")
+            listProduct = it
+            settingChipGroup()
+            if (!model.rvStateStore) {
+                gridProductAdapter.submitData(lifecycle, listProduct)
+            } else {
+                linearProductAdapter.submitData(lifecycle, listProduct)
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun settingChipGroup() {
+        binding.chipgroup.removeAllViews()
+        val listFilter = listOf(
+            model.storeSelectedText1,
+            model.storeSelectedText2,
+            model.storeTextTerendah,
+            model.storeTextTertinggi
+        )
+        Log.d("cekListIndices", listFilter.indices.toString())
+        for (i in listFilter.indices) {
+            val chip = Chip(requireActivity())
+            chip.text = listFilter[i]
+            if (i == 2 && model.storeTextTerendah != null) {
+                chip.text = "> ${listFilter[2]}"
+            }
+            if (i == 3 && model.storeTextTertinggi != null) {
+                chip.text = "< ${listFilter[3]}"
+            }
+            if (chip.text.isNotEmpty()) {
+                binding.chipgroup.addView(chip)
+                Log.d("cekAddChip", "add")
+            }
         }
     }
 
@@ -436,7 +303,81 @@ class StoreFragment : Fragment() {
             model.storeTextTertinggi?.toInt()
         )
         filterParams.value = newFilter
-        hitApi()
+    }
+
+    private fun settingAdapter() {
+        if (!model.rvStateStore) {
+            binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.recyclerView.adapter = gridProductAdapter
+
+            binding.recyclerView.adapter = gridProductAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter { gridProductAdapter.retry() }
+            )
+            (binding.recyclerView.layoutManager as GridLayoutManager).spanSizeLookup =
+                object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return if (position == gridProductAdapter.itemCount) {
+                            2
+                        } else {
+                            1
+                        }
+                    }
+                }
+            binding.changeRV.setImageResource(R.drawable.baseline_grid_view_24)
+
+        } else {
+            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerView.adapter = linearProductAdapter
+
+            binding.recyclerView.adapter = linearProductAdapter.withLoadStateFooter(
+                footer = LoadingStateAdapter { linearProductAdapter.retry() }
+            )
+            binding.changeRV.setImageResource(R.drawable.baseline_format_list_bulleted_24)
+        }
+    }
+
+    private fun showShimmer() {
+        binding.shimmerFilter.visibility = VISIBLE
+        binding.shimmerChangerv.visibility = VISIBLE
+        if (!model.rvStateStore) {
+            Log.d("cekRvState", "false")
+            binding.shimmerGrid.visibility = VISIBLE
+            binding.shimmer.visibility = GONE
+        } else {
+            Log.d("cekRvState", "true")
+            binding.shimmer.visibility = VISIBLE
+            binding.shimmerGrid.visibility = GONE
+        }
+    }
+
+    private fun hideShimmer() {
+        binding.shimmer.visibility = GONE
+        binding.shimmerGrid.visibility = GONE
+        binding.shimmerChangerv.visibility = GONE
+        binding.shimmerFilter.visibility = GONE
+    }
+
+    private fun showUi() {
+        binding.divider.visibility = VISIBLE
+        binding.changeRV.visibility = VISIBLE
+        binding.filterChip.visibility = VISIBLE
+        binding.chipgroup.visibility = VISIBLE
+        binding.recyclerView.visibility = VISIBLE
+    }
+
+    private fun hideUi() {
+        binding.divider.visibility = GONE
+        binding.changeRV.visibility = GONE
+        binding.filterChip.visibility = GONE
+        binding.chipgroup.visibility = GONE
+        binding.recyclerView.visibility = GONE
+    }
+
+    private fun hideError() {
+        binding.gambarerror.visibility = GONE
+        binding.errorTitle.visibility = GONE
+        binding.errorDesc.visibility = GONE
+        binding.resetButton.visibility = GONE
     }
 
     private fun emptyData() {
@@ -450,28 +391,28 @@ class StoreFragment : Fragment() {
         binding.errorDesc.text = getString(R.string.errorDesc)
         binding.resetButton.visibility = VISIBLE
         binding.resetButton.setOnClickListener {
-            resetOrRefresh()
+            viewLifecycleOwner.lifecycleScope.launch {
+                resetOrRefresh()
+            }
         }
     }
 
     private fun noConnection() {
-
-        if (totalCount == 0) {
-            binding.shimmerGrid.visibility = GONE
-            binding.shimmer.visibility = GONE
-            binding.recyclerView.visibility = GONE
-            binding.gambarerror.visibility = VISIBLE
-            binding.errorTitle.visibility = VISIBLE
-            binding.errorTitle.text = getString(R.string.errorTitleConnection)
-            binding.errorDesc.visibility = VISIBLE
-            binding.errorDesc.text = getString(R.string.errorDescConnection)
-            binding.resetButton.visibility = VISIBLE
-            binding.resetButton.text = getString(R.string.refreshButtonError)
-            binding.resetButton.setOnClickListener {
+        binding.shimmerGrid.visibility = GONE
+        binding.shimmer.visibility = GONE
+        binding.recyclerView.visibility = GONE
+        binding.gambarerror.visibility = VISIBLE
+        binding.errorTitle.visibility = VISIBLE
+        binding.errorTitle.text = getString(R.string.errorTitleConnection)
+        binding.errorDesc.visibility = VISIBLE
+        binding.errorDesc.text = getString(R.string.errorDescConnection)
+        binding.resetButton.visibility = VISIBLE
+        binding.resetButton.text = getString(R.string.refreshButtonError)
+        binding.resetButton.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
                 resetOrRefresh()
             }
         }
-
     }
 
     private fun errorState() {
@@ -486,11 +427,13 @@ class StoreFragment : Fragment() {
         binding.resetButton.visibility = VISIBLE
         binding.resetButton.text = getString(R.string.refreshButtonError)
         binding.resetButton.setOnClickListener {
-            resetOrRefresh()
+            viewLifecycleOwner.lifecycleScope.launch {
+                resetOrRefresh()
+            }
         }
     }
 
-    private fun resetOrRefresh() {
+    private suspend fun resetOrRefresh() {
         binding.chipgroup.removeAllViews()
         binding.searchTextField.setText("")
         model.storeSearchText = null
@@ -504,26 +447,7 @@ class StoreFragment : Fragment() {
         model.textTerendah = ""
         model.textTertinggi = ""
         updateFilter()
-        val resetFilter: LiveData<UserFilter> = filterParams.asLiveData()
-        resetFilter.observe(viewLifecycleOwner) {
-            paggingModel.sendFilter(
-                model.storeSearchText,
-                model.storeSelectedText1,
-                model.storeSelectedText2,
-                model.storeTextTerendah?.toInt(),
-                model.storeTextTertinggi?.toInt()
-            ).observe(viewLifecycleOwner) { reset ->
-                Log.d("cekResetFilter", resetFilter.toString())
-                linearProductAdapter.submitData(lifecycle, reset)
-                binding.recyclerView.visibility = VISIBLE
-                binding.gambarerror.visibility = GONE
-                binding.errorTitle.visibility = GONE
-                binding.errorTitle.text = getString(R.string.errorTitle)
-                binding.errorDesc.visibility = GONE
-                binding.errorDesc.text = getString(R.string.errorDesc)
-                binding.resetButton.visibility = GONE
-            }
-        }
+        sendAndGetRequestData()
     }
 
 }

@@ -11,6 +11,7 @@ import com.example.tokopaerbe.core.retrofit.response.DetailProductResponse
 import com.example.tokopaerbe.core.retrofit.response.ReviewResponse
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
+import kotlinx.coroutines.test.runTest
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -69,7 +70,7 @@ class RetrofitTest {
     }
 
     @Test
-    fun testRegisterResponse() {
+    fun testRegisterResponse() = runTest {
         // Assign
         val response = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -81,20 +82,20 @@ class RetrofitTest {
         val password = "password"
         val firebaseToken = "firebaseToken"
         val requestBody = RegisterRequestBody(email, password, firebaseToken)
-        val actualResponse = apiService.uploadDataRegister(apiKey, requestBody).execute()
+        val actualResponse = apiService.uploadDataRegister(apiKey, requestBody).data
         // Assert
         val accessToken =
             "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJlY29tbWVyY2UtYXVkaWVuY2UiLCJpc3MiOiJodHRwOi8vMTkyLjE2OC4yMzAuMTI5OjgwODAvIiwidXNlcklkIjoiMzczNTNkMzAtMWIzZC00ZGJlLThmODQtYWZjMjdjNGU5MWJhIiwidHlwZVRva2VuIjoiYWNjZXNzVG9rZW4iLCJleHAiOjE2ODUzNDE1MjB9.ldL_6Qoo-MfMmwHrhxXUv670Uz6j0CCF9t9I8uOmW_LuAUTzCWhjMcQelP8MjfnVDqKSZj2LaqHv3TY08AB7TQ"
         val refreshToken =
             "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJlY29tbWVyY2UtYXVkaWVuY2UiLCJpc3MiOiJodHRwOi8vMTkyLjE2OC4yMzAuMTI5OjgwODAvIiwidXNlcklkIjoiMzczNTNkMzAtMWIzZC00ZGJlLThmODQtYWZjMjdjNGU5MWJhIiwidHlwZVRva2VuIjoiYWNjZXNzVG9rZW4iLCJleHAiOjE2ODUzNDQ1MjB9.HeeNuQww-w2tb3pffNC43BCmMCcE3rOj-yL7-pTGOEcIcoFCv2n9IEWS0gqxNnDaNf3sXBm7JHCxFexB5FGRgQ"
         val expiresAt = 600L
-        assertEquals(accessToken, actualResponse.body()?.data?.accessToken)
-        assertEquals(refreshToken, actualResponse.body()?.data?.refreshToken)
-        assertEquals(expiresAt, actualResponse.body()?.data?.expiresAt)
+        assertEquals(accessToken, actualResponse.accessToken)
+        assertEquals(refreshToken, actualResponse.refreshToken)
+        assertEquals(expiresAt, actualResponse.expiresAt)
     }
 
     @Test
-    fun testLoginResponse() {
+    fun testLoginResponse() = runTest {
         // Assign
         val response = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -106,7 +107,7 @@ class RetrofitTest {
         val password = "password"
         val firebaseToken = "firebaseToken"
         val requestBody = LoginRequestBody(email, password, firebaseToken)
-        val actualResponse = apiService.uploadDataLogin(apiKey, requestBody).execute()
+        val actualResponse = apiService.uploadDataLogin(apiKey, requestBody).data
         // Assert
         val userName = ""
         val userImage = ""
@@ -115,11 +116,11 @@ class RetrofitTest {
         val refreshToken =
             "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJlY29tbWVyY2UtYXVkaWVuY2UiLCJpc3MiOiJodHRwOi8vMTkyLjE2OC4yMzAuMTI5OjgwODAvIiwidXNlcklkIjoiMzczNTNkMzAtMWIzZC00ZGJlLThmODQtYWZjMjdjNGU5MWJhIiwidHlwZVRva2VuIjoicmVmcmVzaFRva2VuIiwiZXhwIjoxNjg1MzQ0ODk1fQ.tB4EeMvkfJAV_kSwakcEujsJEqNtlvKaBbz6ga58lMw6R1NKNOSi6iy3Qn-dFtHGMkzwqpokY3uOdQYcVtahCA"
         val expiresAt = 600L
-        assertEquals(userName, actualResponse.body()?.data?.userName)
-        assertEquals(userImage, actualResponse.body()?.data?.userImage)
-        assertEquals(accessToken, actualResponse.body()?.data?.accessToken)
-        assertEquals(refreshToken, actualResponse.body()?.data?.refreshToken)
-        assertEquals(expiresAt, actualResponse.body()?.data?.expiresAt)
+        assertEquals(userName, actualResponse.userName)
+        assertEquals(userImage, actualResponse.userImage)
+        assertEquals(accessToken, actualResponse.accessToken)
+        assertEquals(refreshToken, actualResponse.refreshToken)
+        assertEquals(expiresAt, actualResponse.expiresAt)
     }
 
     @Test
@@ -146,7 +147,7 @@ class RetrofitTest {
     }
 
     @Test
-    fun testProfileResponse() {
+    fun testProfileResponse() = runTest {
         // Assign
         val response = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -156,16 +157,16 @@ class RetrofitTest {
         val token = "token"
         val text = MultipartBody.Part.createFormData("userName", "userName")
         val image = MultipartBody.Part.createFormData("userImage", "userImage")
-        val actualResponse = apiService.uploadDataProfile(token, text, image).execute()
+        val actualResponse = apiService.uploadDataProfile(token, text, image).data
         // Assert
         val userName = "Test"
         val userImage = "1d32ba79-e879-4425-a011-2da4281f1c1b-test.png"
-        assertEquals(userName, actualResponse.body()?.data?.userName)
-        assertEquals(userImage, actualResponse.body()?.data?.userImage)
+        assertEquals(userName, actualResponse.userName)
+        assertEquals(userImage, actualResponse.userImage)
     }
 
     @Test
-    fun testSearchResponse() {
+    fun testSearchResponse() = runTest {
         // Assign
         val response = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -174,7 +175,7 @@ class RetrofitTest {
         // Act
         val token = "token"
         val query = "query"
-        val actualResponse = apiService.uploadDataSearch(token, query).execute()
+        val actualResponse = apiService.uploadDataSearch(token, query).data
         // Assert
         val data = listOf(
             "Lenovo Legion 3",
@@ -184,7 +185,7 @@ class RetrofitTest {
             "Lenovo Ideapad 5",
             "Lenovo Ideapad 7"
         )
-        assertEquals(data, actualResponse.body()?.data)
+        assertEquals(data, actualResponse)
     }
 
     @Test
@@ -296,7 +297,7 @@ class RetrofitTest {
     }
 
     @Test
-    fun testFulfillmentResponse() {
+    fun testFulfillmentResponse() = runTest {
         // Assign
         val response = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -304,7 +305,7 @@ class RetrofitTest {
         mockWebServer.enqueue(response)
         // Act
         val payment = "payment"
-        val actualResponse = apiService.uploadDataFulfillment(payment, mock()).execute()
+        val actualResponse = apiService.uploadDataFulfillment(payment, mock()).data
         // Assert
         val invoiceId = "ba47402c-d263-49d3-a1f8-759ae59fa4a1"
         val status = true
@@ -312,12 +313,12 @@ class RetrofitTest {
         val time = "08:53"
         val method = "Bank BCA"
         val total = 48998000
-        assertEquals(invoiceId, actualResponse.body()?.data?.invoiceId)
-        assertEquals(status, actualResponse.body()?.data?.status)
-        assertEquals(date, actualResponse.body()?.data?.date)
-        assertEquals(time, actualResponse.body()?.data?.time)
-        assertEquals(method, actualResponse.body()?.data?.payment)
-        assertEquals(total, actualResponse.body()?.data?.total)
+        assertEquals(invoiceId, actualResponse.invoiceId)
+        assertEquals(status, actualResponse.status)
+        assertEquals(date, actualResponse.date)
+        assertEquals(time, actualResponse.time)
+        assertEquals(method, actualResponse.payment)
+        assertEquals(total, actualResponse.total)
     }
 
     @Test

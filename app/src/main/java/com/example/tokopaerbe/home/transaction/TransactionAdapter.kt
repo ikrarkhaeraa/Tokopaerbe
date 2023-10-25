@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.tokopaerbe.R
 import com.example.tokopaerbe.core.retrofit.response.Transaction
 import com.example.tokopaerbe.databinding.ItemRvTransactionBinding
 import java.text.NumberFormat
@@ -45,6 +46,7 @@ class TransactionAdapter(
             binding.apply {
                 Glide.with(itemView.context)
                     .load(data.image)
+                    .placeholder(R.drawable.image_loadingsmall)
                     .into(itemImage)
                 productName.text = data.name
                 var totalBarang = 0

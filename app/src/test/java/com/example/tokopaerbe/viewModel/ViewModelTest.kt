@@ -2,20 +2,50 @@ package com.example.tokopaerbe.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.example.tokopaerbe.core.retrofit.DataSource
+import com.example.tokopaerbe.core.retrofit.FulfillmentRequestBody
+import com.example.tokopaerbe.core.retrofit.Item
+import com.example.tokopaerbe.core.retrofit.LoginRequestBody
+import com.example.tokopaerbe.core.retrofit.RegisterRequestBody
+import com.example.tokopaerbe.core.retrofit.response.DataLogin
+import com.example.tokopaerbe.core.retrofit.response.DataProfile
+import com.example.tokopaerbe.core.retrofit.response.DataRegister
+import com.example.tokopaerbe.core.retrofit.response.Fulfillment
+import com.example.tokopaerbe.core.retrofit.response.FulfillmentResponse
+import com.example.tokopaerbe.core.retrofit.response.LoginResponse
+import com.example.tokopaerbe.core.retrofit.response.ProfileResponse
+import com.example.tokopaerbe.core.retrofit.response.RegisterResponse
+import com.example.tokopaerbe.core.retrofit.response.SearchResponse
 import com.example.tokopaerbe.core.retrofit.user.UserLogin
 import com.example.tokopaerbe.core.retrofit.user.UserProfile
 import com.example.tokopaerbe.core.retrofit.user.UserRegister
+import com.example.tokopaerbe.core.utils.SealedClass
 import com.example.tokopaerbe.viewmodel.ViewModel
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import okhttp3.MultipartBody
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 import org.mockito.kotlin.whenever
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -24,6 +54,7 @@ import java.util.concurrent.TimeoutException
 class ViewModelTest {
 
     private lateinit var viewModel: ViewModel
+    private lateinit var dataSource: DataSource
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -54,96 +85,118 @@ class ViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = ViewModel(mock())
+        dataSource = mock(DataSource::class.java)
+        viewModel = ViewModel(dataSource)
     }
 
     @Test
     fun testProfile() = runTest {
         val auth = "auth"
-        val text = MultipartBody.Part.createFormData("userName", "userName")
-        val image = MultipartBody.Part.createFormData("userImage", "userImage")
-        val userName = "userName"
-        val userImage = "userImage"
-        viewModel.postDataProfile(auth, text, image)
-        viewModel.saveSessionProfile(UserProfile(userName, userImage))
-        backgroundScope.launch {
-            val data = viewModel.profile.first()
-            val savedUsername = viewModel.getUserName().first()
-            assertEquals(200, data.code)
-            assertEquals(userName, savedUsername)
-        }
-    }
-
-    @Test
-    fun testLogin() = runTest {
-        val auth = "auth"
-        val email = "email"
-        val password = "password"
-        val firebaseToken = "firebaseToken"
-        val userName = "userName"
-        val userImage = "userImage"
-        val accessToken = "accessToken"
-        val refreshToken = "refreshToken"
-        val expiresAt = 0L
-        viewModel.postDataLogin(auth, email, password, firebaseToken)
-        viewModel.userLogin()
-        viewModel.saveSessionLogin(
-            UserLogin(
-                userName,
-                userImage,
-                accessToken,
-                refreshToken,
-                expiresAt
-            )
+        val userName = MultipartBody.Part.createFormData("userName", "userName")
+        val userImage = MultipartBody.Part.createFormData("userImage", "userImage")
+        val expectedResponse = ProfileResponse(
+            DataProfile(
+                "",""
+            ),
+            200,
+            "OK"
         )
-        backgroundScope.launch {
-            val data = viewModel.signIn.first()
-            val state = viewModel.getUserLoginState().first()
-            val savedUsername = viewModel.getUserName().first()
-            val savedToken = viewModel.getUserToken().first()
-            assertEquals(200, data.code)
-            assertEquals(true, state)
-            assertEquals("userName", savedUsername)
-            assertEquals("refreshToken", savedToken)
+
+        `when`(dataSource.uploadProfileData(auth, userName, userImage)).thenReturn(flowOf(expectedResponse))
+
+        viewModel.postDataProfile(auth, userName, userImage)
+
+        val result = mutableListOf<SealedClass<ProfileResponse>>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.profileData.toList(result)
         }
+
+        advanceUntilIdle()
+        assertEquals(result, listOf(SealedClass.Loading, SealedClass.Success(expectedResponse)))
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testRegister() = runTest {
-        val auth = "auth"
-        val email = "email"
-        val password = "password"
-        val firebaseToken = "firebaseToken"
-        val accessToken = "accessToken"
-        val refreshToken = "refreshToken"
-        val expiresAt = 0L
-        viewModel.postDataRegister(auth, email, password, firebaseToken)
-        viewModel.userLogin()
-        viewModel.saveSessionRegister(UserRegister(accessToken, refreshToken, expiresAt))
-        backgroundScope.launch {
-            val data = viewModel.signIn.first()
-            val state = viewModel.getUserLoginState().first()
-            val savedToken = viewModel.getUserToken().first()
-            assertEquals(200, data.code)
-            assertEquals(true, state)
-            assertEquals("refreshToken", savedToken)
+        val apiKey = "your_api_key"
+        val email = "test@example.com"
+        val password = "test_password"
+        val firebaseToken = "firebase_token"
+        val expectedResponse = RegisterResponse(
+            DataRegister(
+                "","",0L
+            ),
+            200,
+            "OK"
+        )
+
+        val requestBody = RegisterRequestBody(email, password, firebaseToken)
+        `when`(dataSource.uploadRegisterData(apiKey, requestBody)).thenReturn(flowOf(expectedResponse))
+
+        viewModel.postDataRegister(apiKey, RegisterRequestBody(email, password, firebaseToken))
+
+        val result = mutableListOf<SealedClass<RegisterResponse>>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.registerData.toList(result)
         }
+
+        advanceUntilIdle()
+        assertEquals(result, listOf(SealedClass.Loading, SealedClass.Success(expectedResponse)))
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testLogin() = runTest {
+        val apiKey = "your_api_key"
+        val email = "test@example.com"
+        val password = "test_password"
+        val firebaseToken = "firebase_token"
+        val expectedResponse = LoginResponse(
+            DataLogin(
+                "","","","",0L
+            ),
+            200,
+            "OK"
+        )
+
+        val requestBody = LoginRequestBody(email, password, firebaseToken)
+        `when`(dataSource.uploadLoginData(apiKey, requestBody)).thenReturn(flowOf(expectedResponse))
+
+        viewModel.postDataLogin(apiKey, LoginRequestBody(email, password, firebaseToken))
+
+        val result = mutableListOf<SealedClass<LoginResponse>>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.loginData.toList(result)
+        }
+
+        advanceUntilIdle()
+        assertEquals(result, listOf(SealedClass.Loading, SealedClass.Success(expectedResponse)))
+    }
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testPostDataSearch() = runTest {
         // Prepare test data
         val auth = "auth_token"
         val query = "search_query"
+        val expectedResponse = SearchResponse(
+            listOf(""),
+            200,
+            "OK"
+        )
 
-        // Call the function
+        `when`(dataSource.uploadSearchData(auth, query)).thenReturn(flowOf(expectedResponse))
+
         viewModel.postDataSearch(auth, query)
 
-        // Observe the LiveData and verify the result
-        backgroundScope.launch {
-            val searchResponse = viewModel.search.getOrAwaitValue()
-            assertEquals(200, searchResponse)
+        val result = mutableListOf<SealedClass<SearchResponse>>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.searchData.toList(result)
         }
+
+        advanceUntilIdle()
+        assertEquals(result, listOf(SealedClass.Init, SealedClass.Loading, SealedClass.Success(expectedResponse)))
     }
 
     @Test
@@ -184,40 +237,30 @@ class ViewModelTest {
         }
     }
 
-    @Test
-    fun testGetPaymentData() = runTest {
-        // Prepare test data
-        val authToken = "example_auth_token"
-
-        // Mock getUserToken function
-        whenever(viewModel.getUserToken()).thenReturn(flowOf(authToken))
-
-        // Call the function
-        viewModel.getPaymentData(authToken)
-
-        // Observe the LiveData and verify the result
-        backgroundScope.launch {
-            val paymentResponse = viewModel.payment.getOrAwaitValue()
-            assertEquals(200, paymentResponse.code)
-        }
-    }
-
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testPostDataFulfillment() = runTest {
         // Prepare test data
-        val authToken = "example_auth_token"
+        val auth = "auth_token"
+        val payment = "payment"
+        val expectedResponse = FulfillmentResponse(
+            Fulfillment("",true,"","","",10000000),
+            200,
+            "OK"
+        )
 
-        // Mock getUserToken function
-        whenever(viewModel.getUserToken()).thenReturn(flowOf(authToken))
+        val requestBody = FulfillmentRequestBody(payment, mock())
+        `when`(dataSource.uploadFulfillmentData(auth, requestBody)).thenReturn(flowOf(expectedResponse))
 
-        // Call the function
-        viewModel.postDataFulfillment(authToken, "payment_method", mock())
+        viewModel.postDataFulfillment(auth, requestBody)
 
-        // Observe the LiveData and verify the result
-        backgroundScope.launch {
-            val fulfillmentResponse = viewModel.fulfillment.getOrAwaitValue()
-            assertEquals(200, fulfillmentResponse.code)
+        val result = mutableListOf<SealedClass<FulfillmentResponse>>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.fulfillmentData.toList(result)
         }
+
+        advanceUntilIdle()
+        assertEquals(result, listOf(SealedClass.Init, SealedClass.Loading, SealedClass.Success(expectedResponse)))
     }
 
     @Test

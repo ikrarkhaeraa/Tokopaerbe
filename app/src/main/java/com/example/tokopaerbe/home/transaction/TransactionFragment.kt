@@ -9,27 +9,24 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.MainActivity
+import com.example.tokopaerbe.core.utils.SealedClass
 import com.example.tokopaerbe.databinding.FragmentTransactionBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
 
     private var _binding: FragmentTransactionBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
     private var token: String = ""
     private var auth: String = ""
 
@@ -49,7 +46,6 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTransactionBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -65,45 +61,39 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.imageView5.visibility = GONE
-        binding.textView5.visibility = GONE
-        binding.descempty.visibility = GONE
-        binding.buttonRefresh.visibility = GONE
-
-        showLoading(true)
-
-        lifecycleScope.launch {
-            token = model.getUserToken().first()
-            auth = "Bearer $token"
-            model.getTransactionData(auth)
-        }
-
+        hideErrorState()
         itemTransaction = ArrayList()
 
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(1000)
+        viewLifecycleOwner.lifecycleScope.launch {
+            token = model.getUserToken().first()
+            auth = "Bearer $token"
+            model.postDataTransaction(auth)
+            model.transactionData.collect {
+                when (it) {
+                    is SealedClass.Init -> {
+                        Log.d("cekTransactionState", "masuk Init")
+                        hideErrorState()
+                    }
 
-            if (isVisible) {
-                model.transaction.observe(viewLifecycleOwner) {
-                    if (it.data.isEmpty()) {
-                        Log.d("transaction", it.toString())
+                    is SealedClass.Loading -> {
+                        Log.d("cekTransactionState", "masuk Loading")
+                        hideErrorState()
+                        showLoading(true)
+                        binding.recyclerView.visibility = GONE
+                    }
+
+                    is SealedClass.Success -> {
+                        val data = it.data.data
+                        Log.d("cekTransactionState", "masuk Success")
+                        Log.d("transactionData", it.data.code.toString())
                         showLoading(false)
-                        binding.imageView5.visibility = VISIBLE
-                        binding.textView5.visibility = VISIBLE
-                        binding.descempty.visibility = VISIBLE
-                        binding.buttonRefresh.visibility = VISIBLE
-                        binding.buttonRefresh.setOnClickListener {
-                            refresh()
-                        }
-                    } else {
-                        Log.d("transaction", it?.code.toString())
-                        showLoading(false)
+                        hideErrorState()
                         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
                         val adapter = TransactionAdapter(this@TransactionFragment)
                         binding.recyclerView.adapter = adapter
-                        adapter.submitList(it.data)
+                        adapter.submitList(data)
 
-                        it.data.map { transaction ->
+                        data.map { transaction ->
                             invoiceId = transaction.invoiceId
                             StatusValue = "Berhasil"
                             tanggalValue = transaction.date
@@ -120,21 +110,23 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
                             )
                             itemTransaction.add(product)
                         }
+
                     }
-//                    else {
-//                        Log.d("transaction", it.toString())
-//                        showLoading(false)
-//                        binding.imageView5.visibility = VISIBLE
-//                        binding.textView5.visibility = VISIBLE
-//                        binding.descempty.visibility = VISIBLE
-//                        binding.buttonRefresh.visibility = VISIBLE
-//                        binding.buttonRefresh.setOnClickListener {
-//                            refresh()
-//                        }
-//                    }
+
+                    is SealedClass.Error -> {
+                        Log.d("cekTransactionState", "masuk Error")
+                        showLoading(false)
+                        showErrorState()
+//                        Toast.makeText(requireContext(), it.message.errorMessage(), Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {
+
+                    }
                 }
             }
         }
+
     }
 
     override fun onItemClick(invoiceId: String) {
@@ -165,10 +157,26 @@ class TransactionFragment : Fragment(), TransactionAdapter.OnItemClickListener {
         binding.textView5.visibility = GONE
         binding.descempty.visibility = GONE
         binding.buttonRefresh.visibility = GONE
-        showLoading(true)
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(1000)
-            model.getTransactionData(auth)
+        model.postDataTransaction(auth)
+    }
+
+    private fun showErrorState() {
+        binding.imageView5.visibility = VISIBLE
+        binding.textView5.visibility = VISIBLE
+        binding.descempty.visibility = VISIBLE
+        binding.buttonRefresh.visibility = VISIBLE
+        binding.recyclerView.visibility = GONE
+        binding.buttonRefresh.setOnClickListener {
+            refresh()
         }
     }
+
+    private fun hideErrorState() {
+        binding.imageView5.visibility = GONE
+        binding.textView5.visibility = GONE
+        binding.descempty.visibility = GONE
+        binding.buttonRefresh.visibility = GONE
+        binding.recyclerView.visibility = VISIBLE
+    }
+
 }

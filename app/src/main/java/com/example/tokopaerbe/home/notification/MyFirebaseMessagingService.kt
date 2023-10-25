@@ -2,6 +2,7 @@ package com.example.tokopaerbe.home.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.media.RingtoneManager
 import android.os.Build
@@ -55,19 +56,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendNotification(messageBody: MutableMap<String, String>) {
-        val requestCode = 0
-//        val intent = Intent(this, MainActivity::class.java)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//        val pendingIntent = PendingIntent.getActivity(
-//            this,
-//            requestCode,
-//            intent,
-//            PendingIntent.FLAG_IMMUTABLE,
-//        )
         val pendingIntent = NavDeepLinkBuilder(this)
             .setGraph(R.navigation.app_navigation)
             .setDestination(R.id.notificationsFragment)
             .createPendingIntent()
+
 
         val channelId = getString(R.string.default_notification_channel_id)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)

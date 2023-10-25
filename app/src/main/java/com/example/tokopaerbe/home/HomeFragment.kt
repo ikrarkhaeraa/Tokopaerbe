@@ -9,26 +9,33 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import com.example.tokopaerbe.MainActivity
 import com.example.tokopaerbe.databinding.FragmentHomeBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private val myCoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +44,6 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
     }
 
@@ -85,8 +91,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun theme() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             model.getIsDarkState().collect { theme ->
+                Log.d("cekTheme", theme.toString())
                 binding.switch2.apply {
                     isChecked = theme
                     setOnClickListener {
@@ -101,4 +108,5 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
 }

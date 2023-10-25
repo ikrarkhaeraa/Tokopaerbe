@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
@@ -16,10 +17,11 @@ import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.R
+import com.example.tokopaerbe.core.utils.ErrorMessage.errorMessage
+import com.example.tokopaerbe.core.utils.SealedClass
 import com.example.tokopaerbe.databinding.FragmentDialogSearchBinding
 import com.example.tokopaerbe.home.store.SearchAdapter
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -29,12 +31,12 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+
 class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener {
 
     private var _binding: FragmentDialogSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var factory: ViewModelFactory
     private val model: ViewModel by activityViewModels()
     private lateinit var listSearchResult: List<String>
     private var clickedTitle: String? = null
@@ -50,7 +52,6 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDialogSearchBinding.inflate(inflater, container, false)
-        factory = ViewModelFactory.getInstance(requireContext())
         return binding.root
     }
 
@@ -83,12 +84,13 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
             if (searchText.isNotEmpty()) {
                 Log.d("cekcek", searchText)
                 binding.searchedittext.setText(searchText)
-                lifecycleScope.launch {
+                viewLifecycleOwner.lifecycleScope.launch {
                     val userToken = model.getUserToken().first()
                     val token = "Bearer $userToken"
                     Log.d("cekTokeninSearchFragment", token)
                     Log.d("cekSearchText", searchText)
 
+//                    model.postDataSearch(token, searchText)
                     model.postDataSearch(token, searchText)
 
                     if (isAdded) {
@@ -114,12 +116,13 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
                     .debounce(1000)
                     .collect { query ->
                         showLoading(true)
-                        lifecycleScope.launch {
+                        viewLifecycleOwner.lifecycleScope.launch {
                             val userToken = model.getUserToken().first()
                             val token = "Bearer $userToken"
                             Log.d("cekTokeninSearchFragment", token)
                             Log.d("cekQuery", query)
 
+//                            model.postDataSearch(token, query)
                             model.postDataSearch(token, query)
 
                             if (isAdded) {
@@ -160,13 +163,38 @@ class DialogSearchFragment : DialogFragment(), SearchAdapter.OnItemClickListener
     }
 
     private fun showData() {
-        model.search.observe(viewLifecycleOwner) {
-            if (isAdded && it.code == 200) {
-                showLoading(false)
-                Log.d("cekSearchResponse", it.data.toString())
-                listSearchResult = it.data
-                binding.recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
-                binding.recyclerView.adapter = SearchAdapter(listSearchResult, this)
+        viewLifecycleOwner.lifecycleScope.launch {
+            model.searchData.collect() {
+                when (it) {
+                    is SealedClass.Init -> {
+
+                    }
+
+                    is SealedClass.Loading -> {
+                        showLoading(true)
+                    }
+
+                    is SealedClass.Success -> {
+                        showLoading(false)
+                        model.userLogin()
+                        Log.d("cekSearchResponse", it.data.data.toString())
+                        listSearchResult = it.data.data
+                        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+                        binding.recyclerView.adapter = SearchAdapter(listSearchResult, this@DialogSearchFragment)
+                    }
+
+                    is SealedClass.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            it.message.errorMessage(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    else -> {
+
+                    }
+                }
             }
         }
     }

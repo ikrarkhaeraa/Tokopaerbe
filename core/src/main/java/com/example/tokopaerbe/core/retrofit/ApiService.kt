@@ -24,25 +24,26 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+
     @POST("register")
-    fun uploadDataRegister(
+    suspend fun uploadDataRegister(
         @Header("API_KEY") apiKey: String,
         @Body requestBody: RegisterRequestBody
-    ): Call<RegisterResponse>
+    ): RegisterResponse
 
     @POST("login")
-    fun uploadDataLogin(
+    suspend fun uploadDataLogin(
         @Header("API_KEY") apiKey: String,
         @Body requestBody: LoginRequestBody
-    ): Call<LoginResponse>
+    ): LoginResponse
 
     @Multipart
     @POST("profile")
-    fun uploadDataProfile(
+    suspend fun uploadDataProfile(
         @Header("Authorization") auth: String,
         @Part text: MultipartBody.Part,
         @Part image: MultipartBody.Part?
-    ): Call<ProfileResponse>
+    ): ProfileResponse
 
     @POST("refresh")
     fun uploadDataRefresh(
@@ -62,43 +63,39 @@ interface ApiService {
         @Query("page") page: Int?,
     ): ProductsResponse
 
+
     @POST("search")
-    fun uploadDataSearch(
+    suspend fun uploadDataSearch(
         @Header("Authorization") auth: String,
         @Query("query") search: String
-    ): Call<SearchResponse>
+    ): SearchResponse
 
     @GET("products/{id}")
-    fun getDetailProductData(
+    suspend fun getDetailProductData(
         @Header("Authorization") auth: String,
         @Path("id") id: String
-    ): Call<DetailProductResponse>
+    ): DetailProductResponse
 
     @GET("review/{id}")
-    fun getReviewData(
+    suspend fun getReviewData(
         @Header("Authorization") auth: String,
         @Path("id") id: String
-    ): Call<ReviewResponse>
-
-    @GET("payment")
-    fun getPaymentData(
-        @Header("Authorization") auth: String,
-    ): Call<PaymentResponse>
+    ): ReviewResponse
 
     @POST("fulfillment")
-    fun uploadDataFulfillment(
+    suspend fun uploadDataFulfillment(
         @Header("Authorization") auth: String,
         @Body requestBody: FulfillmentRequestBody
-    ): Call<FulfillmentResponse>
+    ): FulfillmentResponse
 
     @POST("rating")
-    fun uploadDataRating(
+    suspend fun uploadDataRating(
         @Header("Authorization") auth: String,
         @Body requestBody: RatingRequestBody
-    ): Call<RatingResponse>
+    ): RatingResponse
 
     @GET("transaction")
-    fun getTransactionData(
+    suspend fun getTransactionData(
         @Header("Authorization") auth: String,
-    ): Call<TransactionResponse>
+    ): TransactionResponse
 }

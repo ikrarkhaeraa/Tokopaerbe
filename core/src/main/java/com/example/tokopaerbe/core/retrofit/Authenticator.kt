@@ -1,3 +1,5 @@
+package com.example.tokopaerbe.core.retrofit
+
 import android.content.Context
 import android.util.Log
 import com.chuckerteam.chucker.api.ChuckerInterceptor
@@ -6,6 +8,7 @@ import com.example.tokopaerbe.core.retrofit.RefreshRequestBody
 import com.example.tokopaerbe.core.retrofit.UserPreferences
 import com.example.tokopaerbe.core.retrofit.response.RefreshResponse
 import com.example.tokopaerbe.core.retrofit.user.AccessToken
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -19,7 +22,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class Authenticator @Inject constructor(val preferences: UserPreferences, val chucker: Context) :
+class Authenticator @Inject constructor(private val preferences: UserPreferences, private val chucker: Context) :
     Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -41,31 +44,6 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
             }
         }
     }
-
-//    private suspend fun refreshAuthToken(): String? {
-//        val apiKey = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
-//        val refreshToken = preferences.getRefreshToken().first().toString()
-//
-//        Log.d("cekToken", refreshToken)
-//
-//        return try {
-//            val refreshResponse = getNewToken(apiKey, refreshToken).execute()
-//
-//            if (refreshResponse.isSuccessful) {
-//                refreshResponse.body()?.data?.accessToken
-//            } else if (refreshResponse.code() == 401) {
-//                preferences.logout()
-//                "401"
-//            } else {
-//                "error"
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            Log.d("cekE", e.toString())
-//            null
-//        }
-//
-//    }
 
     private suspend fun refreshAuthToken(): MutableMap<String, String>? {
         val apiKey = "6f8856ed-9189-488f-9011-0ff4b6c08edc"
@@ -120,7 +98,7 @@ class Authenticator @Inject constructor(val preferences: UserPreferences, val ch
             .addInterceptor(chuckerInterceptor).build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://172.17.20.114:5000/")
+            .baseUrl("http://192.168.18.5:5000/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

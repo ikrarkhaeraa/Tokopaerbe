@@ -6,6 +6,7 @@ import androidx.paging.PagingState
 import com.example.tokopaerbe.core.retrofit.ApiService
 import com.example.tokopaerbe.core.retrofit.UserPreferences
 import com.example.tokopaerbe.core.retrofit.response.Product
+import com.example.tokopaerbe.core.retrofit.response.ProductsResponse
 import com.example.tokopaerbe.core.retrofit.user.ErrorState
 import kotlinx.coroutines.flow.first
 import retrofit2.HttpException
@@ -45,7 +46,6 @@ class ProductPagingSource(
             Log.d("cek431", lowest.toString())
             Log.d("cek431", highest.toString())
             Log.d("dataPaging", "${responseData.data.items}")
-            preferences.saveCode(ErrorState(responseData.code))
             Log.d("cekSaveCode", responseData.code.toString())
 
             LoadResult.Page(
@@ -55,19 +55,6 @@ class ProductPagingSource(
             )
         } catch (exception: Exception) {
             Log.d("pagingError", exception.toString())
-            when (exception) {
-                is HttpException ->
-                    if (exception.code() == 404) {
-                        preferences.saveCode(ErrorState(exception.code()))
-                        Log.d("cekSaveCode", exception.code().toString())
-                    } else if (exception.code() == 500) {
-                        preferences.saveCode(ErrorState(exception.code()))
-                        Log.d("cekSaveCode", exception.code().toString())
-                    } else {
-                        preferences.saveCode(ErrorState(exception.code()))
-                        Log.d("cekSaveCode", exception.code().toString())
-                    }
-            }
             return LoadResult.Error(exception)
         }
     }

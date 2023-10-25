@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -16,20 +17,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tokopaerbe.core.retrofit.response.Review
 import com.example.tokopaerbe.databinding.FragmentReviewBinding
 import com.example.tokopaerbe.viewmodel.ViewModel
-import com.example.tokopaerbe.viewmodel.ViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ReviewFragment : Fragment() {
 
     private var _binding: FragmentReviewBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var factory: ViewModelFactory
-    private val model: ViewModel by viewModels { factory }
+    private val model: ViewModel by activityViewModels()
     private val args: DetailProductFragmentArgs by navArgs()
     private var productId: String = ""
     private lateinit var listReview: List<Review>
@@ -59,7 +60,7 @@ class ReviewFragment : Fragment() {
             lifecycleScope.launch {
                 val it = model.getUserToken().first()
                 val token = "Bearer $it"
-                model.getReviewData(token, productId)
+//                model.getReviewData(token, productId)
             }
 
             model.review.observe(viewLifecycleOwner) {
@@ -78,7 +79,6 @@ class ReviewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        factory = ViewModelFactory.getInstance(requireContext())
         _binding = FragmentReviewBinding.inflate(inflater, container, false)
         return binding.root
     }
